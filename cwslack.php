@@ -13,7 +13,8 @@ $slacktoken = "Slack Token Here"; //Set token from the Slack slash command scree
 $helpURL = "https://companyknowledgebase.com/document"; //Set your help article URL here.
 
 
-$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey);
+$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
+
 //Count function used for tracking the ticket number.
 function count_digit($number) {
   return strlen($number);
@@ -50,7 +51,7 @@ $urlticketnotes = $urlticketdata . "/notes"; //Set to ticket notes URL, FUTURE U
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Ticket URL for connectwise.
 
 $utc = time(); //Get the time.
-// Authorization array. Needs to be Authorization: Basic <Base64 encoded company+publickey:privatekey
+// Authorization array. Auto encodes API key for auhtorization above.
 $header_data =array(
  "Authorization: Basic ". $authorization,
 );
@@ -187,9 +188,13 @@ curl_close($ch);
 $dataTNotes = json_decode($curlBodyTNotes);
 }
 
-if(array_key_exists("code",$dataTData) || array_key_exists("code",$dataTNotes)) {
-	if($dataTData->code == "NotFound" || $dataTNotes->code == "NotFound") {
-		echo "Connectwise ticket " . $ticketnumber . " was not found.";
+if(array_key_exists("code",$dataTData) || array_key_exists("code",$dataTNotes)) { //Check if array contains error code
+	if($dataTData->code == "NotFound" || $dataTNotes->code == "NotFound") { //If error code is NotFound
+		echo "Connectwise ticket " . $ticketnumber . " was not found."; //Report that the ticket was not found.
+		return;
+	}
+	else {
+		echo "Unknown Error Occurred, check API key and other API settings." //Fail case.
 		return;
 	}
 }
