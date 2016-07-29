@@ -6,9 +6,14 @@ header('Content-Type: application/json'); //Set the header to return JSON, requi
 
 $connectwise = "https://cw.domain.com"; //Set your Connectwise URL
 $companyname = "My Company"; //Set your company name from Connectwise.
-$slacktoken = "Slack Token Here" //Set token from the Slack slash command screen.
-$helpURL = "https://companyknowledgebase.com/document" //Set your help article URL here.
+$apicompanyname = "mycompany"; //Company name all lower case for api auth. 
+$apipublickey = "Key"; //Public API key
+$apiprivatekey = "Key"; //Private API key
+$slacktoken = "Slack Token Here"; //Set token from the Slack slash command screen.
+$helpURL = "https://companyknowledgebase.com/document"; //Set your help article URL here.
 
+
+$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey);
 //Count function used for tracking the ticket number.
 function count_digit($number) {
   return strlen($number);
@@ -47,13 +52,18 @@ $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_r
 $utc = time(); //Get the time.
 // Authorization array. Needs to be Authorization: Basic <Base64 encoded company+publickey:privatekey
 $header_data =array(
- "Authorization: Basic dGVjaGdlbitMbUxWWFZTTVRwZVptb2FjOmF3YW1vVVJMU0ZhNUUybHM=",
+ "Authorization: Basic ". $authorization,
 );
 // Authorization array, with extra json content-type used in patch commands to change tickets.
 $header_data2 =array(
-"Authorization: Basic dGVjaGdlbitMbUxWWFZTTVRwZVptb2FjOmF3YW1vVVJMU0ZhNUUybHM=",
+"Authorization: Basic " . $authorization,
  "Content-Type: application/json"
 );
+
+//Need to create 2 arrays before hand to ensure no errors occur.
+$dataTNotes = array();
+$dataTData = array();
+
 //-
 //Ticket data section
 //-
@@ -175,6 +185,13 @@ if (curl_error($ch)) {
 }
 curl_close($ch);
 $dataTNotes = json_decode($curlBodyTNotes);
+}
+
+if(array_key_exists("code",$dataTData) || array_key_exists("code",$dataTNotes)) {
+	if($dataTData->code == "NotFound" || $dataTNotes->code == "NotFound") {
+		echo "Connectwise ticket " . $ticketnumber . " was not found.";
+		return;
+	}
 }
 
 $date=strtotime($dataTData->dateEntered); //Convert date entered JSON result to time.
