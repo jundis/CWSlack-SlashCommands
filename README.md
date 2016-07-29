@@ -12,10 +12,10 @@ This script, when hosted on a PHP supported web server, will act as a bridge bet
 6. Set Method to GET
 7. Copy the token
 8. Set a name, icon, and autocomplete text if wanted.
-9. Modify the cwslack.php file and change lines 7-10 with your companies values.
+9. Modify the cwslack.php file and change lines 7-13 with your companies values.
 10. Test it in Slack!
 
-Note: You may need to change line 22 of the file if your ticket numbers are not always 6 digits. It is set to fail all slash commands that don't have either help or a 6 digit number as the first line.
+Note: You may need to change line 27 of the file if your ticket numbers are not always 6 digits. It is set to fail all slash commands that don't have either help or a 6 digit number as the first line.
 
 Change: if(count_digit($exploded[0]) != 6) {
 To: if(count_digit($exploded[0]) != <ticket number length>) {
