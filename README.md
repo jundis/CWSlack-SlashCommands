@@ -6,7 +6,7 @@ This script, when hosted on a PHP supported web server, will act as a bridge bet
 
 1. Download the cwslack.php file
 2. Place on a compatible web server
-3. Create a new slack slash command integration at hhttps://<SLACK TEAM>.slack.com/apps/A0F82E8CA-slash-commands
+3. Create a new slack slash command integration at hhttps://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
 4. Set command to /t (or other if you prefer)
 5. Set the URL to http://domain.tld/cwslack.php
 6. Set Method to GET
