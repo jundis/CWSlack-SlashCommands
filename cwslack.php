@@ -1,18 +1,10 @@
 <?php
 ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
-
-//SET THESE VARIABLES
-
-$connectwise = "https://cw.domain.com"; //Set your Connectwise URL
-$companyname = "My Company"; //Set your company name from Connectwise.
-$apicompanyname = "mycompany"; //Company name all lower case for api auth. 
-$apipublickey = "Key"; //Public API key
-$apiprivatekey = "Key"; //Private API key
-$slacktoken = "Slack Token Here"; //Set token from the Slack slash command screen.
-$helpURL = "https://companyknowledgebase.com/document"; //Set your help article URL here.
+require_once 'config.php';
 
 
+$apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
 
 //Count function used for tracking the ticket number.
