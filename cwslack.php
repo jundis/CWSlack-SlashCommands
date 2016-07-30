@@ -186,7 +186,7 @@ if(array_key_exists("code",$dataTData) || array_key_exists("code",$dataTNotes)) 
 		return;
 	}
 	else {
-		echo "Unknown Error Occurred, check API key and other API settings." //Fail case.
+		echo "Unknown Error Occurred, check API key and other API settings."; //Fail case.
 		return;
 	}
 }
