@@ -14,8 +14,3 @@ This script, when hosted on a PHP supported web server, will act as a bridge bet
 8. Set a name, icon, and autocomplete text if wanted.
 9. Modify the config.php file with your companies values.
 10. Test it in Slack!
-
-Note: You may need to change line 27 of the file if your ticket numbers are not always 6 digits. It is set to fail all slash commands that don't have either help or a 6 digit number as the first line.
-
-Change: if(count_digit($exploded[0]) != 6) {
-To: if(count_digit($exploded[0]) != <ticket number length>) {
