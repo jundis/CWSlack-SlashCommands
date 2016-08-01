@@ -216,7 +216,7 @@ if($command == "priority") //If command is priority.
 			))
 		);
 }
-if($command == "status") //If command is status.
+else if($command == "status") //If command is status.
 {
 	$return =array(
 		"parse" => "full",
