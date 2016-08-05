@@ -14,5 +14,13 @@ $helpurl = "https://companyknowledgebase.com/document"; //Set your help article 
 $webhookurl = "https://hooks.slack.com/services/tokens"; //Change this if you intend to use cwslack-incoming.php
 $postadded = 1; //Set this to post new tickets to slack.
 $postupdated = 0; //Set this to post updated tickets to slack. Defaults to off to avoid spam
+$timezone = "CST"; //Set your timezone here. 
+
+//Don't modify below unless you know what you're doing!
+
+//
+
+//Timezone Setting to be used for all files.
+date_default_timezone_set($timezone);
 
 ?>
