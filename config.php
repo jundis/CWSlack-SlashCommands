@@ -1,7 +1,6 @@
 <?php
 
 //SET THESE VARIABLES
-
 //
 
 $connectwise = "https://cw.domain.com"; //Set your Connectwise URL
@@ -17,7 +16,6 @@ $postupdated = 0; //Set this to post updated tickets to slack. Defaults to off t
 $timezone = "CST"; //Set your timezone here. 
 
 //Don't modify below unless you know what you're doing!
-
 //
 
 //Timezone Setting to be used for all files.

@@ -27,8 +27,8 @@ if($_GET['action'] == "added" && $postadded == 1)
 		"attachments"=>array(array(
 			"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 			"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
-			"text" =>  $info->CompanyName . " / " . $info->ContactName . //Return "Company / Contact" string
-			"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Date Entered / Status" string
+			"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+			"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
 			"\n" . $info->Resources, //Return assigned resources
 			"mrkdwn_in" => array(
 				"text",
@@ -44,7 +44,7 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 		"attachments"=>array(array(
 			"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 			"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
-			"text" =>  $info->CompanyName . " / " . $info->ContactName . //Return "Company / Contact" string
+			"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
 			"\n" . $dateformat . " | " . $info->StatusName . //Return "Date Entered / Status" string
 			"\n" . $info->Resources, //Return assigned resources
 			"mrkdwn_in" => array(
