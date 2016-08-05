@@ -54,7 +54,7 @@ cwslack.php and cwslack-activities.php were designed to be independent, but both
 
 # Command Usage
 
-* denotes required
+\* denotes required
 
 ## cwslack.php
 
@@ -70,6 +70,6 @@ option3 should be low/moderate/critical
 
 ## cwslack-activities.php
 
-/act new*|[activity title]*|[assigned to]*
+/act new\*|[activity title]\*|[assigned to]*
 
 All are required for activities. New will be replaced with more commands in the future.
