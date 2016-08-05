@@ -18,7 +18,7 @@ cwslack.php and cwslack-activities.php were designed to be independent, but both
 6. Set Method to GET
 7. Copy the token
 8. Set a name, icon, and autocomplete text if wanted.
-9. Modify the config.php file with your companies values.
+9. Modify the config.php file with your companies values and timezone.
 10. Test it in Slack!
 
 ## cwslack-activities.php
@@ -48,7 +48,7 @@ cwslack.php and cwslack-activities.php were designed to be independent, but both
   - Set Access Level to "All Records"
   - Enable "Service Ticket API" and select the board(s) you want this to run on.
   - Enter http://domain.tld/cwslack-incoming.php?id= for the callback URL (do not enable legacy format)
-7. Modify the config.php file with your companies values, make sure to set the specific $webhookurl to the value copied in step 5.
+7. Modify the config.php file with your companies values and timezone, make sure to set the value for $webhookurl to the value copied in step 5.
 8. Change the $postupdated and $postadded to what you prefer. Enabling $postupdated can get spammy.
 9. Test it in Slack by creating a new ticket on the board you selected in step 6!
 
