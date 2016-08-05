@@ -14,6 +14,7 @@ $webhookurl = "https://hooks.slack.com/services/tokens"; //Change this if you in
 $postadded = 1; //Set this to post new tickets to slack.
 $postupdated = 0; //Set this to post updated tickets to slack. Defaults to off to avoid spam
 $timezone = "CST"; //Set your timezone here. 
+$allowzadmin = 0; //Set this to allow posts from zAdmin, warning as zAdmin does workflow rules so update spam is countered, however new client tickets are through zAdmin. To avoid insane spam, do not have this turned on while $postupdated is turned on. 
 
 //Don't modify below unless you know what you're doing!
 //

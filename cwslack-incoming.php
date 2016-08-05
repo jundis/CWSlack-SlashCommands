@@ -8,7 +8,9 @@ require_once 'config.php'; //Require the config file.
 $data = json_decode(file_get_contents('php://input')); //Decode incoming body from connectwise callback.
 $info = json_decode(stripslashes($data->Entity)); //Decode the entity field which contains the JSON data we want.
 
-if(empty($_GET['id']) || empty($_GET['action']) || strtolower($_GET['memberId'])=="zadmin" || $_GET['isInternalAnalysis']=="True" || empty($info)) die; //If anything we need doesn't exist, kill connection.
+if(empty($_GET['id']) || empty($_GET['action']) || $_GET['isInternalAnalysis']=="True" || empty($info)) die; //If anything we need doesn't exist, kill connection.
+
+if(strtolower($_GET['memberId'])=="zadmin" && $allowzadmin == 0) die; //Die if $allowzadmin is not enabled.
 
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=";
 $header_data =array(
@@ -23,20 +25,41 @@ $ch = curl_init();
 
 if($_GET['action'] == "added" && $postadded == 1)
 {
-	$postfieldspre = array(
-		"attachments"=>array(array(
-			"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-			"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
-			"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-			"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-			"\n" . $info->Resources, //Return assigned resources
-			"mrkdwn_in" => array(
-				"text",
-				"pretext",
-				"title"
-				)
-			))
-		);
+	if(strtolower($_GET['memberId'])=="zadmin")
+	{
+		$postfieldspre = array(
+			"attachments"=>array(array(
+				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+				"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
+				"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+				"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+				"\n" . $info->Resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext",
+					"title"
+					)
+				))
+			);
+
+	}
+	else
+	{
+		$postfieldspre = array(
+			"attachments"=>array(array(
+				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+				"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
+				"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+				"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+				"\n" . $info->Resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext",
+					"title"
+					)
+				))
+			);
+	}
 }
 else if($_GET['action'] == "updated" && $postupdated == 1)
 {
