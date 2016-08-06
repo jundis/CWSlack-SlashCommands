@@ -67,7 +67,6 @@ $curlOpts = array(
 	CURLOPT_RETURNTRANSFER => true,
 	CURLOPT_HTTPHEADER => $header_data,
 	CURLOPT_FOLLOWLOCATION => true,
-	CURLOPT_TCP_KEEPALIVE => 2,
 	CURLOPT_HEADER => 1,
 );
 curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
@@ -118,7 +117,6 @@ $curlOpts = array(
 	CURLOPT_FOLLOWLOCATION => true,
 	CURLOPT_CUSTOMREQUEST => "PATCH",
 	CURLOPT_POSTFIELDS => $postfields,
-	CURLOPT_TCP_KEEPALIVE => 2,
 	CURLOPT_POST => 1,
 	CURLOPT_HEADER => 1,
 );
@@ -165,7 +163,6 @@ $curlOpts = array(
 	CURLOPT_FOLLOWLOCATION => true,
 	CURLOPT_CUSTOMREQUEST => "PATCH",
 	CURLOPT_POSTFIELDS => $postfields,
-	CURLOPT_TCP_KEEPALIVE => 2,
 	CURLOPT_POST => 1,
 	CURLOPT_HEADER => 1,
 );
