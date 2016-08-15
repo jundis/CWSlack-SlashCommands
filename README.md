@@ -2,9 +2,13 @@
 
 This script, when hosted on a PHP supported web server, will act as a bridge between the JSON requests of Slack and the JSON responses of the ConnectWise REST API.
 
-cwslack.php and cwslack-activities.php were designed to be independent, but both rely on the config.php file.
+cwslack.php, cwslack-incoming.php, and cwslack-activities.php were designed to be independent, but all rely on the config.php file.
 
+For requesting ticket information using /ticket #, use cwslack.php.
 
+For creating new activities, use cwslack-activities.php.
+
+To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.php
 
 # Installation Instructions
 
