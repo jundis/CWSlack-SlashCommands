@@ -63,6 +63,21 @@ curl_close($ch);
 $dataResponse = json_decode($curlResponse);
 }
 
+if(array_key_exists("code",$dataResponse)) { //Check if array contains error code
+	if($dataResponse->code == "NotFound") { //If error code is NotFound
+		echo "This should never occur..."; //Report that the ticket was not found.
+		return;
+	}
+	if($dataResponse->code == "Unauthorized") { //If error code is an authorization error
+		echo "401 Unauthorized, check API key to ensure it is valid."; //Fail case.
+		return;
+	}
+	else {
+		echo "Unknown Error Occurred, check API key and other API settings."; //Fail case.
+		return;
+	}
+}
+
 $return="Unknown command.";
 if($command == "new") //If command is new.
 {
