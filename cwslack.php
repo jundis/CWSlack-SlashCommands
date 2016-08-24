@@ -189,7 +189,7 @@ if(array_key_exists("code",$dataTData)) { //Check if array contains error code
 		return;
 	}
 	else {
-		echo "Unknown Error Occurred, check API key and other API settings."; //Fail case.
+		echo "Unknown Error Occurred, check API key and other API settings." . $dataTNotes->code; //Fail case.
 		return;
 	}
 }
@@ -203,7 +203,7 @@ if(array_key_exists("code",$dataTNotes)) { //Check if array contains error code
 		return;
 	}
 	else {
-		echo "Unknown Error Occurred, check API key and other API settings."; //Fail case.
+		echo "Unknown Error Occurred, check API key and other API settings. Error: " . $dataTNotes->code; //Fail case.
 		return;
 	}
 }
