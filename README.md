@@ -68,9 +68,9 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 
 # Config.php configuration
 
-\* Asterisk denotes required.
-\+ Plus denotes required for cwslack-activities.php
-\- Minus denotes required for cwslack-incoming.php
+\* Asterisk denotes required.  
+\+ Plus denotes required for cwslack-activities.php  
+\- Minus denotes required for cwslack-incoming.php  
 
 * $connectwise * : This value needs to be set to your main connectwise URL.
 * $companyname * : This value needs to be set to whatever your company name is that you use to login to ConnectWise.
@@ -79,12 +79,12 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 * $slacktoken * : Set to the token you got when creating a new slash command integration in Slack.
 * $timezone * : Set to your timezone according to http://php.net/manual/en/timezones.america.php .
 * $slackactivitiestoken + : Set to the token you got when creating a new slash command integration in Slack for /activities.
-* $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
 * $webhookurl - : Set to the incoming webhook URL you got when creating a new incoming webhook in Slack.
 * $postadded - : Set to 1 if you want it to post new tickets to chat.
 * $postupdated - : Set to 1 if you want it to post new ticket updates to chat.
 * $allowzadmin - : Set to 1 if you want posts from zAdmin to go to chat. Set to 0 by default to avoid spam in high volume environments.
 * $badboard : Set this if you have a specific board that spams a lot, set to Alerts by default to hide alerts board posts.
+* $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
 
 # Command Usage
 
