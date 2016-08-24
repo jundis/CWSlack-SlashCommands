@@ -206,6 +206,7 @@ if($command == "priority") //If command is priority.
 		"parse" => "full", //Parse all text.
 		"response_type" => "in_channel", //Send the response in the channel
 		"attachments"=>array(array(
+			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "Ticket Summary: " . $dataTData->summary, //Set bolded title text
 			"pretext" => "Ticket #" . $dataTData->id . "'s priority has been set to " . $option3, //Set pretext
 			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.", //Set text to be returned
@@ -222,6 +223,7 @@ else if($command == "status") //If command is status.
 		"parse" => "full",
 		"response_type" => "in_channel",
 		"attachments"=>array(array(
+			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "Ticket Summary: " . $dataTData->summary,
 			"pretext" => "Ticket #" . $dataTData->id . "'s status has been set to " . $option3,
 			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.",
@@ -238,6 +240,7 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 		"parse" => "full",
 		"response_type" => "in_channel",
 		"attachments"=>array(array(
+			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "<" . $ticketurl . $dataTData -> id . "&companyName=" . $companyname . "|#" . $dataTData->id . ">: " . $dataTData->summary, //Return clickable link to ticket with ticket summary.
 			"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 			"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string

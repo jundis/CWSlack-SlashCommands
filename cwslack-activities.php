@@ -70,6 +70,7 @@ if($command == "new") //If command is new.
 		"parse" => "full", //Parse all text.
 		"response_type" => "in_channel", //Send the response in the channel
 		"attachments"=>array(array(
+			"fallback" => "New Activity Created: " . $dataResponse->name, //Fallback for notifications
 			"title" => "New Activity Created: " . $dataResponse->name, //Set bolded title text
 			"pretext" => "Activity #" . $dataResponse->id . " has been created and assigned to " . $exploded[2], //Set pretext
 			"text" => "Click <" . $activityurl . $dataResponse -> id . $activityurl2 . "|here> to open the activity.", //Set text to be returned
