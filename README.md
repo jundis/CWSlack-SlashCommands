@@ -22,7 +22,7 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 6. Set Method to GET
 7. Copy the token
 8. Set a name, icon, and autocomplete text if wanted.
-9. Modify the config.php file with your companies values and timezone.
+9. Modify the config.php file with your companies values and timezone. Full configuration info below.
 10. Test it in Slack!
 
 ## cwslack-activities.php
@@ -35,7 +35,7 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 6. Set Method to GET
 7. Copy the token
 8. Set a name, icon, and autocomplete text if wanted.
-9. Modify the config.php file with your companies values, make sure to set the specific $slackactivitiestoken to the one for the activities slash command.
+9. Modify the config.php file with your companies values, Full configuration info below.
 10. Test it in Slack!
 
 ## cwslack-incoming.php
@@ -55,6 +55,36 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 7. Modify the config.php file with your companies values and timezone, make sure to set the value for $webhookurl to the value copied in step 5.
 8. Change the $postupdated and $postadded to what you prefer. Enabling $postupdated can get spammy.
 9. Test it in Slack by creating a new ticket on the board you selected in step 6!
+
+# API Key Setup
+
+1. Login to ConnectWise
+2. In the top right, click on your name
+3. Go to "My Account"
+4. Select the "API Keys" tab
+5. Click the Plus icon to create a new key
+6. Provide a description and click the Save icon.
+7. Save this information, you cannot retrieve the private key ever again so if lost you will need to create new ones.
+
+# Config.php configuration
+
+\* Asterisk denotes required.
+\+ Plus denotes required for cwslack-activities.php
+\- Minus denotes required for cwslack-incoming.php
+
+* $connectwise * : This value needs to be set to your main connectwise URL.
+* $companyname * : This value needs to be set to whatever your company name is that you use to login to ConnectWise.
+* $apipublickey * : Set to your Public Key from API setup
+* $apiprivatekey * : Set to your Private Key from API setup
+* $slacktoken * : Set to the token you got when creating a new slash command integration in Slack.
+* $timezone * : Set to your timezone according to http://php.net/manual/en/timezones.america.php .
+* $slackactivitiestoken + : Set to the token you got when creating a new slash command integration in Slack for /activities.
+* $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
+* $webhookurl - : Set to the incoming webhook URL you got when creating a new incoming webhook in Slack.
+* $postadded - : Set to 1 if you want it to post new tickets to chat.
+* $postupdated - : Set to 1 if you want it to post new ticket updates to chat.
+* $allowzadmin - : Set to 1 if you want posts from zAdmin to go to chat. Set to 0 by default to avoid spam in high volume environments.
+* $badboard : Set this if you have a specific board that spams a lot, set to Alerts by default to hide alerts board posts.
 
 # Command Usage
 
