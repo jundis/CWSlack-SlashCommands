@@ -179,9 +179,27 @@ curl_close($ch);
 $dataTNotes = json_decode($curlBodyTNotes);
 }
 
-if(array_key_exists("code",$dataTData) || array_key_exists("code",$dataTNotes)) { //Check if array contains error code
-	if($dataTData->code == "NotFound" || $dataTNotes->code == "NotFound") { //If error code is NotFound
+if(array_key_exists("code",$dataTData)) { //Check if array contains error code
+	if($dataTData->code == "NotFound") { //If error code is NotFound
 		echo "Connectwise ticket " . $ticketnumber . " was not found."; //Report that the ticket was not found.
+		return;
+	}
+	if($dataTData->code == "Unauthorized") { //If error code is an authorization error
+		echo "401 Unauthorized, check API key to ensure it is valid."; //Fail case.
+		return;
+	}
+	else {
+		echo "Unknown Error Occurred, check API key and other API settings."; //Fail case.
+		return;
+	}
+}
+if(array_key_exists("code",$dataTNotes)) { //Check if array contains error code
+	if($dataTNotes->code == "NotFound") { //If error code is NotFound
+		echo "Connectwise ticket " . $ticketnumber . " was not found."; //Report that the ticket was not found.
+		return;
+	}
+	if($dataTNotes->code == "Unauthorized") { //If error code is an authorization error
+		echo "401 Unauthorized, check API key to ensure it is valid."; //Fail case.
 		return;
 	}
 	else {
