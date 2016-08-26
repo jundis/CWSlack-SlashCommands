@@ -84,6 +84,7 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 * $postupdated - : Set to 1 if you want it to post new ticket updates to chat.
 * $allowzadmin - : Set to 1 if you want posts from zAdmin to go to chat. Set to 0 by default to avoid spam in high volume environments.
 * $badboard : Set this if you have a specific board that spams a lot, set to Alerts by default to hide alerts board posts.
+* $badstatus : Set this if you have a status you want to ignore, set to Closed by default as tickets are rarely automatically closed.
 * $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
 
 # Command Usage
