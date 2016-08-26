@@ -26,8 +26,8 @@ $posttext = 1; //Set to 1 if you want it to post the latest note from the ticket
 
 //cwslack-follow.php
 $slackfollowtoken = "Slack Token Here"; //Set your token for the follow slash command
-$followenabled=0;
-$dir="storage";
+$followenabled=0; //When set to 1, follow commands and the follow scripts will be enabled.
+$dir="/var/www/storage/"; //Needs to be set to a directory writeable by PHP for storage of the storage.txt file.
 
 
 //Change optional
