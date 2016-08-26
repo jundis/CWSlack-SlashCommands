@@ -115,6 +115,33 @@ if($posttext==1) //Block for curl to get latest note
 	curl_close($ch1);
 
 	$dataTNotes = json_decode($curlBodyTNotes); //Decode the JSON returned by the CW API.
+	
+	if($command == "full" || $command == "notes" || $command == "all")
+	{
+		$ch1 = curl_init(); //Initiate a curl session_cache_expire
+		$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc";
+		//Create curl array to set the API url, headers, and necessary flags.
+		$curlOpts1 = array(
+			CURLOPT_URL => $noteurl,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER => $header_data,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HEADER => 1,
+		);
+		curl_setopt_array($ch1, $curlOpts1); //Set the curl array to $curlOpts
+
+		$answerTNotes = curl_exec($ch1); //Set $answerTData to the curl response to the API.
+		$headerLen = curl_getinfo($ch1, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
+		$curlBodyTNotes = substr($answerTNotes, $headerLen); //Remove header data from the curl string.
+
+		// If there was an error, show it
+		if (curl_error($ch1)) {
+			die(curl_error($ch1));
+		}
+		curl_close($ch1);
+
+		$dataTNotes2 = json_decode($curlBodyTNotes); //Decode the JSON returned by the CW API.
+	}
 }
 //-
 //Priority command
@@ -326,6 +353,66 @@ else if($command == "initial" || $command == "first" || $command == "note")
 				array(
 					"pretext" => "Initial ticket note from: " . $dataTNotes[0]->createdBy,
 					"text" =>  $dataTNotes[0]->text,
+					"mrkdwn_in" => array(
+						"text",
+						"pretext",
+						"title"
+						)
+				))
+			);
+
+	}
+}
+else if($command == "full" || $command == "notes" || $command == "all")
+{
+	if($posttext==0)
+	{
+		$return =array(
+			"parse" => "full",
+			"response_type" => "in_channel",
+			"attachments"=>array(array(
+				"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
+				"title" => "<" . $ticketurl . $dataTData -> id . "&companyName=" . $companyname . "|#" . $dataTData->id . ">: " . $dataTData->summary, //Return clickable link to ticket with ticket summary.
+				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
+				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
+				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
+				"\n" . $dataTData->resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext"
+					)
+				))
+			);
+	}
+	else
+	{
+		$return =array(
+			"parse" => "full",
+			"response_type" => "ephemeral",
+			"attachments"=>array(array(
+				"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
+				"title" => "<" . $ticketurl . $dataTData -> id . "&companyName=" . $companyname . "|#" . $dataTData->id . ">: " . $dataTData->summary, //Return clickable link to ticket with ticket summary.
+				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
+				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
+				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
+				"\n" . $dataTData->resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext"
+					)
+				),
+				array(
+					"pretext" => "Latest Note from: " . $dataTNotes[0]->createdBy,
+					"text" =>  $dataTNotes[0]->text,
+					"mrkdwn_in" => array(
+						"text",
+						"pretext",
+						"title"
+						)
+				),
+				array(
+					"pretext" => "Initial ticket note from: " . $dataTNotes2[0]->createdBy,
+					"text" =>  $dataTNotes2[0]->text,
 					"mrkdwn_in" => array(
 						"text",
 						"pretext",
