@@ -105,6 +105,14 @@ option3 should be n2s/scheduled/completed
 
 option3 should be low/moderate/critical
 
+### full (or) notes (or) all
+
+If $posttext=1 in config.php, shows you the latest note and the initial note. This displays to you only to avoid spam.
+
+### initial (or) note (or) first
+
+If $posttext=1 in config.php, shows you the initial note of the ticket. This displays to you only to avoid spam.
+
 ## cwslack-activities.php
 
 /act new\*|[activity title]\*|[assigned to]*
