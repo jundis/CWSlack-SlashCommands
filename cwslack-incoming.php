@@ -29,6 +29,7 @@ $header_data2 =array(
  "Content-Type: application/json"
 );
 
+$skip = 0;
 $date=strtotime($info->EnteredDateUTC); //Convert date entered JSON result to time.
 $dateformat=date('m-d-Y g:i:sa',$date); //Convert previously converted time to a better time string.
 $ticket=$_GET['id'];
@@ -211,27 +212,232 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 }
 else
 {
-	die;
+	$skip=1;
 }
 
-$postfields = json_encode($postfieldspre);
+if($skip==0)
+{
+	$postfields = json_encode($postfieldspre);
 
-$curlOpts = array(
-	CURLOPT_URL => $webhookurl,
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_HTTPHEADER => $header_data2,
-	CURLOPT_FOLLOWLOCATION => true,
-	CURLOPT_POSTFIELDS => $postfields,
-	CURLOPT_POST => 1,
-	CURLOPT_HEADER => 1,
-);
-curl_setopt_array($ch, $curlOpts);
-$answer = curl_exec($ch);
+	$curlOpts = array(
+		CURLOPT_URL => $webhookurl,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_HTTPHEADER => $header_data2,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_POSTFIELDS => $postfields,
+		CURLOPT_POST => 1,
+		CURLOPT_HEADER => 1,
+	);
+	curl_setopt_array($ch, $curlOpts);
+	$answer = curl_exec($ch);
 
-// If there was an error, show it
-if (curl_error($ch)) {
-	die(curl_error($ch));
+	// If there was an error, show it
+	if (curl_error($ch)) {
+		die(curl_error($ch));
+	}
+	curl_close($ch);
 }
-curl_close($ch);
+
+if($followenabled==1)
+{
+	if(file_exists($dir."storage.txt"))
+	{
+		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES);
+	}
+	else
+	{
+		$f = fopen($dir."storage.txt") or die("can't open file");
+		fclose($f);
+		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES);
+	}
+	$lines = explode("\n",$file);
+	$alerts = array();
+	foreach($lines as $line)
+	{
+		$tempex = explode("^",$line);
+
+		if($tempex[0]==$ticket)
+		{
+			$alerts[]=$tempex[1];
+		}
+	}
+	if(empty($alerts)) die;
+	foreach($alerts as $username)
+	{
+		if($_GET['action'] == "added")
+		{
+			if($posttext==0)
+			{
+				if(strtolower($_GET['memberId'])=="zadmin")
+				{
+					$postfieldspre = array(
+						"channel"=>"@".$username,
+						"attachments"=>array(array(
+							"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+							"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
+							"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+							"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+							"\n" . $info->Resources, //Return assigned resources
+							"mrkdwn_in" => array(
+								"text",
+								"pretext",
+								"title"
+								)
+							))
+						);
+
+				}
+				else
+				{
+					$postfieldspre = array(
+						"channel"=>"@".$username,
+						"attachments"=>array(array(
+							"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+							"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
+							"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+							"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+							"\n" . $info->Resources, //Return assigned resources
+							"mrkdwn_in" => array(
+								"text",
+								"pretext",
+								"title"
+								)
+							))
+						);
+				}
+			}
+			else
+			{
+				if(strtolower($_GET['memberId'])=="zadmin")
+				{
+					$postfieldspre = array(
+						"channel"=>"@".$username,
+						"attachments"=>array(array(
+							"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+							"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
+							"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+							"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+							"\n" . $info->Resources, //Return assigned resources
+							"mrkdwn_in" => array(
+								"text",
+								"pretext",
+								"title"
+								)
+							),
+							array(
+								"pretext" => "Latest Note from: " . $dataTData[0]->createdBy,
+								"text" =>  $dataTData[0]->text,
+								"mrkdwn_in" => array(
+									"text",
+									"pretext",
+									"title"
+									)
+							))
+						);
+
+				}
+				else
+				{
+					$postfieldspre = array(
+						"channel"=>"@".$username,
+						"attachments"=>array(array(
+							"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+							"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
+							"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+							"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+							"\n" . $info->Resources, //Return assigned resources
+							"mrkdwn_in" => array(
+								"text",
+								"pretext",
+								"title"
+								)
+							),
+							array(
+								"pretext" => "Latest Note from: " . $dataTData[0]->createdBy,
+								"text" =>  $dataTData[0]->text,
+								"mrkdwn_in" => array(
+									"text",
+									"pretext",
+									"title"
+									)
+							))
+						);
+				}
+			}
+		}
+		else if($_GET['action'] == "updated")
+		{
+			if($posttext==0)
+			{
+				$postfieldspre = array(
+					"channel"=>"@".$username,
+					"attachments"=>array(array(
+						"fallback" => "Updated ticket #" . $ticket . " - " . $info->Summary,
+						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+						"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
+						"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+						"\n" . $dateformat . " | " . $info->StatusName . //Return "Date Entered / Status" string
+						"\n" . $info->Resources, //Return assigned resources
+						"mrkdwn_in" => array(
+							"text",
+							"pretext"
+							)
+						))
+					);
+			}
+			else
+			{
+				$postfieldspre = array(
+					"channel"=>"@".$username,
+					"attachments"=>array(array(
+						"fallback" => "Updated ticket #" . $ticket . " - " . $info->Summary,
+						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+						"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
+						"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+						"\n" . $dateformat . " | " . $info->StatusName . //Return "Date Entered / Status" string
+						"\n" . $info->Resources, //Return assigned resources
+						"mrkdwn_in" => array(
+							"text",
+							"pretext"
+							)
+						),
+						array(
+							"pretext" => "Latest Note from: " . $dataTData[0]->createdBy,
+							"text" =>  $dataTData[0]->text,
+							"mrkdwn_in" => array(
+								"text",
+								"pretext",
+								"title"
+								)
+						)
+					)
+				);
+			}
+		}
+	}
+	$postfields = json_encode($postfieldspre);
+
+	$curlOpts = array(
+		CURLOPT_URL => $webhookurl,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_HTTPHEADER => $header_data2,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_POSTFIELDS => $postfields,
+		CURLOPT_POST => 1,
+		CURLOPT_HEADER => 1,
+	);
+	curl_setopt_array($ch, $curlOpts);
+	$answer = curl_exec($ch);
+
+	// If there was an error, show it
+	if (curl_error($ch)) {
+		die(curl_error($ch));
+	}
+	curl_close($ch);
+}
 
 ?>
