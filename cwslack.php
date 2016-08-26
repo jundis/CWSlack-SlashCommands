@@ -41,6 +41,12 @@ $urlticketdata = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $tic
 $noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20desc";
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Ticket URL for connectwise.
 
+//Set noteurl to use ascending if an initial note command is passed.
+if($command == "initial" || $command == "first" || $command == "note") 
+{
+	$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc";
+}
+
 $utc = time(); //Get the time.
 // Authorization array. Auto encodes API key for auhtorization above.
 $header_data =array(
@@ -278,6 +284,57 @@ else if($command == "status") //If command is status.
 				)
 			))
 		);
+}
+else if($command == "initial" || $command == "first" || $command == "note")
+{
+	if($posttext==0)
+	{
+		$return =array(
+			"parse" => "full",
+			"response_type" => "in_channel",
+			"attachments"=>array(array(
+				"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
+				"title" => "<" . $ticketurl . $dataTData -> id . "&companyName=" . $companyname . "|#" . $dataTData->id . ">: " . $dataTData->summary, //Return clickable link to ticket with ticket summary.
+				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
+				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
+				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
+				"\n" . $dataTData->resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext"
+					)
+				))
+			);
+	}
+	else
+	{
+		$return =array(
+			"parse" => "full",
+			"response_type" => "ephemeral",
+			"attachments"=>array(array(
+				"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
+				"title" => "<" . $ticketurl . $dataTData -> id . "&companyName=" . $companyname . "|#" . $dataTData->id . ">: " . $dataTData->summary, //Return clickable link to ticket with ticket summary.
+				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
+				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
+				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
+				"\n" . $dataTData->resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext"
+					)
+				),
+				array(
+					"pretext" => "Initial ticket note from: " . $dataTNotes[0]->createdBy,
+					"text" =>  $dataTNotes[0]->text,
+					"mrkdwn_in" => array(
+						"text",
+						"pretext",
+						"title"
+						)
+				))
+			);
+
+	}
 }
 else //If no command is set, or if it's just random gibberish after ticket number.
 {
