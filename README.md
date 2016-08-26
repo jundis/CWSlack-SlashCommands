@@ -10,6 +10,8 @@ For creating new activities, use cwslack-activities.php.
 
 To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.php
 
+To follow tickets and get updates whenever they're updated, use cwslack-follow.php (requires cwslack-incoming.php)
+
 # Installation Instructions
 
 ## cwslack.php
@@ -27,11 +29,24 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 
 ## cwslack-activities.php
 
-1. Download the cwslack.php file and config.php file.
+1. Download the cwslack-activities.php file and config.php file.
 2. Place on a compatible web server
 3. Create a new slack slash command integration at  https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
 4. Set command to /act (or other if you prefer)
 5. Set the URL to http://domain.tld/cwslack-activities.php
+6. Set Method to GET
+7. Copy the token
+8. Set a name, icon, and autocomplete text if wanted.
+9. Modify the config.php file with your companies values, Full configuration info below.
+10. Test it in Slack!
+
+## cwslack-follow.php (Also requires cwslack-incoming.php to function)
+
+1. Download the cwslack-follow.php file and config.php file.
+2. Place on a compatible web server
+3. Create a new slack slash command integration at  https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
+4. Set command to /follow (or other if you prefer)
+5. Set the URL to http://domain.tld/cwslack-follow.php
 6. Set Method to GET
 7. Copy the token
 8. Set a name, icon, and autocomplete text if wanted.
@@ -71,6 +86,7 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 \* Asterisk denotes required.  
 \+ Plus denotes required for cwslack-activities.php  
 \- Minus denotes required for cwslack-incoming.php  
+\# Pound denotes required for cwslack-follow.php
 
 * $connectwise * : This value needs to be set to your main connectwise URL.
 * $companyname * : This value needs to be set to whatever your company name is that you use to login to ConnectWise.
@@ -87,6 +103,9 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 * $badstatus : Set this if you have a status you want to ignore, set to Closed by default as tickets are rarely automatically closed.
 * $badcompany : Set this if you have a company you want to ignore, set to CatchAll by default to avoid spam from unknown incoming e-mails.
 * $posttext : Set this to 1 if you want to include the latest note with the Slack message. Set to 1 by default now.
+* $slackfollowtoken # : Set to the token you got when creating a new slash command integration in Slack for /follow.
+* $followenabled # : Defaults to 0, you need to change this to 1 if you want to enable follow.
+* $dir # : Directory on the server to store files. Please note that the user running php (www-data in Linux) needs write/read access to this folder.
 * $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
 
 # Command Usage
@@ -118,3 +137,9 @@ If $posttext=1 in config.php, shows you the initial note of the ticket. This dis
 /act new\*|[activity title]\*|[assigned to]*
 
 All are required for activities. New will be replaced with more commands in the future.
+
+## cwslack-follow.php
+
+/follow [ticket number]* (unfollow)
+
+Add unfollow to the end of the command to stop following a ticket.

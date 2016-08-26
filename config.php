@@ -24,6 +24,12 @@ $badstatus = "Closed"; //Set to any status name you want to fail, to avoid ticke
 $badcompany = "CatchAll (for email connector)"; //Set to any company name you want to fail, to avoid ticket creation for catchall from posting to Slack.
 $posttext = 1; //Set to 1 if you want it to post the latest note from the ticket into chat whenever a ticket is created or updated.
 
+//cwslack-follow.php
+$slackfollowtoken = "Slack Token Here"; //Set your token for the follow slash command
+$followenabled=0; //When set to 1, follow commands and the follow scripts will be enabled.
+$dir="/var/www/storage/"; //Needs to be set to a directory writeable by PHP for storage of the storage.txt file.
+
+
 //Change optional
 $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help article URL here.
 
@@ -33,5 +39,9 @@ $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help ar
 
 //Timezone Setting to be used for all files.
 date_default_timezone_set($timezone);
+if ( !file_exists($dir) ) {
+     $oldmask = umask(0);  // helpful when used in linux server  
+     mkdir ($dir, 0744);
+ }
 
 ?>
