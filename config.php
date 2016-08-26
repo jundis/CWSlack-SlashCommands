@@ -21,6 +21,8 @@ $postupdated = 0; //Set this to post updated tickets to slack. Defaults to off t
 $allowzadmin = 0; //Set this to allow posts from zAdmin, warning as zAdmin does workflow rules so update spam is countered, however new client tickets are through zAdmin. To avoid insane spam, do not have this turned on while $postupdated is turned on. 
 $badboard = "Alerts"; //Set to any board name you want to fail, to avoid ticket creation/updates from this board posting to Slack.
 $badstatus = "Closed"; //Set to any status name you want to fail, to avoid ticket creation/updates with this status from posting to Slack.
+$badcompany = "CatchAll (for email connector)"; //Set to any company name you want to fail, to avoid ticket creation for catchall from posting to Slack.
+$posttext = 1; //Set to 1 if you want it to post the latest note from the ticket into chat whenever a ticket is created or updated.
 
 //Change optional
 $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help article URL here.
