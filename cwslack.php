@@ -38,7 +38,7 @@ if (array_key_exists(2,$exploded)) //If a third string exists in the slash comma
 }
 //Set URLs
 $urlticketdata = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
-$urlticketnotes = $urlticketdata . "/notes"; //Set to ticket notes URL, FUTURE USE
+$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20desc";
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Ticket URL for connectwise.
 
 $utc = time(); //Get the time.
@@ -52,9 +52,10 @@ $header_data2 =array(
  "Content-Type: application/json"
 );
 
-//Need to create 2 arrays before hand to ensure no errors occur.
+//Need to create 3 arrays before hand to ensure no errors occur.
 $dataTNotes = array();
 $dataTData = array();
+$dataTCmd = array();
 
 //-
 //Ticket data section
@@ -83,6 +84,32 @@ curl_close($ch);
 
 $dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
 
+if($posttext==1) //Block for curl to get latest note
+{
+	$ch1 = curl_init(); //Initiate a curl session_cache_expire
+
+	//Create curl array to set the API url, headers, and necessary flags.
+	$curlOpts1 = array(
+		CURLOPT_URL => $noteurl,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_HTTPHEADER => $header_data,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_HEADER => 1,
+	);
+	curl_setopt_array($ch1, $curlOpts1); //Set the curl array to $curlOpts
+
+	$answerTNotes = curl_exec($ch1); //Set $answerTData to the curl response to the API.
+	$headerLen = curl_getinfo($ch1, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
+	$curlBodyTNotes = substr($answerTNotes, $headerLen); //Remove header data from the curl string.
+
+	// If there was an error, show it
+	if (curl_error($ch1)) {
+		die(curl_error($ch1));
+	}
+	curl_close($ch1);
+
+	$dataTNotes = json_decode($curlBodyTNotes); //Decode the JSON returned by the CW API.
+}
 //-
 //Priority command
 //- 
@@ -122,15 +149,15 @@ $curlOpts = array(
 );
 curl_setopt_array($ch, $curlOpts);
 
-$answerTNotes = curl_exec($ch);
+$answerTCmd = curl_exec($ch);
 $headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE); 
-$curlBodyTNotes = substr($answerTNotes, $headerLen);
+$curlBodyTCmd = substr($answerTCmd, $headerLen);
 // If there was an error, show it
 if (curl_error($ch)) {
 	die(curl_error($ch));
 }
 curl_close($ch);
-$dataTNotes = json_decode($curlBodyTNotes);
+$dataTCmd = json_decode($curlBodyTCmd);
 }
 
 //-
@@ -168,15 +195,15 @@ $curlOpts = array(
 );
 curl_setopt_array($ch, $curlOpts);
 
-$answerTNotes = curl_exec($ch);
+$answerTCmd = curl_exec($ch);
 $headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE); 
-$curlBodyTNotes = substr($answerTNotes, $headerLen);
+$curlBodyTCmd = substr($answerTCmd, $headerLen);
 // If there was an error, show it
 if (curl_error($ch)) {
 	die(curl_error($ch));
 }
 curl_close($ch);
-$dataTNotes = json_decode($curlBodyTNotes);
+$dataTCmd = json_decode($curlBodyTCmd);
 }
 
 if(array_key_exists("code",$dataTData)) { //Check if array contains error code
@@ -189,21 +216,21 @@ if(array_key_exists("code",$dataTData)) { //Check if array contains error code
 		return;
 	}
 	else {
-		echo "Unknown Error Occurred, check API key and other API settings." . $dataTNotes->code; //Fail case.
+		echo "Unknown Error Occurred, check API key and other API settings." . $dataTData->code; //Fail case.
 		return;
 	}
 }
-if(array_key_exists("code",$dataTNotes)) { //Check if array contains error code
-	if($dataTNotes->code == "NotFound") { //If error code is NotFound
+if(array_key_exists("code",$dataTCmd)) { //Check if array contains error code
+	if($dataTCmd->code == "NotFound") { //If error code is NotFound
 		echo "Connectwise ticket " . $ticketnumber . " was not found."; //Report that the ticket was not found.
 		return;
 	}
-	if($dataTNotes->code == "Unauthorized") { //If error code is an authorization error
+	if($dataTCmd->code == "Unauthorized") { //If error code is an authorization error
 		echo "401 Unauthorized, check API key to ensure it is valid."; //Fail case.
 		return;
 	}
 	else {
-		echo "Unknown Error Occurred, check API key and other API settings. Error: " . $dataTNotes->code; //Fail case.
+		echo "Unknown Error Occurred, check API key and other API settings. Error: " . $dataTCmd->code; //Fail case.
 		return;
 	}
 }
@@ -254,22 +281,54 @@ else if($command == "status") //If command is status.
 }
 else //If no command is set, or if it's just random gibberish after ticket number.
 {
-	$return =array(
-		"parse" => "full",
-		"response_type" => "in_channel",
-		"attachments"=>array(array(
-			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
-			"title" => "<" . $ticketurl . $dataTData -> id . "&companyName=" . $companyname . "|#" . $dataTData->id . ">: " . $dataTData->summary, //Return clickable link to ticket with ticket summary.
-			"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
-			"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
-			"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-			"\n" . $dataTData->resources, //Return assigned resources
-			"mrkdwn_in" => array(
-				"text",
-				"pretext"
-				)
-			))
-		);
+	if($posttext==0)
+	{
+		$return =array(
+			"parse" => "full",
+			"response_type" => "in_channel",
+			"attachments"=>array(array(
+				"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
+				"title" => "<" . $ticketurl . $dataTData -> id . "&companyName=" . $companyname . "|#" . $dataTData->id . ">: " . $dataTData->summary, //Return clickable link to ticket with ticket summary.
+				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
+				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
+				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
+				"\n" . $dataTData->resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext"
+					)
+				))
+			);
+	}
+	else
+	{
+		$return =array(
+			"parse" => "full",
+			"response_type" => "in_channel",
+			"attachments"=>array(array(
+				"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
+				"title" => "<" . $ticketurl . $dataTData -> id . "&companyName=" . $companyname . "|#" . $dataTData->id . ">: " . $dataTData->summary, //Return clickable link to ticket with ticket summary.
+				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
+				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
+				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
+				"\n" . $dataTData->resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext"
+					)
+				),
+				array(
+					"pretext" => "Latest Note from: " . $dataTNotes[0]->createdBy,
+					"text" =>  $dataTNotes[0]->text,
+					"mrkdwn_in" => array(
+						"text",
+						"pretext",
+						"title"
+						)
+				))
+			);
+
+	}
 }
 
 echo json_encode($return, JSON_PRETTY_PRINT); //Return properly encoded arrays in JSON for Slack parsing.
