@@ -10,7 +10,8 @@ $info = json_decode(stripslashes($data->Entity)); //Decode the entity field whic
 if(empty($_GET['id']) || empty($_GET['action']) || $_GET['isInternalAnalysis']=="True" || empty($info)) die; //If anything we need doesn't exist, kill connection.
 
 if(strtolower($_GET['memberId'])=="zadmin" && $allowzadmin == 0) die; //Die if $allowzadmin is not enabled.
-if($info->BoardName==$badboard) die; //Kill connection if board is listed as $badboard variable.
+if(strtolower($info->BoardName)==strtolower($badboard)) die; //Kill connection if board is listed as $badboard variable.
+if(strtolower($info->StatusName)==strtolower($badstatus)) die; //Kill connection if status is listed as the $badstatus variable.
 
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=";
 $header_data =array(
