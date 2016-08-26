@@ -10,6 +10,8 @@ For creating new activities, use cwslack-activities.php.
 
 To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.php
 
+To follow tickets and get updates whenever they're updated, use cwslack-follow.php (requires cwslack-incoming.php)
+
 # Installation Instructions
 
 ## cwslack.php
@@ -27,11 +29,24 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 
 ## cwslack-activities.php
 
-1. Download the cwslack.php file and config.php file.
+1. Download the cwslack-activities.php file and config.php file.
 2. Place on a compatible web server
 3. Create a new slack slash command integration at  https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
 4. Set command to /act (or other if you prefer)
 5. Set the URL to http://domain.tld/cwslack-activities.php
+6. Set Method to GET
+7. Copy the token
+8. Set a name, icon, and autocomplete text if wanted.
+9. Modify the config.php file with your companies values, Full configuration info below.
+10. Test it in Slack!
+
+## cwslack-follow.php (Also requires cwslack-incoming.php to function)
+
+1. Download the cwslack-follow.php file and config.php file.
+2. Place on a compatible web server
+3. Create a new slack slash command integration at  https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
+4. Set command to /follow (or other if you prefer)
+5. Set the URL to http://domain.tld/cwslack-follow.php
 6. Set Method to GET
 7. Copy the token
 8. Set a name, icon, and autocomplete text if wanted.
@@ -122,3 +137,9 @@ If $posttext=1 in config.php, shows you the initial note of the ticket. This dis
 /act new\*|[activity title]\*|[assigned to]*
 
 All are required for activities. New will be replaced with more commands in the future.
+
+## cwslack-follow.php
+
+/follow [ticket number]* (unfollow)
+
+Add unfollow to the end of the command to stop following a ticket.
