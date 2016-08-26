@@ -418,26 +418,26 @@ if($followenabled==1)
 				);
 			}
 		}
-	}
-	$postfields = json_encode($postfieldspre);
+		$postfields = json_encode($postfieldspre);
 
-	$curlOpts = array(
-		CURLOPT_URL => $webhookurl,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_HTTPHEADER => $header_data2,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_POSTFIELDS => $postfields,
-		CURLOPT_POST => 1,
-		CURLOPT_HEADER => 1,
-	);
-	curl_setopt_array($ch, $curlOpts);
-	$answer = curl_exec($ch);
+		$curlOpts = array(
+			CURLOPT_URL => $webhookurl,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER => $header_data2,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_POSTFIELDS => $postfields,
+			CURLOPT_POST => 1,
+			CURLOPT_HEADER => 1,
+		);
+		curl_setopt_array($ch, $curlOpts);
+		$answer = curl_exec($ch);
 
-	// If there was an error, show it
-	if (curl_error($ch)) {
-		die(curl_error($ch));
+		// If there was an error, show it
+		if (curl_error($ch)) {
+			die(curl_error($ch));
+		}
+		curl_close($ch);
 	}
-	curl_close($ch);
 }
 
 ?>
