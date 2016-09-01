@@ -34,6 +34,7 @@ if(strtolower($_GET['memberId'])=="zadmin" && $allowzadmin == 0) die; //Die if $
 if(strtolower($info->BoardName)==strtolower($badboard)) die; //Kill connection if board is listed as $badboard variable.
 if(strtolower($info->StatusName)==strtolower($badstatus)) die; //Kill connection if status is listed as the $badstatus variable.
 if(strtolower($info->CompanyName)==strtolower($badcompany)) die; //Kill connection if company is listed as the $badcompany variable.
+if($_GET['srDetailRecId']==0) die; //Kill connection if the update is not a note, and is something like a status change. This will prevent duplicate entries.
 
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=";
 $noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $_GET['id'] . "/notes?orderBy=id%20desc";
