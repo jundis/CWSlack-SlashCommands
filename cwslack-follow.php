@@ -33,7 +33,7 @@ if(file_exists($dir."storage.txt")) //Check if storage file exists.
 }
 else
 {
-	$f = fopen($dir."storage.txt") or die("can't open file"); //If not, create it.
+	$f = fopen($dir."storage.txt", 'w') or die("can't open file"); //If not, create it.
 	fclose($f); //Close newly created file.
 	$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //Open it again for reading.
 }
