@@ -24,18 +24,21 @@ require_once 'config.php';
 if(empty($_GET['token']) || ($_GET['token'] != $slackfollowtoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
 if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
 
-if(file_exists($dir."storage.txt"))
+$exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
+
+//File Handling block
+if(file_exists($dir."storage.txt")) //Check if storage file exists.
 {
-	$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES);
+	$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //If so, open it.
 }
 else
 {
-	$f = fopen($dir."storage.txt") or die("can't open file");
-	fclose($f);
-	$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES);
+	$f = fopen($dir."storage.txt") or die("can't open file"); //If not, create it.
+	fclose($f); //Close newly created file.
+	$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //Open it again for reading.
 }
-$exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+//Check for command errors.
 if(!is_numeric($exploded[0])) {
 	//Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 	if ($exploded[0]=="help") {
@@ -50,46 +53,46 @@ if(!is_numeric($exploded[0])) {
 	}; 
 }
 
-$ticketnumber = $exploded[0];
-$username = $_GET['user_name'];
-$command=NULL;
+$ticketnumber = $exploded[0]; //Read ticket number to variable for convenience.
+$username = $_GET['user_name']; //Read Slack username to variable for convenience.
+$command=NULL; //Set a null command variable, so it has something set no matter what.
 
 if (array_key_exists(1,$exploded)) //If a second string exists in the slash command array, make it the command.
 {
 	$command = $exploded[1];
 }
 
-if($command=="unfollow")
+if($command=="unfollow") //If unfollow is set in the text received from Slack.
 {
-	$lines = explode("\n",$file);
+	$lines = explode("\n",$file); //Explode the file into each line
 
-	foreach($lines as $line)
+	foreach($lines as $line) //For each line in the file...
 	{
-		$tempex = explode("^",$line);
+		$tempex = explode("^",$line); //Explode the line into parts based on character set by this file's output.
 
-		if($tempex[0]!=$ticketnumber)
+		if($tempex[0]!=$ticketnumber) //If the first part of the line is not the ticket number
 		{
-			$output[] = $line;
+			$output[] = $line; //Output the line to the file again.
 		}
-		else
+		else //If it is not
 		{
-			if($tempex[1]!=$username)
+			if($tempex[1]!=$username) //If the second part is not the username of sender.
 			{
-				$output[]=$line;
+				$output[]=$line; //Output the line to the file again.
 			}
-			else
+			else //If the ticket number and username match.
 			{
-				echo "Unfollowed ticket #" .$ticketnumber;
+				echo "Unfollowed ticket #" .$ticketnumber; //Return text to Slack and do not output this line.
 			}
 		}
 	}
-	$out = implode("\n",$output);
-	file_put_contents($dir."/storage.txt",$out);
+	$out = implode("\n",$output); //Implode all lines.
+	file_put_contents($dir."/storage.txt",$out); //Output to file again, excluding the line unfollowed.
 }
-else
+else //If no command.
 {
-	file_put_contents($dir."/storage.txt","\n".$ticketnumber."^".$username,FILE_APPEND);
-	echo "Now following ticket #" . $ticketnumber;
+	file_put_contents($dir."/storage.txt","\n".$ticketnumber."^".$username,FILE_APPEND); //Take the ticket number and the username of the person who submitted it and output to storage file, seperated by ^ sign.
+	echo "Now following ticket #" . $ticketnumber; //Return text to Slack notifying of follow.
 }
 
 
