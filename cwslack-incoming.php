@@ -28,7 +28,7 @@ $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $ap
 $data = json_decode(file_get_contents('php://input')); //Decode incoming body from connectwise callback.
 $info = json_decode(stripslashes($data->Entity)); //Decode the entity field which contains the JSON data we want.
 
-if(empty($_GET['id']) || empty($_GET['action']) || $_GET['isInternalAnalysis']=="True" || empty($info)) die; //If anything we need doesn't exist, kill connection.
+if(empty($_GET['id']) || empty($_GET['action']) || empty($info)) die; //If anything we need doesn't exist, kill connection.
 
 if(strtolower($_GET['memberId'])=="zadmin" && $allowzadmin == 0) die; //Die if $allowzadmin is not enabled.
 if(strtolower($info->BoardName)==strtolower($badboard)) die; //Kill connection if board is listed as $badboard variable.
