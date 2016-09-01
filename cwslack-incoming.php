@@ -36,11 +36,12 @@ if(strtolower($info->StatusName)==strtolower($badstatus)) die; //Kill connection
 if(strtolower($info->CompanyName)==strtolower($badcompany)) die; //Kill connection if company is listed as the $badcompany variable.
 if($_GET['srDetailRecId']==0) die; //Kill connection if the update is not a note, and is something like a status change. This will prevent duplicate entries.
 
-$ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=";
-$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $_GET['id'] . "/notes?orderBy=id%20desc";
+$ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
+$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $_GET['id'] . "/notes?orderBy=id%20desc"; //Set the URL required for cURL requests to ticket note API.
 
 $dataTData = array(); //Blank array.
 
+//Set headers for cURL requests. $header_data covers API authentication while $header_data2 covers the Slack output.
 $header_data =array(
  "Authorization: Basic ". $authorization,
 );
@@ -48,14 +49,14 @@ $header_data2 =array(
  "Content-Type: application/json"
 );
 
-$skip = 0;
+$skip = 0; //Create variable to skip posting to Slack channel while also allowing follow posts.
 $date=strtotime($info->EnteredDateUTC); //Convert date entered JSON result to time.
 $dateformat=date('m-d-Y g:i:sa',$date); //Convert previously converted time to a better time string.
 $ticket=$_GET['id'];
 
 if($posttext==1) //Block for curl to get latest note
 {
-	$ch1 = curl_init(); //Initiate a curl session_cache_expire
+	$ch1 = curl_init(); //Initiate a curl session
 
 	//Create curl array to set the API url, headers, and necessary flags.
 	$curlOpts1 = array(
@@ -79,8 +80,6 @@ if($posttext==1) //Block for curl to get latest note
 
 	$dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
 }
-
-$ch = curl_init();
 
 if($_GET['action'] == "added" && $postadded == 1)
 {
@@ -236,6 +235,7 @@ else
 
 if($skip==0)
 {
+	$ch = curl_init();
 	$postfields = json_encode($postfieldspre);
 
 	$curlOpts = array(
@@ -259,29 +259,29 @@ if($skip==0)
 
 if($followenabled==1)
 {
-	if(file_exists($dir."storage.txt"))
+	if(file_exists($dir."storage.txt")) //Check if storage file exists.
 	{
-		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES);
+		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //If so, open it.
 	}
 	else
 	{
-		$f = fopen($dir."storage.txt") or die("can't open file");
-		fclose($f);
-		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES);
+		$f = fopen($dir."storage.txt") or die("can't open file"); //If not, create it.
+		fclose($f); //Close newly created file.
+		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //Open it again for reading.
 	}
-	$lines = explode("\n",$file);
-	$alerts = array();
-	foreach($lines as $line)
+	$lines = explode("\n",$file); //Create array with each line being it's own part of the array.
+	$alerts = array(); //Create a blank array.
+	foreach($lines as $line) //Read through each line in the file.
 	{
-		$tempex = explode("^",$line);
+		$tempex = explode("^",$line); //Explode line based on seperator from cwslack-follow.php
 
-		if($tempex[0]==$ticket)
+		if($tempex[0]==$ticket) //If the first part of the line is the ticket number..
 		{
-			$alerts[]=$tempex[1];
+			$alerts[]=$tempex[1]; //Then add the username to the alerts array.
 		}
 	}
-	if(empty($alerts)) die;
-	foreach($alerts as $username)
+	if(empty($alerts)) die; //If no one was added to array, kill connection.
+	foreach($alerts as $username) //For each user in alerts array, set $postfieldspre to the follow message.
 	{
 		if($_GET['action'] == "added")
 		{
@@ -438,7 +438,9 @@ if($followenabled==1)
 			}
 		}
 		$postfields = json_encode($postfieldspre);
-
+		
+		//cURL block.
+		$ch = curl_init();
 		$curlOpts = array(
 			CURLOPT_URL => $webhookurl,
 			CURLOPT_RETURNTRANSFER => true,
