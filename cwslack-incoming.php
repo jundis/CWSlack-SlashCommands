@@ -60,6 +60,8 @@ if($posttext==1) //Block for curl to get latest note
 {
 	$createdby = "Error"; //Create with error just in case.
 	$notetext = "Error"; //Create with error just in case.
+	
+	//Block for cURL connections to the ticket notes API
 	$ch1 = curl_init(); //Initiate a curl session
 
 	//Create curl array to set the API url, headers, and necessary flags.
@@ -83,7 +85,9 @@ if($posttext==1) //Block for curl to get latest note
 	curl_close($ch1);
 
 	$dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
+	//End ticket note block.
 	
+	//Block for cURL connections to Time Entries API
 	$ch2 = curl_init(); //Initiate a curl session
 
 	//Create curl array to set the API url, headers, and necessary flags.
@@ -107,17 +111,19 @@ if($posttext==1) //Block for curl to get latest note
 	curl_close($ch2);
 
 	$dataTimeData = json_decode($curlBodyTimeData); //Decode the JSON returned by the CW API.
-	$createdby = $dataTData[0]->createdBy;
-	$text = $dataTData[0]->text;
+	//End time entry block.
+	
+	$createdby = $dataTData[0]->createdBy; //Set $createdby to the ticket note creator.
+	$text = $dataTData[0]->text; //Set $text to the ticket text.
 	if(array_key_exists(0,$dataTData) && array_key_exists(0,$dataTimeData)) //Check if arrays exist properly.
 	{
 		$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
 		$notetime = new DateTime($dataTData[0]->dateCreated); //Create new datetime object based on ticketnote note.
 		
-		if($timetime>$notetime)
+		if($timetime>$notetime) //If the time entry is newer than latest ticket note.
 		{
-			$createdby = $dataTimeData[0]->enteredBy;
-			$text = $dataTimeData[0]->notes;
+			$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
+			$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
 		}
 	}
 }
