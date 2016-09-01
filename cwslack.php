@@ -59,6 +59,8 @@ if (array_key_exists(2,$exploded)) //If a third string exists in the slash comma
 $urlticketdata = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
 $noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20desc";
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Ticket URL for connectwise.
+$timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries?conditions=chargeToId=" . $ticketnumber . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
+
 
 //Set noteurl to use ascending if an initial note command is passed.
 if($command == "initial" || $command == "first" || $command == "note") 
@@ -111,6 +113,9 @@ $dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW A
 
 if($posttext==1) //Block for curl to get latest note
 {
+	$createdby = "Error"; //Create with error just in case.
+	$notetext = "Error"; //Create with error just in case.
+	
 	$ch1 = curl_init(); //Initiate a curl session_cache_expire
 
 	//Create curl array to set the API url, headers, and necessary flags.
@@ -134,6 +139,32 @@ if($posttext==1) //Block for curl to get latest note
 	curl_close($ch1);
 
 	$dataTNotes = json_decode($curlBodyTNotes); //Decode the JSON returned by the CW API.
+	
+	//Block for cURL connections to Time Entries API
+	$ch2 = curl_init(); //Initiate a curl session
+
+	//Create curl array to set the API url, headers, and necessary flags.
+	$curlOpts2 = array(
+		CURLOPT_URL => $timeurl,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_HTTPHEADER => $header_data,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_HEADER => 1,
+	);
+	curl_setopt_array($ch2, $curlOpts2); //Set the curl array to $curlOpts
+
+	$answerTimeData = curl_exec($ch2); //Set $answerTData to the curl response to the API.
+	$headerLen = curl_getinfo($ch2, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
+	$curlBodyTimeData = substr($answerTimeData, $headerLen); //Remove header data from the curl string.
+
+	// If there was an error, show it
+	if (curl_error($ch2)) {
+		die(curl_error($ch2));
+	}
+	curl_close($ch2);
+
+	$dataTimeData = json_decode($curlBodyTimeData); //Decode the JSON returned by the CW API.
+	//End time entry block.
 	
 	if($command == "full" || $command == "notes" || $command == "all")
 	{
@@ -160,6 +191,19 @@ if($posttext==1) //Block for curl to get latest note
 		curl_close($ch1);
 
 		$dataTNotes2 = json_decode($curlBodyTNotes); //Decode the JSON returned by the CW API.
+	}
+	$createdby = $dataTNotes[0]->createdBy; //Set $createdby to the ticket note creator.
+	$text = $dataTNotes[0]->text; //Set $text to the ticket text.
+	if(array_key_exists(0,$dataTNotes) && array_key_exists(0,$dataTimeData) && $command != "initial" && $command != "first" && $command != "note") //Check if arrays exist properly.
+	{
+		$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
+		$notetime = new DateTime($dataTNotes[0]->dateCreated); //Create new datetime object based on ticketnote note.
+		
+		if($timetime>$notetime) //If the time entry is newer than latest ticket note.
+		{
+			$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
+			$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
+		}
 	}
 }
 //-
@@ -370,8 +414,8 @@ else if($command == "initial" || $command == "first" || $command == "note")
 					)
 				),
 				array(
-					"pretext" => "Initial ticket note from: " . $dataTNotes[0]->createdBy,
-					"text" =>  $dataTNotes[0]->text,
+					"pretext" => "Initial ticket note from: " . $createdby,
+					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
 						"pretext",
@@ -421,8 +465,8 @@ else if($command == "full" || $command == "notes" || $command == "all")
 					)
 				),
 				array(
-					"pretext" => "Latest Note from: " . $dataTNotes[0]->createdBy,
-					"text" =>  $dataTNotes[0]->text,
+					"pretext" => "Latest Note from: " . $createdby,
+					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
 						"pretext",
@@ -481,8 +525,8 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 					)
 				),
 				array(
-					"pretext" => "Latest Note from: " . $dataTNotes[0]->createdBy,
-					"text" =>  $dataTNotes[0]->text,
+					"pretext" => "Latest Note from: " . $createdby,
+					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
 						"pretext",
