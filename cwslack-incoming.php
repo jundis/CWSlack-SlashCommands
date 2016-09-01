@@ -34,12 +34,14 @@ if(strtolower($_GET['memberId'])=="zadmin" && $allowzadmin == 0) die; //Die if $
 if(strtolower($info->BoardName)==strtolower($badboard)) die; //Kill connection if board is listed as $badboard variable.
 if(strtolower($info->StatusName)==strtolower($badstatus)) die; //Kill connection if status is listed as the $badstatus variable.
 if(strtolower($info->CompanyName)==strtolower($badcompany)) die; //Kill connection if company is listed as the $badcompany variable.
-if($_GET['srDetailRecId']==0) die; //Kill connection if the update is not a note, and is something like a status change. This will prevent duplicate entries.
+if($_GET['srDetailRecId']==0 && $_GET['timeRecId']==0) die; //Kill connection if the update is not a note, and is something like a status change. This will prevent duplicate entries.
 
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
 $noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $_GET['id'] . "/notes?orderBy=id%20desc"; //Set the URL required for cURL requests to ticket note API.
+$timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries?conditions=chargeToId=" . $_GET['id'] . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
 
 $dataTData = array(); //Blank array.
+$dataTimeData = array(); //Blank array.
 
 //Set headers for cURL requests. $header_data covers API authentication while $header_data2 covers the Slack output.
 $header_data =array(
@@ -56,6 +58,8 @@ $ticket=$_GET['id'];
 
 if($posttext==1) //Block for curl to get latest note
 {
+	$createdby = "Error"; //Create with error just in case.
+	$notetext = "Error"; //Create with error just in case.
 	$ch1 = curl_init(); //Initiate a curl session
 
 	//Create curl array to set the API url, headers, and necessary flags.
@@ -79,6 +83,43 @@ if($posttext==1) //Block for curl to get latest note
 	curl_close($ch1);
 
 	$dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
+	
+	$ch2 = curl_init(); //Initiate a curl session
+
+	//Create curl array to set the API url, headers, and necessary flags.
+	$curlOpts2 = array(
+		CURLOPT_URL => $timeurl,
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_HTTPHEADER => $header_data,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_HEADER => 1,
+	);
+	curl_setopt_array($ch2, $curlOpts2); //Set the curl array to $curlOpts
+
+	$answerTimeData = curl_exec($ch2); //Set $answerTData to the curl response to the API.
+	$headerLen = curl_getinfo($ch2, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
+	$curlBodyTimeData = substr($answerTimeData, $headerLen); //Remove header data from the curl string.
+
+	// If there was an error, show it
+	if (curl_error($ch2)) {
+		die(curl_error($ch2));
+	}
+	curl_close($ch2);
+
+	$dataTimeData = json_decode($curlBodyTimeData); //Decode the JSON returned by the CW API.
+	$createdby = $dataTData[0]->createdBy;
+	$text = $dataTData[0]->text;
+	if(array_key_exists(0,$dataTData) && array_key_exists(0,$dataTimeData)) //Check if arrays exist properly.
+	{
+		$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
+		$notetime = new DateTime($dataTData[0]->dateCreated); //Create new datetime object based on ticketnote note.
+		
+		if($timetime>$notetime)
+		{
+			$createdby = $dataTimeData[0]->enteredBy;
+			$text = $dataTimeData[0]->notes;
+		}
+	}
 }
 
 if($_GET['action'] == "added" && $postadded == 1)
@@ -142,8 +183,8 @@ if($_GET['action'] == "added" && $postadded == 1)
 						)
 					),
 					array(
-						"pretext" => "Latest Note from: " . $dataTData[0]->createdBy,
-						"text" =>  $dataTData[0]->text,
+						"pretext" => "Latest Note from: " . $createdby,
+						"text" =>  $text,
 						"mrkdwn_in" => array(
 							"text",
 							"pretext",
@@ -170,8 +211,8 @@ if($_GET['action'] == "added" && $postadded == 1)
 						)
 					),
 					array(
-						"pretext" => "Latest Note from: " . $dataTData[0]->createdBy,
-						"text" =>  $dataTData[0]->text,
+						"pretext" => "Latest Note from: " . $createdby,
+						"text" =>  $text,
 						"mrkdwn_in" => array(
 							"text",
 							"pretext",
@@ -217,8 +258,8 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 				)
 			),
 			array(
-				"pretext" => "Latest Note from: " . $dataTData[0]->createdBy,
-				"text" =>  $dataTData[0]->text,
+				"pretext" => "Latest Note from: " . $createdby,
+				"text" =>  $text,
 				"mrkdwn_in" => array(
 					"text",
 					"pretext",
@@ -347,8 +388,8 @@ if($followenabled==1)
 								)
 							),
 							array(
-								"pretext" => "Latest Note from: " . $dataTData[0]->createdBy,
-								"text" =>  $dataTData[0]->text,
+								"pretext" => "Latest Note from: " . $createdby,
+								"text" =>  $text,
 								"mrkdwn_in" => array(
 									"text",
 									"pretext",
@@ -376,8 +417,8 @@ if($followenabled==1)
 								)
 							),
 							array(
-								"pretext" => "Latest Note from: " . $dataTData[0]->createdBy,
-								"text" =>  $dataTData[0]->text,
+								"pretext" => "Latest Note from: " . $createdby,
+								"text" =>  $text,
 								"mrkdwn_in" => array(
 									"text",
 									"pretext",
@@ -425,8 +466,8 @@ if($followenabled==1)
 							)
 						),
 						array(
-							"pretext" => "Latest Note from: " . $dataTData[0]->createdBy,
-							"text" =>  $dataTData[0]->text,
+							"pretext" => "Latest Note from: " . $createdby,
+							"text" =>  $text,
 							"mrkdwn_in" => array(
 								"text",
 								"pretext",
