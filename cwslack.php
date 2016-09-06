@@ -388,7 +388,7 @@ else if($command == "initial" || $command == "first" || $command == "note")
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources, //Return assigned resources
+				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -407,7 +407,7 @@ else if($command == "initial" || $command == "first" || $command == "note")
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources, //Return assigned resources
+				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -439,7 +439,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources, //Return assigned resources
+				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -458,7 +458,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources, //Return assigned resources
+				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -499,7 +499,7 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources, //Return assigned resources
+				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -518,7 +518,7 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources, //Return assigned resources
+				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
