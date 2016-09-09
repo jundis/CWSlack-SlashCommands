@@ -28,14 +28,20 @@ $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $ap
 $data = json_decode(file_get_contents('php://input')); //Decode incoming body from connectwise callback.
 $info = json_decode(stripslashes($data->Entity)); //Decode the entity field which contains the JSON data we want.
 
+//Connection kill blocks. Stops things from running if certain conditions are met.
 if(empty($_GET['id']) || empty($_GET['action']) || empty($info)) die; //If anything we need doesn't exist, kill connection.
 
-if(strtolower($_GET['memberId'])=="zadmin" && $allowzadmin == 0) die; //Die if $allowzadmin is not enabled.
-if(strtolower($info->BoardName)==strtolower($badboard)) die; //Kill connection if board is listed as $badboard variable.
-if(strtolower($info->StatusName)==strtolower($badstatus)) die; //Kill connection if status is listed as the $badstatus variable.
-if(strtolower($info->CompanyName)==strtolower($badcompany)) die; //Kill connection if company is listed as the $badcompany variable.
 if($_GET['srDetailRecId']==0 && $_GET['timeRecId']==0) die; //Kill connection if the update is not a note, and is something like a status change. This will prevent duplicate entries.
+if(strtolower($_GET['memberId'])=="zadmin" && $allowzadmin == 0) die; //Die if $allowzadmin is not enabled.
 
+$badboards = explode("|",$badboard); //Explode with pipe seperator.
+$badstatuses = explode("|",$badstatus); //Explode with pipe seperator.
+$badcompanies = explode("|",$badcompany); //Explode with pipe seperator.
+if (in_array($info->BoardName,$badboards)) die;
+if (in_array($info->StatusName,$badstatuses)) die;
+if (in_array($info->CompanyName,$badcompanies)) die;
+
+//URL creation
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
 $noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $_GET['id'] . "/notes?orderBy=id%20desc"; //Set the URL required for cURL requests to ticket note API.
 $timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries?conditions=chargeToId=" . $_GET['id'] . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
