@@ -53,6 +53,20 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 9. Modify the config.php file with your companies values, Full configuration info below.
 10. Test it in Slack!
 
+To enable ConnectWise link to follow and unfollow a ticket:
+
+1. Open Setup Tables in ConnectWise.
+2. Open the "Links" table.
+3. Create a new Link referencing "Service"
+4. Set the Link Name to "Slack Follow"
+5. Set the Link Definition to https://yourdomain.tld/cwslack-follow.php?memberid=[memberid]&srnumber=[srnumber]&method=follow
+6. Create a new Link referencing "Service"
+7. Set the Link Name to "Slack Unfollow"
+8. Set the Link Definition to https://yourdomain.tld/cwslack-follow.php?memberid=[memberid]&srnumber=[srnumber]&method=unfollow
+9. Change the "method" on these links to whatever you set your $followtoken and $unfollowtoken to in config.php.
+10. Test the links!
+
+
 ## cwslack-incoming.php
 
 1. Download the cwslack-incoming.php file and config.php file.
@@ -106,6 +120,8 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 * $slackfollowtoken # : Set to the token you got when creating a new slash command integration in Slack for /follow.
 * $followenabled # : Defaults to 0, you need to change this to 1 if you want to enable follow.
 * $dir # : Directory on the server to store files. Please note that the user running php (www-data in Linux) needs write/read access to this folder.
+* $followtoken : Change to any value and use this in the ConnectWise link tables.
+* $unfollowtoken : Change to any value and use this in the ConnectWise link tables.
 * $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
 
 # Command Usage

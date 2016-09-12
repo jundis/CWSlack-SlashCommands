@@ -21,10 +21,16 @@ ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
 require_once 'config.php';
 
-if(empty($_GET['token']) || ($_GET['token'] != $slackfollowtoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
+$link=0;
 
-$exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
+if(empty($_GET['method']) || ($_GET['method'] != $followtoken && $_GET['method'] != $unfollowtoken)){
+	if(empty($_GET['token']) || $_GET['token'] != $slackfollowtoken) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+	if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
+	
+	$exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
+} else {
+	$link=1;
+}
 
 //File Handling block
 if(file_exists($dir."storage.txt")) //Check if storage file exists.
@@ -39,7 +45,7 @@ else
 }
 
 //Check for command errors.
-if(!is_numeric($exploded[0])) {
+if($link==0 && !is_numeric($exploded[0])) {
 	//Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 	if ($exploded[0]=="help") {
 		$test=json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true));
@@ -53,13 +59,33 @@ if(!is_numeric($exploded[0])) {
 	}; 
 }
 
-$ticketnumber = $exploded[0]; //Read ticket number to variable for convenience.
-$username = $_GET['user_name']; //Read Slack username to variable for convenience.
 $command=NULL; //Set a null command variable, so it has something set no matter what.
 
-if (array_key_exists(1,$exploded)) //If a second string exists in the slash command array, make it the command.
+if($link==0){
+	$ticketnumber = $exploded[0]; //Read ticket number to variable for convenience.
+	$username = $_GET['user_name']; //Read Slack username to variable for convenience.
+
+	if (array_key_exists(1,$exploded)) //If a second string exists in the slash command array, make it the command.
+	{
+		$command = $exploded[1];
+	}
+} 
+else 
 {
-	$command = $exploded[1];
+	$ticketnumber = $_GET['srnumber'];
+	$username = $_GET['memberid'];
+	if($_GET['method']==$followtoken)
+	{
+		//For future use.
+	} 
+	else if ($_GET['method']==$unfollowtoken)
+	{
+		$command="unfollow"; //Set command to unfollow if it matches the CW unfollowtoken
+	}
+	else
+	{
+		die; //If matches neither token, die.
+	}
 }
 
 if($command=="unfollow") //If unfollow is set in the text received from Slack.
@@ -82,10 +108,11 @@ if($command=="unfollow") //If unfollow is set in the text received from Slack.
 			}
 			else //If the ticket number and username match.
 			{
-				echo "Unfollowed ticket #" .$ticketnumber; //Return text to Slack and do not output this line.
+				//Do not output this line.
 			}
 		}
 	}
+	echo "Unfollowed ticket #" .$ticketnumber; //Return text to Slack
 	$out = implode("\n",$output); //Implode all lines.
 	file_put_contents($dir."/storage.txt",$out); //Output to file again, excluding the line unfollowed.
 }

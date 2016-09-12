@@ -49,7 +49,8 @@ $badcompany = "CatchAll (for email connector)"; //Set to any company name you wa
 $slackfollowtoken = "Slack Token Here"; //Set your token for the follow slash command
 $followenabled=0; //When set to 1, follow commands and the follow scripts will be enabled.
 $dir="/var/www/storage/"; //Needs to be set to a directory writeable by PHP for storage of the storage.txt file.
-
+$followtoken="follow"; //Change to random text to be used in your CW follow link if you use it. Defaults to follow which is fine for testing.
+$unfollowtoken="unfollow"; //Change to random text to be used in your CW unfollow link if you use it. Defaults to unfollow which is fine for testing.
 
 //Change optional
 $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help article URL here.
