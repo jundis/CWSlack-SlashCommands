@@ -111,6 +111,12 @@ curl_close($ch);
 
 $dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
 
+if($dataTData==NULL) 
+{
+	echo "Array not returned in line 195. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata;
+	die;
+}
+
 if($posttext==1) //Block for curl to get latest note
 {
 	$createdby = "Error"; //Create with error just in case.
