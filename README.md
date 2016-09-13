@@ -103,6 +103,7 @@ To enable ConnectWise link to follow and unfollow a ticket:
 \# Pound denotes required for cwslack-follow.php
 
 * $connectwise * : This value needs to be set to your main connectwise URL.
+  * Users of Hosted ConnectWise will need to use https://api-na.myconnectwise.net, https://api-eu.myconnectwise.net or https://api-au.myconnectwise.net
 * $companyname * : This value needs to be set to whatever your company name is that you use to login to ConnectWise.
 * $apipublickey * : Set to your Public Key from API setup
 * $apiprivatekey * : Set to your Private Key from API setup
