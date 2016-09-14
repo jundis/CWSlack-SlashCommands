@@ -22,36 +22,33 @@ ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
 require_once 'config.php';
 
+if(empty($_GET['token']) || ($_GET['token'] != $slackcontactstoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
 
 $apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
-
-if(empty($_GET['token']) || ($_GET['token'] != $slackcontactstoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
 $exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
 //Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 if ($exploded[0]=="help") {
-	$test=json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true));
-	echo $test;
-	return;
+	$test=json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true)); //Encode a JSON response with a help URL.
+	echo $test; //Return the JSON
+	return; //Kill the connection.
 }
 
 $firstname=NULL; //Create a first name variable and set it to Null
 $lastname=NULL; //Create a last name variable and set it to Null
 $url=NULL; //Create a URL variable and set it to Null.
-$firstlast=FALSE;
 
-if (array_key_exists(0,$exploded)) //If a second string exists in the slash command array, make it the command.
+if (array_key_exists(0,$exploded)) //If the first part of the array exists (always will)
 {
 	$lastname = $exploded[0];
 	$url = $connectwise . "/v4_6_release/apis/3.0/company/contacts?conditions=lastName%20like%20%27" . $lastname . "%27"; //Set contact API url
 }
-if (array_key_exists(1,$exploded)) //If a third string exists in the slash command array, make it the option for the command.
+if (array_key_exists(1,$exploded)) //If two parts of the array exists
 {
-	$lastname = $exploded[1];
-	$firstname = $exploded[0];
-	$firstlast = TRUE;
+	$lastname = $exploded[1]; //Set the second portion to last name
+	$firstname = $exploded[0]; //Set the first portion to first name
 	
 	$url = $connectwise . "/v4_6_release/apis/3.0/company/contacts?conditions=lastName%20like%20%27" . $lastname . "%27%20and%20firstName%20like%20%27" . $firstname . "%27"; //Set contact API url to include first and last name.
 }
@@ -66,7 +63,7 @@ $header_data =array(
 $dataTData = array();
 
 //-
-//Ticket data section
+//cURL connection to ConnectWise to pull Company API.
 //-
 $ch = curl_init(); //Initiate a curl session_cache_expire
 
@@ -92,20 +89,21 @@ curl_close($ch);
 
 $dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
 
-if($dataTData==NULL) 
+if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 {
-	echo "No contact found or your API URL is incorrect.";
-	die;
+	echo "No contact found or your API URL is incorrect."; //Return error.
+	die; //Kill the connection.
 }
 
 $return="Nothing!"; //Create return value and set to a basic message just in case.
-$company=$dataTData[0]->company;
-$comms=$dataTData[0]->communicationItems;
-$text="";
+$company=$dataTData[0]->company; //Set company array for easier reference later on.
+$comms=$dataTData[0]->communicationItems; //Set communications array for iteration.
+$text=""; //Set blank text varaible "just in case"
 
+//Iteration block to search through all contact types on the user.
 foreach($comms as $item) {
-	$type = $item->type;
-	$text = $text . $type->name . ": " . $item->value . "\n";
+	$type = $item->type; //Set the type variable to whatever the contact type is, this would be Email or Direct or whatever you have it set to in CW.
+	$text = $text . $type->name . ": " . $item->value . "\n"; //Create a new line for each iteration, 
 }
 
 $return =array(
