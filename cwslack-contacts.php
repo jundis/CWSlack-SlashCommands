@@ -1,0 +1,129 @@
+<?php
+/* 	
+	CWSlack-SlashCommands
+    Copyright (C) 2016  jundis
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+*/
+
+
+ini_set('display_errors', 1); //Display errors in case something occurs
+header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
+require_once 'config.php';
+
+
+$apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
+$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
+
+if(empty($_GET['token']) || ($_GET['token'] != $slackcontactstoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
+$exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
+
+//Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
+if ($exploded[0]=="help") {
+	$test=json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true));
+	echo $test;
+	return;
+}
+
+$firstname=NULL; //Create a first name variable and set it to Null
+$lastname=NULL; //Create a last name variable and set it to Null
+$url=NULL; //Create a URL variable and set it to Null.
+$firstlast=FALSE;
+
+if (array_key_exists(0,$exploded)) //If a second string exists in the slash command array, make it the command.
+{
+	$lastname = $exploded[0];
+	$url = $connectwise . "/v4_6_release/apis/3.0/company/contacts?conditions=lastName%20like%20%27" . $lastname . "%27"; //Set contact API url
+}
+if (array_key_exists(1,$exploded)) //If a third string exists in the slash command array, make it the option for the command.
+{
+	$lastname = $exploded[1];
+	$firstname = $exploded[0];
+	$firstlast = TRUE;
+	
+	$url = $connectwise . "/v4_6_release/apis/3.0/company/contacts?conditions=lastName%20like%20%27" . $lastname . "%27%20and%20firstName%20like%20%27" . $firstname . "%27"; //Set contact API url to include first and last name.
+}
+
+$utc = time(); //Get the time.
+// Authorization array. Auto encodes API key for auhtorization above.
+$header_data =array(
+ "Authorization: Basic ". $authorization,
+);
+
+//Need to create array before hand to ensure no errors occur.
+$dataTData = array();
+
+//-
+//Ticket data section
+//-
+$ch = curl_init(); //Initiate a curl session_cache_expire
+
+//Create curl array to set the API url, headers, and necessary flags.
+$curlOpts = array(
+	CURLOPT_URL => $url,
+	CURLOPT_RETURNTRANSFER => true,
+	CURLOPT_HTTPHEADER => $header_data,
+	CURLOPT_FOLLOWLOCATION => true,
+	CURLOPT_HEADER => 1,
+);
+curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
+
+$answerTData = curl_exec($ch); //Set $answerTData to the curl response to the API.
+$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
+$curlBodyTData = substr($answerTData, $headerLen); //Remove header data from the curl string.
+
+// If there was an error, show it
+if (curl_error($ch)) {
+	die(curl_error($ch));
+}
+curl_close($ch);
+
+$dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
+
+if($dataTData==NULL) 
+{
+	echo "No contact found or your API URL is incorrect.";
+	die;
+}
+
+$return="Nothing!"; //Create return value and set to a basic message just in case.
+$company=$dataTData[0]->company;
+$comms=$dataTData[0]->communicationItems;
+$text="";
+
+foreach($comms as $item) {
+	$type = $item->type;
+	$text = $text . $type->name . ": " . $item->value . "\n";
+}
+
+$return =array(
+	"parse" => "full", //Parse all text.
+	"response_type" => "in_channel", //Send the response in the channel
+	"attachments"=>array(array(
+		"fallback" => "Contact Info for " . $dataTData[0]->firstName . " " . $dataTData[0]->lastName, //Fallback for notifications
+		"title" => "Company: " . $company->name, //Set bolded title text
+		"pretext" => "Contact Info for " . $dataTData[0]->firstName . " " . $dataTData[0]->lastName, //Set pretext
+		"text" => $text, //Set text to be returned
+		"mrkdwn_in" => array( //Set markdown values
+			"text",
+			"pretext"
+			)
+		))
+	);
+
+
+echo json_encode($return, JSON_PRETTY_PRINT); //Return properly encoded arrays in JSON for Slack parsing.
+
+?>
