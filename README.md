@@ -116,8 +116,8 @@ To enable ConnectWise link to follow and unfollow a ticket:
 \* Asterisk denotes required.  
 \+ Plus denotes required for cwslack-activities.php  
 \- Minus denotes required for cwslack-incoming.php  
-\# Pound denotes required for cwslack-follow.php
-\& Ampersand denotes required for cwslack-contacts.php
+\# Pound denotes required for cwslack-follow.php  
+\& Ampersand denotes required for cwslack-contacts.php  
 
 * $connectwise * : This value needs to be set to your main connectwise URL.
   * Users of Hosted ConnectWise will need to use https://api-na.myconnectwise.net, https://api-eu.myconnectwise.net or https://api-au.myconnectwise.net
