@@ -47,6 +47,11 @@ $ticketnumber = $exploded[0]; //Set the ticket number to the first string
 $command=NULL; //Create a command variable and set it to Null
 $sentence=NULL; //Create a option variable and set it to Null
 
+
+//Set URL
+$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes";
+
+
 if (array_key_exists(1, $exploded)) //If a second string exists in the slash command array, make it the command.
 {
     $command = $exploded[1];
@@ -59,7 +64,7 @@ if (array_key_exists(1, $exploded)) //If a second string exists in the slash com
 }
 
 // Authorization array, with extra json content-type used in patch commands to change tickets.
-$header_data2 =array(
+$header_data =array(
     "Authorization: Basic " . $authorization,
     "Content-Type: application/json"
 );
@@ -68,8 +73,43 @@ $header_data2 =array(
 $dataTNotes = array();
 
 $ch = curl_init();
+$postfieldspre = NULL; //avoid errors.
+if($command == "internal")
+{
+    $postfieldspre = array("ServiceNote" => array("internalAnalysisFlag" => "True", "text" => $sentence));
+}
+else if ($command == "external")
+{
+    $postfieldspre = array("ServiceNote" => array("detailDescriptionFlag" => "True", "externalFlag" => "True", "text" => $sentence));
+}
+else
+{
+    echo "Second part of text must be either internal or external.";
+}
+$postfields = json_encode($postfieldspre); //Format the array as JSON
+var_dump($postfields);
+//Same as previous curl array but includes required information for PATCH commands.
+$curlOpts = array(
+    CURLOPT_URL => $noteurl,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => $header_data,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_POSTFIELDS => $postfields,
+    CURLOPT_POST => 1,
+    CURLOPT_HEADER => 1,
+);
+curl_setopt_array($ch, $curlOpts);
 
+$answerTCmd = curl_exec($ch);
+$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+$curlBodyTCmd = substr($answerTCmd, $headerLen);
+// If there was an error, show it
+if (curl_error($ch)) {
+    die(curl_error($ch));
+}
+curl_close($ch);
+$dataTNotes = json_decode($curlBodyTCmd);
 
-
+var_dump($dataTNotes);
 
 ?>
