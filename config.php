@@ -37,6 +37,9 @@ $slackactivitiestoken = "Slack Token Here"; //Set your token for the activities 
 //cwslack-contacts.php
 $slackcontactstoken = "Slack Token Here"; //Set your token for the contacts slash command
 
+//cwlsack-notes.php
+$slacknotestoken = "Slack Token Here"; //Set your token for the notes slash command
+
 //cwslack-incoming.php
 $webhookurl = "https://hooks.slack.com/services/tokens"; //Change this to the URL retrieved from incoming webhook setup for Slack.
 $postadded = 1; //Set this to post new tickets to slack.
