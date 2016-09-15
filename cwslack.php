@@ -238,7 +238,7 @@ else //If unknown
 $postfieldspre = array(array("op" => "replace", "path" => "/priority/id", "value" => $priority)); //Command array to replace the priority ID
 $postfields = json_encode($postfieldspre); //Format the array as JSON
 
-//Same as previous curl array but includes reequired information for PATCH commands.
+//Same as previous curl array but includes required information for PATCH commands.
 $curlOpts = array(
 	CURLOPT_URL => $urlticketdata,
 	CURLOPT_RETURNTRANSFER => true,
