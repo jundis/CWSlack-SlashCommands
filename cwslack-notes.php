@@ -74,18 +74,18 @@ $dataTNotes = array();
 
 $ch = curl_init();
 $postfieldspre = NULL; //avoid errors.
-if($command == "internal")
+if($command == "internal") //If second part of text is internal
 {
-    if($usecwname==1)
+    if($usecwname==1) //If usecwname variable is set.
     {
-        $postfieldspre = array("internalAnalysisFlag" => "True", "member"=>array("identifier"=>$_GET['user_name']), "text" => $sentence);
+        $postfieldspre = array("internalAnalysisFlag" => "True", "member"=>array("identifier"=>$_GET['user_name']), "text" => $sentence); //Post ticket as slack user.
     }
-    else
+    else //If not
     {
-        $postfieldspre = array("internalAnalysisFlag" => "True", "text" => $sentence);
+        $postfieldspre = array("internalAnalysisFlag" => "True", "text" => $sentence); //Post ticket as API user
     }
 }
-else if ($command == "external")
+else if ($command == "external")//If second part of text is external
 {
     if($usecwname==1)
     {
@@ -96,12 +96,13 @@ else if ($command == "external")
         $postfieldspre = array("detailDescriptionFlag" => "True", "text" => $sentence);
     }
 }
-else
+else //If second part of text is neither external or internal
 {
-    echo "Second part of text must be either internal or external.";
+    echo "Second part of text must be either internal or external."; //Return error text.
+    die; //Kill connection.
 }
 $postfields = json_encode($postfieldspre); //Format the array as JSON
-//Same as previous curl array but includes required information for PATCH commands.
+//Same as previous curl arrays
 $curlOpts = array(
     CURLOPT_URL => $noteurl,
     CURLOPT_RETURNTRANSFER => true,
@@ -123,15 +124,16 @@ if (curl_error($ch)) {
 curl_close($ch);
 $dataTNotes = json_decode($curlBodyTCmd);
 
-if(array_key_exists("errors",$dataTNotes))
+if(array_key_exists("errors",$dataTNotes)) //If connectwise returned an error.
 {
-    $errors = $dataTNotes->errors;
+    $errors = $dataTNotes->errors; //Make array easier to access.
 
-    echo "ConnectWise Error: " . $errors[0]->message;
+    echo "ConnectWise Error: " . $errors[0]->message; //Return CW error
+    die; //Kill connection
 }
-else
+else //No error
 {
-    echo "New " . $command . " note created on #" . $ticketnumber . ": " . $sentence;
+    echo "New " . $command . " note created on #" . $ticketnumber . ": " . $sentence; //Return new ticket posted message.
 }
 
 ?>
