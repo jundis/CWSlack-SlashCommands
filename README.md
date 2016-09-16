@@ -12,6 +12,8 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 
 To search for ConnectWise contact info, use cwslack-contacts.php.
 
+To post new notes to tickets, use cwslack-notes.php
+
 To follow tickets and get updates whenever they're updated, use cwslack-follow.php (requires cwslack-incoming.php)
 
 # Installation Instructions
@@ -53,6 +55,19 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 7. Copy the token
 8. Set a name, icon, and autocomplete text if wanted.
 9. Modify the config.php file with your companies values, Full configuration info below.
+10. Test it in Slack!
+
+## cwslack-notes.php
+
+1. Download the cwslack-notes.php file and config.php file.
+2. Place on a compatible web server
+3. Create a new slack slash command integration at https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
+4. Set command to /t (or other if you prefer)
+5. Set the URL to https://domain.tld/cwslack-notes.php
+6. Set Method to GET
+7. Copy the token
+8. Set a name, icon, and autocomplete text if wanted.
+9. Modify the config.php file with your companies values and timezone. Full configuration info below.
 10. Test it in Slack!
 
 ## cwslack-incoming.php
@@ -118,6 +133,7 @@ To enable ConnectWise link to follow and unfollow a ticket:
 \- Minus denotes required for cwslack-incoming.php  
 \# Pound denotes required for cwslack-follow.php  
 \& Ampersand denotes required for cwslack-contacts.php  
+\^ Caret denotes required for cwslack-notes.php
 
 * $connectwise * : This value needs to be set to your main connectwise URL.
   * Users of Hosted ConnectWise will need to use https://api-na.myconnectwise.net, https://api-eu.myconnectwise.net or https://api-au.myconnectwise.net
@@ -126,7 +142,11 @@ To enable ConnectWise link to follow and unfollow a ticket:
 * $apiprivatekey * : Set to your Private Key from API setup
 * $slacktoken * : Set to the token you got when creating a new slash command integration in Slack.
 * $timezone * : Set to your timezone according to http://php.net/manual/en/timezones.america.php .
+
+
 * $slackactivitiestoken + : Set to the token you got when creating a new slash command integration in Slack for /activities.
+
+
 * $webhookurl - : Set to the incoming webhook URL you got when creating a new incoming webhook in Slack.
 * $postadded - : Set to 1 if you want it to post new tickets to chat.
 * $postupdated - : Set to 1 if you want it to post new ticket updates to chat.
@@ -135,13 +155,24 @@ To enable ConnectWise link to follow and unfollow a ticket:
 * $badstatus : Set this if you have a status you want to ignore, set to Closed by default as tickets are rarely automatically closed.
 * $badcompany : Set this if you have a company you want to ignore, set to CatchAll by default to avoid spam from unknown incoming e-mails.
 * $posttext : Set this to 1 if you want to include the latest note with the Slack message. Set to 1 by default now.
+
+
 * $slackfollowtoken # : Set to the token you got when creating a new slash command integration in Slack for /follow.
 * $followenabled # : Defaults to 0, you need to change this to 1 if you want to enable follow.
 * $dir # : Directory on the server to store files. Please note that the user running php (www-data in Linux) needs write/read access to this folder.
 * $followtoken : Change to any value and use this in the ConnectWise link tables.
 * $unfollowtoken : Change to any value and use this in the ConnectWise link tables.
+
+
 * $slackcontactstoken & : Set to the token you got when creating a new slash command integration in Slack for /contact.
+
+
+* $slacknotestoken ^ : Set to the token you got when creating a new slash command intregration in Slack for /notes.
+* $usecwname ^ : If set to 0 which is default, notes are posted as user that is attached to API key. If set to 1, then it will post as the correct CW user but all names in Slack must be the same as in CW.
+
+
 * $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
+
 
 # Command Usage
 
