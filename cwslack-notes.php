@@ -76,18 +76,31 @@ $ch = curl_init();
 $postfieldspre = NULL; //avoid errors.
 if($command == "internal")
 {
-    $postfieldspre = array("ServiceNote" => array("internalAnalysisFlag" => "True", "text" => $sentence));
+    if($usecwname==1)
+    {
+        $postfieldspre = array("internalAnalysisFlag" => "True", "member"=>array("identifier"=>$_GET['user_name']), "text" => $sentence);
+    }
+    else
+    {
+        $postfieldspre = array("internalAnalysisFlag" => "True", "text" => $sentence);
+    }
 }
 else if ($command == "external")
 {
-    $postfieldspre = array("ServiceNote" => array("detailDescriptionFlag" => "True", "externalFlag" => "True", "text" => $sentence));
+    if($usecwname==1)
+    {
+        $postfieldspre = array("detailDescriptionFlag" => "True", "member"=>array("identifier"=>$_GET['user_name']), "text" => $sentence);
+    }
+    else
+    {
+        $postfieldspre = array("detailDescriptionFlag" => "True", "text" => $sentence);
+    }
 }
 else
 {
     echo "Second part of text must be either internal or external.";
 }
 $postfields = json_encode($postfieldspre); //Format the array as JSON
-var_dump($postfields);
 //Same as previous curl array but includes required information for PATCH commands.
 $curlOpts = array(
     CURLOPT_URL => $noteurl,
@@ -110,6 +123,15 @@ if (curl_error($ch)) {
 curl_close($ch);
 $dataTNotes = json_decode($curlBodyTCmd);
 
-var_dump($dataTNotes);
+if(array_key_exists("errors",$dataTNotes))
+{
+    $errors = $dataTNotes->errors;
+
+    echo $errors[0]->message;
+}
+else
+{
+    echo "New " . $command . " note created on #" . $ticketnumber . ": " . $sentence;
+}
 
 ?>
