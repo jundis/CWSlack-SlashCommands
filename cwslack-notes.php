@@ -127,7 +127,7 @@ if(array_key_exists("errors",$dataTNotes))
 {
     $errors = $dataTNotes->errors;
 
-    echo $errors[0]->message;
+    echo "ConnectWise Error: " . $errors[0]->message;
 }
 else
 {
