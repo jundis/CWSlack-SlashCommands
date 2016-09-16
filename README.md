@@ -215,3 +215,9 @@ Add unfollow to the end of the command to stop following a ticket.
 /contact [last name]* OR [first name] [last name]
 
 Either option works, but you cannot search by first name only.
+
+## cwslack-notes.php
+
+/note [ticket number]* [internal OR external]* [ticket note]*
+
+This does allow spaces for the ticket note so do not wrap in quotation marks or anything.
