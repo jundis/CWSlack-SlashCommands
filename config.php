@@ -41,6 +41,9 @@ $slackcontactstoken = "Slack Token Here"; //Set your token for the contacts slas
 $slacknotestoken = "Slack Token Here"; //Set your token for the notes slash command
 $usecwname = 0; //If set to 1, it will create tickets using the user's slack name. Command will fail if their slack name is not the same as connectwise name.
 
+//cwslack-configs.php
+$slackconfigstoken = "Slack Token Here"; //Set your token for the configs slash command
+
 //cwslack-incoming.php
 $webhookurl = "https://hooks.slack.com/services/tokens"; //Change this to the URL retrieved from incoming webhook setup for Slack.
 $postadded = 1; //Set this to post new tickets to slack.
