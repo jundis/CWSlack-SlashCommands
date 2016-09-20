@@ -29,6 +29,13 @@ if(empty($_GET['token']) || ($_GET['token'] != $slackactivitiestoken)) die; //If
 if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
 $exploded = explode("|",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+//Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
+if ($exploded[0]=="help") {
+    $test=json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true)); //Encode a JSON response with a help URL.
+    echo $test; //Return the JSON
+    return; //Kill the connection.
+}
+
 $urlactivities = $connectwise . "/v4_6_release/apis/3.0/sales/activities/";
 $activityurl = $connectwise . '/v4_6_release/ConnectWise.aspx?fullscreen=false&locale=en_US#startscreen=activity_detail&state={"p":"activity_detail", "s":{"p":{"pid":3, "rd": ';
 $activityurl2 = ' ,"compId":0, "contId":0, "oppid":0}}}';
