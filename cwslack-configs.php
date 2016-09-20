@@ -129,7 +129,7 @@ $return =array(
         "fallback" => "Configuration Info for " . $conf->company->identifier . "\\" . $conf->name, //Fallback for notifications
         "title" => "Configuration: " . $conf->name, //Set bolded title text
         "pretext" => "Configuration for:  " . $conf->company->identifier, //Set pretext
-        "text" => "_Notes_:\n" . $notes . "\n_Vendor Notes_:\n" . $vendornotes . "\n_Questions_:\n" . $answers,//Set text to be returned
+        "text" => "*_Notes_*:\n" . $notes . "\n*_Vendor Notes_*:\n" . $vendornotes . "\n*_Questions_*:\n" . $answers,//Set text to be returned
         "mrkdwn_in" => array( //Set markdown values
             "text",
             "pretext"
