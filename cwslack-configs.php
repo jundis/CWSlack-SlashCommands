@@ -50,6 +50,7 @@ else //If 2 parts don't exist
 }
 
 $url = $connectwise . "/v4_6_release/apis/3.0/company/configurations?conditions=company/name%20contains%20%27" . $company . "%27%20and%20name%20contains%20%27" . $config . "%27&pagesize=1";
+$url = str_replace(' ', '%20', $url);; //Encode URL to prevent errors with spaces.
 
 $utc = time(); //Get the time.
 // Authorization array. Auto encodes API key for auhtorization above.
@@ -97,7 +98,7 @@ if(array_key_exists("errors",$dataTData)) //If connectwise returned an error.
 }
 if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 {
-    echo "No config found or your API URL is incorrect."; //Return error.
+    echo "No configuration found."; //Return error.
     die; //Kill the connection.
 }
 
