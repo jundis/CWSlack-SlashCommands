@@ -112,7 +112,14 @@ foreach($questions as $q) //For each item in the Question array
 {
     if($q->answer!=NULL) //If the answer exists and is not just blank and useless.
     {
-        $answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
+        if(strpos($q->question,":") != false) //If question contains a colon.
+        {
+            $answers = $answers . $q->question . " " . $q->answer . "\n"; //Return the question, answer, and new line.
+        }
+        else //Else, add a colon.
+        {
+            $answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
+        }
     }
 }
 
