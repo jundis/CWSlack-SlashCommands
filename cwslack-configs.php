@@ -110,7 +110,10 @@ $answers = ""; //Nothing just in case
 
 foreach($questions as $q) //For each item in the Question array
 {
-    $answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
+    if($q->answer!=NULL) //If the answer exists and is not just blank and useless.
+    {
+        $answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
+    }
 }
 
 if($conf->notes!=NULL) //If notes are not null
