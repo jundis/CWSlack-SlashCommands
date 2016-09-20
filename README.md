@@ -2,7 +2,7 @@
 
 This script, when hosted on a PHP supported web server, will act as a bridge between the JSON requests of Slack and the JSON responses of the ConnectWise REST API.
 
-cwslack.php, cwslack-incoming.php, cwslack-activities.php, and cwslack-contacts.php were designed to be independent, but all rely on the config.php file. This allows you to pick and choose what you want and for different Slack commands instead of one universal /cw tickets 249123 and /cw contact john doe it can be /t 249123 and /c john doe.
+cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, and cwslack-contacts.php were designed to be independent, but all rely on the config.php file. This allows you to pick and choose what you want and for different Slack commands instead of one universal /cw tickets 249123 and /cw contact john doe it can be /t 249123 and /c john doe.
 
 For requesting ticket information using /ticket #, use cwslack.php.
 
@@ -13,6 +13,8 @@ To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.p
 To search for ConnectWise contact info, use cwslack-contacts.php.
 
 To post new notes to tickets, use cwslack-notes.php
+
+To search for ConnectWise configuration records, use cwslack-configs.php.
 
 To follow tickets and get updates whenever they're updated, use cwslack-follow.php (requires cwslack-incoming.php)
 
@@ -27,7 +29,7 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 5. Set the URL to https://domain.tld/cwslack.php
 6. Set Method to GET
 7. Copy the token
-8. Set a name, icon, and autocomplete text if wanted.
+8. Set a name, icon, and auto complete text if wanted.
 9. Modify the config.php file with your companies values and timezone. Full configuration info below.
 10. Test it in Slack!
 
@@ -40,7 +42,7 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 5. Set the URL to https://domain.tld/cwslack-activities.php
 6. Set Method to GET
 7. Copy the token
-8. Set a name, icon, and autocomplete text if wanted.
+8. Set a name, icon, and auto complete text if wanted.
 9. Modify the config.php file with your companies values, Full configuration info below.
 10. Test it in Slack!
 
@@ -53,7 +55,7 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 5. Set the URL to https://domain.tld/cwslack-contacts.php
 6. Set Method to GET
 7. Copy the token
-8. Set a name, icon, and autocomplete text if wanted.
+8. Set a name, icon, and auto complete text if wanted.
 9. Modify the config.php file with your companies values, Full configuration info below.
 10. Test it in Slack!
 
@@ -66,7 +68,20 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 5. Set the URL to https://domain.tld/cwslack-notes.php
 6. Set Method to GET
 7. Copy the token
-8. Set a name, icon, and autocomplete text if wanted.
+8. Set a name, icon, and auto complete text if wanted.
+9. Modify the config.php file with your companies values and timezone. Full configuration info below.
+10. Test it in Slack!
+
+## cwslack-configs.php
+
+1. Download the cwslack-configs.php file and config.php file.
+2. Place on a compatible web server
+3. Create a new slack slash command integration at https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
+4. Set command to /t (or other if you prefer)
+5. Set the URL to https://domain.tld/cwslack-configs.php
+6. Set Method to GET
+7. Copy the token
+8. Set a name, icon, and auto complete text if wanted.
 9. Modify the config.php file with your companies values and timezone. Full configuration info below.
 10. Test it in Slack!
 
@@ -74,9 +89,9 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 
 1. Download the cwslack-incoming.php file and config.php file.
 2. Place on a compatible web server
-3. Create a new slack incoming webhook integration at https://my.slack.com/services/new/incoming-webhook/
+3. Create a new slack incoming web hook integration at https://my.slack.com/services/new/incoming-webhook/
 4. Set a name, icon, and if wanted.
-5. Set channel that you want to post to and copy the Webhook URL
+5. Set channel that you want to post to and copy the Web hook URL
 6. Create a new integrator login in ConnectWise:
   - Go to System > Setup Tables in the client
   - Type "int" in the table field and select Integrator Login
@@ -98,7 +113,7 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 5. Set the URL to https://domain.tld/cwslack-follow.php
 6. Set Method to GET
 7. Copy the token
-8. Set a name, icon, and autocomplete text if wanted.
+8. Set a name, icon, and auto complete text if wanted.
 9. Modify the config.php file with your companies values, Full configuration info below.
 10. Test it in Slack!
 
@@ -134,8 +149,9 @@ To enable ConnectWise link to follow and unfollow a ticket:
 \# Pound denotes required for cwslack-follow.php  
 \& Ampersand denotes required for cwslack-contacts.php  
 \^ Caret denotes required for cwslack-notes.php
+\% Percent denotes required for cwslack-notes.php
 
-* $connectwise * : This value needs to be set to your main connectwise URL.
+* $connectwise * : This value needs to be set to your main ConnectWise URL.
   * Users of Hosted ConnectWise will need to use https://api-na.myconnectwise.net, https://api-eu.myconnectwise.net or https://api-au.myconnectwise.net
 * $companyname * : This value needs to be set to whatever your company name is that you use to login to ConnectWise.
 * $apipublickey * : Set to your Public Key from API setup
@@ -147,7 +163,7 @@ To enable ConnectWise link to follow and unfollow a ticket:
 * $slackactivitiestoken + : Set to the token you got when creating a new slash command integration in Slack for /activities.
 
 
-* $webhookurl - : Set to the incoming webhook URL you got when creating a new incoming webhook in Slack.
+* $webhookurl - : Set to the incoming web hook URL you got when creating a new incoming web hook in Slack.
 * $postadded - : Set to 1 if you want it to post new tickets to chat.
 * $postupdated - : Set to 1 if you want it to post new ticket updates to chat.
 * $allowzadmin - : Set to 1 if you want posts from zAdmin to go to chat. Set to 0 by default to avoid spam in high volume environments.
@@ -167,9 +183,10 @@ To enable ConnectWise link to follow and unfollow a ticket:
 * $slackcontactstoken & : Set to the token you got when creating a new slash command integration in Slack for /contact.
 
 
-* $slacknotestoken ^ : Set to the token you got when creating a new slash command intregration in Slack for /notes.
+* $slacknotestoken ^ : Set to the token you got when creating a new slash command integration in Slack for /notes.
 * $usecwname ^ : If set to 0 which is default, notes are posted as user that is attached to API key. If set to 1, then it will post as the correct CW user but all names in Slack must be the same as in CW.
 
+* $slackconfigstoken % : Set to the token you got when creating a new slash command integration in Slack for /config.
 
 * $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
 
@@ -221,3 +238,9 @@ Either option works, but you cannot search by first name only.
 /note [ticket number]* [internal OR external]* [ticket note]*
 
 This does allow spaces for the ticket note so do not wrap in quotation marks or anything.
+
+## cwslack-configs.php
+
+/config [company name]*|[config name]*
+
+Requires pipe symbol between the two, will return details on config that matches search.
