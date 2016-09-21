@@ -116,6 +116,20 @@ if($dataTData==NULL)
 	echo "Array not returned in line 195. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata;
 	die;
 }
+if(array_key_exists("code",$dataTData)) { //Check if array contains error code
+	if($dataTData->code == "NotFound") { //If error code is NotFound
+		echo "Connectwise ticket " . $ticketnumber . " was not found."; //Report that the ticket was not found.
+		return;
+	}
+	if($dataTData->code == "Unauthorized") { //If error code is an authorization error
+		echo "401 Unauthorized, check API key to ensure it is valid."; //Fail case.
+		return;
+	}
+	else {
+		echo "Unknown Error Occurred, check API key and other API settings." . $dataTData->code; //Fail case.
+		return;
+	}
+}
 
 if($posttext==1) //Block for curl to get latest note
 {
@@ -238,7 +252,7 @@ else //If unknown
 $postfieldspre = array(array("op" => "replace", "path" => "/priority/id", "value" => $priority)); //Command array to replace the priority ID
 $postfields = json_encode($postfieldspre); //Format the array as JSON
 
-//Same as previous curl array but includes required information for PATCH commands.
+//Same as previous curl array but includes reequired information for PATCH commands.
 $curlOpts = array(
 	CURLOPT_URL => $urlticketdata,
 	CURLOPT_RETURNTRANSFER => true,
@@ -308,20 +322,7 @@ curl_close($ch);
 $dataTCmd = json_decode($curlBodyTCmd);
 }
 
-if(array_key_exists("code",$dataTData)) { //Check if array contains error code
-	if($dataTData->code == "NotFound") { //If error code is NotFound
-		echo "Connectwise ticket " . $ticketnumber . " was not found."; //Report that the ticket was not found.
-		return;
-	}
-	if($dataTData->code == "Unauthorized") { //If error code is an authorization error
-		echo "401 Unauthorized, check API key to ensure it is valid."; //Fail case.
-		return;
-	}
-	else {
-		echo "Unknown Error Occurred, check API key and other API settings." . $dataTData->code; //Fail case.
-		return;
-	}
-}
+
 if(array_key_exists("code",$dataTCmd)) { //Check if array contains error code
 	if($dataTCmd->code == "NotFound") { //If error code is NotFound
 		echo "Connectwise ticket " . $ticketnumber . " was not found."; //Report that the ticket was not found.
