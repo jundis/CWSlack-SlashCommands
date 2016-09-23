@@ -213,16 +213,20 @@ if($posttext==1) //Block for curl to get latest note
 		$dataTNotes2 = json_decode($curlBodyTNotes); //Decode the JSON returned by the CW API.
 	}
 	$createdby = $dataTNotes[0]->createdBy; //Set $createdby to the ticket note creator.
+	$notetime = new DateTime($dataTNotes[0]->dateCreated); //Create new datetime object based on ticketnote note.
+	$notedate = $dataTNotes[0]->dateCreated;
+
 	$text = $dataTNotes[0]->text; //Set $text to the ticket text.
 	if(array_key_exists(0,$dataTNotes) && array_key_exists(0,$dataTimeData) && $command != "initial" && $command != "first" && $command != "note") //Check if arrays exist properly.
 	{
 		$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
-		$notetime = new DateTime($dataTNotes[0]->dateCreated); //Create new datetime object based on ticketnote note.
-		
+
+
 		if($timetime>$notetime) //If the time entry is newer than latest ticket note.
 		{
 			$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
 			$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
+			$notedate = $dataTimeData[0]->dateEntered;
 		}
 	}
 }
@@ -342,6 +346,12 @@ $date=strtotime($dataTData->dateEntered); //Convert date entered JSON result to 
 $dateformat=date('m-d-Y g:i:sa',$date); //Convert previously converted time to a better time string.
 $return="Nothing!"; //Create return value and set to a basic message just in case.
 $contact="None"; //Set None for contact in case no contact exists for "Catch All" tickets.
+if($posttext==1)
+{
+	$date2=strtotime($notedate);
+	$date2format=date('m-d-Y g:i:sa',$date2);
+}
+
 
 if(!$dataTData->contact==NULL) { //Check if contact name exists in array.
 	$contact = $dataTData->contact->name; //Set contact variable to contact name.
@@ -421,7 +431,7 @@ else if($command == "initial" || $command == "first" || $command == "note")
 					)
 				),
 				array(
-					"pretext" => "Initial ticket note from: " . $createdby,
+					"pretext" => "Initial ticket note (" . $date2format  . ") from: " . $createdby,
 					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
@@ -456,6 +466,8 @@ else if($command == "full" || $command == "notes" || $command == "all")
 	}
 	else
 	{
+		$date3=strtotime($dataTNotes2[0]->dateCreated);
+		$date3format=date('m-d-Y g:i:sa',$date3);
 		$return =array(
 			"parse" => "full",
 			"response_type" => "ephemeral",
@@ -472,7 +484,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 					)
 				),
 				array(
-					"pretext" => "Latest Note from: " . $createdby,
+					"pretext" => "Latest Note (" . $date2format  . ") from: " . $createdby,
 					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
@@ -481,7 +493,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 						)
 				),
 				array(
-					"pretext" => "Initial ticket note from: " . $dataTNotes2[0]->createdBy,
+					"pretext" => "Initial ticket note (" . $date3format  . ") from: " . $dataTNotes2[0]->createdBy,
 					"text" =>  $dataTNotes2[0]->text,
 					"mrkdwn_in" => array(
 						"text",
@@ -532,7 +544,7 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 					)
 				),
 				array(
-					"pretext" => "Latest Note from: " . $createdby,
+					"pretext" => "Latest Note (" . $date2format  . ") from: " . $createdby,
 					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
