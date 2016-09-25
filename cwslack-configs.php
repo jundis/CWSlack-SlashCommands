@@ -109,19 +109,26 @@ $notes = "None"; //Just in case
 $vendornotes = "None"; //Just in case
 $answers = ""; //Nothing just in case
 
-foreach($questions as $q) //For each item in the Question array
+if($questions!=NULL)
 {
-    if($q->answer!=NULL) //If the answer exists and is not just blank and useless.
-    {
-        if(strpos($q->question,":") != false) //If question contains a colon.
-        {
-            $answers = $answers . $q->question . " " . $q->answer . "\n"; //Return the question, answer, and new line.
-        }
-        else //Else, add a colon.
-        {
-            $answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
-        }
-    }
+	foreach($questions as $q) //For each item in the Question array
+	{
+		if($q->answer!=NULL) //If the answer exists and is not just blank and useless.
+		{
+			if(strpos($q->question,":") != false) //If question contains a colon.
+			{
+				$answers = $answers . $q->question . " " . $q->answer . "\n"; //Return the question, answer, and new line.
+			}
+			else //Else, add a colon.
+			{
+				$answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
+			}
+		}
+	}
+}
+else
+{
+	$answers="None";
 }
 
 if($conf->notes!=NULL) //If notes are not null
