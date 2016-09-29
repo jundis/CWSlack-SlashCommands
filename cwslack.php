@@ -346,6 +346,18 @@ $date=strtotime($dataTData->dateEntered); //Convert date entered JSON result to 
 $dateformat=date('m-d-Y g:i:sa',$date); //Convert previously converted time to a better time string.
 $return="Nothing!"; //Create return value and set to a basic message just in case.
 $contact="None"; //Set None for contact in case no contact exists for "Catch All" tickets.
+$resources="No resources"; //Just in case resources are null, have something to return.
+$hours="No time entered."; //Just in case time is null, have something to return.
+
+if($dataTData->actualHours != NULL) //If time is not NULL
+{
+	$hours="Time: ". $dataTData->actualHours . " Hours"; //Set $hours to a formatted time line.
+}
+
+if($dataTData->resources != NULL)
+{
+	$resources=$dataTData->resources;
+}
 if($posttext==1)
 {
 	$date2=strtotime($notedate);
@@ -405,7 +417,7 @@ else if($command == "initial" || $command == "first" || $command == "note")
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
+				"\n" . $resources . " | " . $hours, //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -424,7 +436,7 @@ else if($command == "initial" || $command == "first" || $command == "note")
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
+				"\n" . $resources . " | " . $hours, //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -456,7 +468,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
+				"\n" . $resources . " | " . $hours, //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -477,7 +489,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
+				"\n" . $resources . " | " . $hours, //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -518,7 +530,7 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
+				"\n" . $resources . " | " . $hours, //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -537,7 +549,7 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $dataTData->resources . " | Time: " . $dataTData->actualHours . " Hours", //Return assigned resources
+				"\n" . $resources . " | " . $hours, //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
