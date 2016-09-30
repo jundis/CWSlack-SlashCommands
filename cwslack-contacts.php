@@ -97,15 +97,22 @@ if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 
 $return="Nothing!"; //Create return value and set to a basic message just in case.
 $company=$dataTData[0]->company; //Set company array for easier reference later on.
-$comms=$dataTData[0]->communicationItems; //Set communications array for iteration.
-$text=""; //Set blank text varaible "just in case"
 
-//Iteration block to search through all contact types on the user.
-foreach($comms as $item) {
-	$type = $item->type; //Set the type variable to whatever the contact type is, this would be Email or Direct or whatever you have it set to in CW.
-	$formatted = preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $item->value); //Format phone numbers
-	$text = $text . $type->name . ": " . $formatted . "\n"; //Create a new line for each iteration, 
+$text="No contact info found."; //Set catch error "just in case"
+
+if(array_key_exists("communicationItems",$dataTData[0]) && $dataTData[0]->communicationItems != NULL)
+{
+    $comms=$dataTData[0]->communicationItems; //Set communications array for iteration.
+    $text=""; //Set blank text varaible "just in case"
+
+    //Iteration block to search through all contact types on the user.
+    foreach($comms as $item) {
+        $type = $item->type; //Set the type variable to whatever the contact type is, this would be Email or Direct or whatever you have it set to in CW.
+        $formatted = preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $item->value); //Format phone numbers
+        $text = $text . $type->name . ": " . $formatted . "\n"; //Create a new line for each iteration,
+    }
 }
+
 
 $return =array(
 	"parse" => "full", //Parse all text.
