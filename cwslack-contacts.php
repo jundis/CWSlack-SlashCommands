@@ -97,6 +97,70 @@ if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 
 $return="Nothing!"; //Create return value and set to a basic message just in case.
 $company=$dataTData[0]->company; //Set company array for easier reference later on.
+$compurl=$company->_info;
+//Company phone #
+$ch = curl_init(); //Initiate a curl session_cache_expire
+
+//Create curl array to set the API url, headers, and necessary flags.
+$curlOpts = array(
+    CURLOPT_URL => $compurl->company_href,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => $header_data,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HEADER => 1,
+);
+curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
+
+$answerCData = curl_exec($ch); //Set $answerTData to the curl response to the API.
+$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
+$curlBodyCData = substr($answerCData, $headerLen); //Remove header data from the curl string.
+
+// If there was an error, show it
+if (curl_error($ch)) {
+    die(curl_error($ch));
+}
+curl_close($ch);
+
+$dataCData = json_decode($curlBodyCData); //Decode the JSON returned by the CW API.
+$cphone = NULL; // Just in case.
+
+if ($dataCData->phoneNumber != NULL && $dataCData->phoneNumber != NULL)
+{
+    $cphone = preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $dataCData->phoneNumber);
+}
+
+$site=$dataTData[0]->site;
+$siteurl=$site->_info;
+//Company phone #
+$ch = curl_init(); //Initiate a curl session_cache_expire
+
+//Create curl array to set the API url, headers, and necessary flags.
+$curlOpts = array(
+    CURLOPT_URL => $siteurl->site_href,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => $header_data,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HEADER => 1,
+);
+curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
+
+$answerSData = curl_exec($ch); //Set $answerTData to the curl response to the API.
+$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
+$curlBodySData = substr($answerSData, $headerLen); //Remove header data from the curl string.
+
+// If there was an error, show it
+if (curl_error($ch)) {
+    die(curl_error($ch));
+}
+curl_close($ch);
+
+$dataSData = json_decode($curlBodySData); //Decode the JSON returned by the CW API.
+$sphone = NULL; // Just in case.
+
+if ($dataSData->phoneNumber != NULL && $dataSData->phoneNumber != NULL)
+{
+    $sphone = preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $dataSData->phoneNumber);
+}
 
 $text="No contact info found."; //Set catch error "just in case"
 
@@ -104,12 +168,38 @@ if(array_key_exists("communicationItems",$dataTData[0]) && $dataTData[0]->commun
 {
     $comms=$dataTData[0]->communicationItems; //Set communications array for iteration.
     $text=""; //Set blank text varaible "just in case"
-
+    if($cphone != NULL || $sphone != NULL) //Check if one is not null and has data
+    {
+        $text = ""; //Set text to blank for proper processing
+    }
+    if($cphone != NULL) //Check if cphone is null
+    {
+        $text=$text . "Company Phone: " . $cphone . "\n"; //If not, set text and add new line
+    }
+    if($sphone != NULL && $sphone != $cphone) //Check if sphone is null AND if sphone is the same as cphone, skip if both are true.
+    {
+        $text=$text . "Site Phone: " . $sphone . "\n";
+    }
     //Iteration block to search through all contact types on the user.
     foreach($comms as $item) {
         $type = $item->type; //Set the type variable to whatever the contact type is, this would be Email or Direct or whatever you have it set to in CW.
         $formatted = preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $item->value); //Format phone numbers
         $text = $text . $type->name . ": " . $formatted . "\n"; //Create a new line for each iteration,
+    }
+}
+else
+{
+    if($cphone != NULL || $sphone != NULL) //Check if one is not null and has data
+    {
+        $text = ""; //Set text to blank for proper processing
+    }
+    if($cphone != NULL) //Check if cphone is null
+    {
+        $text=$text . "Company Phone: " . $cphone . "\n"; //If not, set text and add new line
+    }
+    if($sphone != NULL && $sphone != $cphone) //Check if sphone is null AND if sphone is the same as cphone, skip if both are true.
+    {
+        $text=$text . "Site Phone: " . $sphone . "\n";
     }
 }
 
