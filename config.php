@@ -50,6 +50,9 @@ $postadded = 1; //Set this to post new tickets to slack.
 $postupdated = 0; //Set this to post updated tickets to slack. Defaults to off to avoid spam
 $allowzadmin = 0; //Set this to allow posts from zAdmin, warning as zAdmin does workflow rules so update spam is countered, however new client tickets are through zAdmin. To avoid insane spam, do not have this turned on while $postupdated is turned on. 
 $posttext = 1; //Set to 1 if you want it to post the latest note from the ticket into chat whenever a ticket is created or updated.
+$timeenabled = 0; //Set to 1 if you want to post all tickets past $timepast to a specific channel, $timechan
+$timepast = 1.0; //Set to a time in hours where once reached all updates will post to #dispatch.
+$timechan = "#dispatch"; //Set to a channel to post to for $timeenabled
 //"Bad" variables to block certain things from coming through in cwslack-incoming.php. Separate by a pipe symbol | to have multiple.
 $badboard = "Alerts"; //Set to any board name you want to fail, to avoid ticket creation/updates from this board posting to Slack.
 $badstatus = "Closed|Canceled"; //Set to any status name you want to fail, to avoid ticket creation/updates with this status from posting to Slack.
