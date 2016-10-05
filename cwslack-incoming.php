@@ -142,7 +142,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 		{
 			$postfieldspre = array(
 				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 					"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
 					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -161,7 +161,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 		{
 			$postfieldspre = array(
 				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 					"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
 					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -182,7 +182,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 		{
 			$postfieldspre = array(
 				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 					"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
 					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -210,7 +210,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 		{
 			$postfieldspre = array(
 				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 					"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
 					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -241,7 +241,7 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 	{
 		$postfieldspre = array(
 			"attachments"=>array(array(
-				"fallback" => "Updated ticket #" . $ticket . " - " . $info->Summary,
+				"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 				"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
 				"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -258,7 +258,7 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 	{
 		$postfieldspre = array(
 		"attachments"=>array(array(
-			"fallback" => "Updated ticket #" . $ticket . " - " . $info->Summary,
+			"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 			"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 			"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
 			"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -342,7 +342,7 @@ if($followenabled==1)
 						$postfieldspre = array(
 							"channel" => "@" . $username,
 							"attachments" => array(array(
-								"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+								"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 								"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 								"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
 								"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -360,7 +360,7 @@ if($followenabled==1)
 						$postfieldspre = array(
 							"channel" => "@" . $username,
 							"attachments" => array(array(
-								"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+								"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 								"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 								"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
 								"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -379,7 +379,7 @@ if($followenabled==1)
 						$postfieldspre = array(
 							"channel" => "@" . $username,
 							"attachments" => array(array(
-								"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+								"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 								"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 								"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
 								"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -406,7 +406,7 @@ if($followenabled==1)
 						$postfieldspre = array(
 							"channel" => "@" . $username,
 							"attachments" => array(array(
-								"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+								"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 								"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 								"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
 								"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -435,7 +435,7 @@ if($followenabled==1)
 					$postfieldspre = array(
 						"channel" => "@" . $username,
 						"attachments" => array(array(
-							"fallback" => "Updated ticket #" . $ticket . " - " . $info->Summary,
+							"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 							"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
 							"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -451,7 +451,7 @@ if($followenabled==1)
 					$postfieldspre = array(
 						"channel" => "@" . $username,
 						"attachments" => array(array(
-							"fallback" => "Updated ticket #" . $ticket . " - " . $info->Summary,
+							"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 							"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
 							"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -512,7 +512,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 				$postfieldspre = array(
 					"channel"=>$timechan,
 					"attachments"=>array(array(
-						"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+						"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 						"color" => "#F0E68C",
 						"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
@@ -533,7 +533,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 				$postfieldspre = array(
 					"channel"=>$timechan,
 					"attachments"=>array(array(
-						"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+						"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 						"color" => "#F0E68C",
 						"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
@@ -556,7 +556,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 				$postfieldspre = array(
 					"channel"=>$timechan,
 					"attachments"=>array(array(
-						"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+						"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 						"color" => "#F0E68C",
 						"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
@@ -586,7 +586,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 				$postfieldspre = array(
 					"channel"=>$timechan,
 					"attachments"=>array(array(
-						"fallback" => "New ticket #" . $ticket . " - " . $info->Summary,
+						"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 						"color" => "#F0E68C",
 						"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
@@ -617,7 +617,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 			$postfieldspre = array(
 				"channel" => $timechan,
 				"attachments" => array(array(
-					"fallback" => "Updated ticket #" . $ticket . " - " . $info->Summary,
+					"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 					"color" => "#F0E68C",
 					"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
@@ -634,7 +634,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 			$postfieldspre = array(
 				"channel" => $timechan,
 				"attachments" => array(array(
-					"fallback" => "Updated ticket #" . $ticket . " - " . $info->Summary,
+					"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 					"color" => "#F0E68C",
 					"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
