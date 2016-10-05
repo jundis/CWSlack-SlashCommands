@@ -8,15 +8,15 @@ For requesting ticket information using /ticket #, use cwslack.php.
 
 For creating new activities, use cwslack-activities.php.
 
-To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.php
+To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.php.
 
 To search for ConnectWise contact info, use cwslack-contacts.php.
 
-To post new notes to tickets, use cwslack-notes.php
+To post new notes to tickets, use cwslack-notes.php.
 
 To search for ConnectWise configuration records, use cwslack-configs.php.
 
-To follow tickets and get updates whenever they're updated, use cwslack-follow.php (requires cwslack-incoming.php)
+To follow tickets and get updates whenever they're updated, use cwslack-follow.php (requires cwslack-incoming.php).
 
 # Installation Instructions
 
