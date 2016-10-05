@@ -138,101 +138,48 @@ if($_GET['action'] == "added" && $postadded == 1)
 {
 	if($posttext==0)
 	{
-		if(strtolower($_GET['memberId'])=="zadmin")
-		{
-			$postfieldspre = array(
-				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-					"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
-					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-					"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-					"\n" . $info->Resources, //Return assigned resources
-					"mrkdwn_in" => array(
-						"text",
-						"pretext",
-						"title"
-						)
-					))
-				);
-
-		}
-		else
-		{
-			$postfieldspre = array(
-				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-					"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
-					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-					"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-					"\n" . $info->Resources, //Return assigned resources
-					"mrkdwn_in" => array(
-						"text",
-						"pretext",
-						"title"
-						)
-					))
-				);
-		}
+		$postfieldspre = array(
+			"attachments"=>array(array(
+				"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+				"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
+				"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+				"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+				"\n" . $info->Resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext",
+					"title"
+					)
+				))
+			);
 	}
 	else
 	{
-		if(strtolower($_GET['memberId'])=="zadmin")
-		{
-			$postfieldspre = array(
-				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-					"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
-					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-					"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-					"\n" . $info->Resources, //Return assigned resources
+		$postfieldspre = array(
+			"attachments"=>array(array(
+				"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+				"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
+				"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+				"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+				"\n" . $info->Resources, //Return assigned resources
+				"mrkdwn_in" => array(
+					"text",
+					"pretext",
+					"title"
+					)
+				),
+				array(
+					"pretext" => "Latest Note from: " . $createdby,
+					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
 						"pretext",
 						"title"
 						)
-					),
-					array(
-						"pretext" => "Latest Note from: " . $createdby,
-						"text" =>  $text,
-						"mrkdwn_in" => array(
-							"text",
-							"pretext",
-							"title"
-							)
-					))
-				);
-
-		}
-		else
-		{
-			$postfieldspre = array(
-				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-					"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
-					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-					"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-					"\n" . $info->Resources, //Return assigned resources
-					"mrkdwn_in" => array(
-						"text",
-						"pretext",
-						"title"
-						)
-					),
-					array(
-						"pretext" => "Latest Note from: " . $createdby,
-						"text" =>  $text,
-						"mrkdwn_in" => array(
-							"text",
-							"pretext",
-							"title"
-							)
-					))
-				);
-		}
+				))
+			);
 	}
 }
 else if($_GET['action'] == "updated" && $postupdated == 1)
@@ -336,99 +283,52 @@ if($followenabled==1)
 	if(!empty($alerts)) {
 		foreach ($alerts as $username) //For each user in alerts array, set $postfieldspre to the follow message.
 		{
-			if ($_GET['action'] == "added") {
-				if ($posttext == 0) {
-					if (strtolower($_GET['memberId']) == "zadmin") {
-						$postfieldspre = array(
-							"channel" => "@" . $username,
-							"attachments" => array(array(
-								"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-								"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
-								"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
-								"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-									"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-									"\n" . $info->Resources, //Return assigned resources
-								"mrkdwn_in" => array(
-									"text",
-									"pretext",
-									"title"
-								)
-							))
-						);
-
-					} else {
-						$postfieldspre = array(
-							"channel" => "@" . $username,
-							"attachments" => array(array(
-								"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-								"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
-								"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
-								"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-									"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-									"\n" . $info->Resources, //Return assigned resources
-								"mrkdwn_in" => array(
-									"text",
-									"pretext",
-									"title"
-								)
-							))
-						);
-					}
+			if ($_GET['action'] == "added")
+			{
+				if ($posttext == 0)
+				{
+					$postfieldspre = array(
+						"channel" => "@" . $username,
+						"attachments" => array(array(
+							"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
+							"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
+							"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+								"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+								"\n" . $info->Resources, //Return assigned resources
+							"mrkdwn_in" => array(
+								"text",
+								"pretext",
+								"title"
+							)
+						))
+					);
 				} else {
-					if (strtolower($_GET['memberId']) == "zadmin") {
-						$postfieldspre = array(
-							"channel" => "@" . $username,
-							"attachments" => array(array(
-								"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-								"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
-								"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
-								"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-									"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-									"\n" . $info->Resources, //Return assigned resources
+					$postfieldspre = array(
+						"channel" => "@" . $username,
+						"attachments" => array(array(
+							"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
+							"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
+							"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+								"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+								"\n" . $info->Resources, //Return assigned resources
+							"mrkdwn_in" => array(
+								"text",
+								"pretext",
+								"title"
+							)
+						),
+							array(
+								"pretext" => "Latest Note from: " . $createdby,
+								"text" => $text,
 								"mrkdwn_in" => array(
 									"text",
 									"pretext",
 									"title"
 								)
-							),
-								array(
-									"pretext" => "Latest Note from: " . $createdby,
-									"text" => $text,
-									"mrkdwn_in" => array(
-										"text",
-										"pretext",
-										"title"
-									)
-								))
-						);
-
-					} else {
-						$postfieldspre = array(
-							"channel" => "@" . $username,
-							"attachments" => array(array(
-								"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-								"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
-								"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
-								"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-									"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-									"\n" . $info->Resources, //Return assigned resources
-								"mrkdwn_in" => array(
-									"text",
-									"pretext",
-									"title"
-								)
-							),
-								array(
-									"pretext" => "Latest Note from: " . $createdby,
-									"text" => $text,
-									"mrkdwn_in" => array(
-										"text",
-										"pretext",
-										"title"
-									)
-								))
-						);
-					}
+							))
+					);
 				}
 			} else if ($_GET['action'] == "updated") {
 				if ($posttext == 0) {
@@ -507,112 +407,56 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 	{
 		if($posttext==0)
 		{
-			if(strtolower($_GET['memberId'])=="zadmin")
-			{
-				$postfieldspre = array(
-					"channel"=>$timechan,
-					"attachments"=>array(array(
-						"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-						"color" => "#F0E68C",
-						"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
-						"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-							"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-							"\n" . $info->Resources . " | Total Hours: *" . $info->ActualHours . "*", //Return assigned resources
-						"mrkdwn_in" => array(
-							"text",
-							"pretext",
-							"title"
-						)
-					))
-				);
-
-			}
-			else
-			{
-				$postfieldspre = array(
-					"channel"=>$timechan,
-					"attachments"=>array(array(
-						"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-						"color" => "#F0E68C",
-						"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
-						"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-							"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-							"\n" . $info->Resources . " | Total Hours: *" . $info->ActualHours . "*", //Return assigned resources
-						"mrkdwn_in" => array(
-							"text",
-							"pretext",
-							"title"
-						)
-					))
-				);
-			}
+			$postfieldspre = array(
+				"channel"=>$timechan,
+				"attachments"=>array(array(
+					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+					"color" => "#F0E68C",
+					"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
+					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+						"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+						"\n" . $info->Resources . " | Total Hours: *" . $info->ActualHours . "*", //Return assigned resources
+					"mrkdwn_in" => array(
+						"text",
+						"pretext",
+						"title"
+					)
+				))
+			);
 		}
 		else
 		{
-			if(strtolower($_GET['memberId'])=="zadmin")
-			{
-				$postfieldspre = array(
-					"channel"=>$timechan,
-					"attachments"=>array(array(
-						"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-						"color" => "#F0E68C",
-						"pretext" => "Ticket #" . $ticket . " has been created by " . $info->ContactName . ".",
-						"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-							"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-							"\n" . $info->Resources . " | Total Hours: *" . $info->ActualHours . "*", //Return assigned resources
+			$postfieldspre = array(
+				"channel"=>$timechan,
+				"attachments"=>array(array(
+					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+					"color" => "#F0E68C",
+					"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
+					"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+						"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
+						"\n" . $info->Resources . " | Total Hours: *" . $info->ActualHours . "*", //Return assigned resources
+					"mrkdwn_in" => array(
+						"text",
+						"pretext",
+						"title"
+					)
+				),
+					array(
+						"pretext" => "Latest Note from: " . $createdby,
+						"text" =>  $text,
 						"mrkdwn_in" => array(
 							"text",
 							"pretext",
 							"title"
 						)
-					),
-						array(
-							"pretext" => "Latest Note from: " . $createdby,
-							"text" =>  $text,
-							"mrkdwn_in" => array(
-								"text",
-								"pretext",
-								"title"
-							)
-						))
-				);
-
-			}
-			else
-			{
-				$postfieldspre = array(
-					"channel"=>$timechan,
-					"attachments"=>array(array(
-						"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-						"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-						"color" => "#F0E68C",
-						"pretext" => "Ticket #" . $ticket . " has been created by " . $info->UpdatedBy . ".",
-						"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-							"\n" . "Priority: " . $info->Priority . " | " . $info->StatusName . //Return "Prority / Status" string
-							"\n" . $info->Resources . " | Total Hours: *" . $info->ActualHours . "*", //Return assigned resources
-						"mrkdwn_in" => array(
-							"text",
-							"pretext",
-							"title"
-						)
-					),
-						array(
-							"pretext" => "Latest Note from: " . $createdby,
-							"text" =>  $text,
-							"mrkdwn_in" => array(
-								"text",
-								"pretext",
-								"title"
-							)
-						))
-				);
-			}
+					))
+			);
 		}
 	}
-	else if($_GET['action'] == "updated") {
+	else if($_GET['action'] == "updated")
+	{
 		if ($posttext == 0) {
 			$postfieldspre = array(
 				"channel" => $timechan,
