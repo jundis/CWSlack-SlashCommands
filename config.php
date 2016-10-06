@@ -59,6 +59,11 @@ $badboard = "Alerts"; //Set to any board name you want to fail, to avoid ticket 
 $badstatus = "Closed|Canceled"; //Set to any status name you want to fail, to avoid ticket creation/updates with this status from posting to Slack.
 $badcompany = "CatchAll (for email connector)"; //Set to any company name you want to fail, to avoid ticket creation for catchall from posting to Slack.
 
+//cwslack-firmalerts.php
+//This uses the variables $webhookurl and $timechan from cwslack-incoming.php above.
+$posttousers = 1; //When set, will post to the user whenever the appointment reminder is reached.
+$posttochan = 1; //When set, will post to $timechan whenever the firm appointment starts.
+
 //cwslack-follow.php
 $slackfollowtoken = "Slack Token Here"; //Set your token for the follow slash command
 $followenabled=0; //When set to 1, follow commands and the follow scripts will be enabled.
