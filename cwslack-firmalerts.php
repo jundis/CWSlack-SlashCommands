@@ -66,15 +66,12 @@ curl_close($ch);
 
 $dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
 
-var_dump($dataTData);
-
 foreach($dataTData as $entry)
 {
 	$reminder = $entry->reminder->name;
 	$user = $entry->member->identifier;
 	$username = $entry->member->name;
 	$namearray = explode(" - ",$entry->name);
-	var_dump($namearray);
 	$companyarray = explode(" / ",$namearray[0]);
 	$company = $companyarray[0];
 	$summary = $namearray[1];
@@ -198,10 +195,5 @@ foreach($dataTData as $entry)
 			curl_close($ch);
 		}
 	}
-	
-	echo $datereminder . "\n\n";
-	echo $datenow . "\n\n";
-	echo $datestart . "\n\n";
-	var_dump($entry);
 }
 ?>
