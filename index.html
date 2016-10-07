@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Connectwise/Slack Integrations by jundis</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Connectwise/Slack Integrations</h1>
+        <h2>Retrieve ConnectWise ticket information into Slack channels and DMs</h2>
+        <a href="https://github.com/jundis/CWSlack-SlashCommands" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h3>
+<a id="integrating-connectwise-psa-and-slack-for-efficiency" class="anchor" href="#integrating-connectwise-psa-and-slack-for-efficiency" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Integrating ConnectWise PSA and Slack for efficiency.</h3>
+
+<p>The goal of this project is to fully integrate the ConnectWise software into Slack slash commands and incoming webhooks to make life as an MSP much easier. The ConnectWise main interface can be slow and bogged down through many pages, whereas the API has quick responses as long as you know what you're searching for.</p>
+
+<h3>
+<a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v1.7</h3>
+
+<ul>
+<li>Fixed multiple error issues</li>
+<li>Added note time to /t commands</li>
+<li>Added cwslack-configs.php</li>
+</ul>
+
+<p>The latest version of these scripts is available at the download links above, or you can visit the release page <a href="https://github.com/jundis/CWSlack-SlashCommands/releases">here</a>.</p>
+
+<h3>
+<a id="support" class="anchor" href="#support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support</h3>
+
+<p>Basic support for these script is provided through the GitHub <a href="https://github.com/jundis/CWSlack-SlashCommands/issues">issues page</a>. Please submit an issue for any question or error you're receiving and I'll reply as soon as possible. You can also reach me on <a href="https://www.reddit.com/message/compose?to=jundis&amp;subject=CWSlack%20Integration">reddit</a> for any private questions.</p>
+
+<h1>
+<a id="command-usage" class="anchor" href="#command-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Command Usage</h1>
+
+<p>* denotes required</p>
+
+<h2>
+<a id="cwslackphp" class="anchor" href="#cwslackphp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>cwslack.php</h2>
+
+<p>/t [ticket number]* [command] [option3]</p>
+
+<h3>
+<a id="status" class="anchor" href="#status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>status</h3>
+
+<p>option3 should be n2s/scheduled/completed</p>
+
+<h3>
+<a id="priority" class="anchor" href="#priority" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>priority</h3>
+
+<p>option3 should be low/moderate/critical</p>
+
+<h3>
+<a id="full-or-notes-or-all" class="anchor" href="#full-or-notes-or-all" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>full (or) notes (or) all</h3>
+
+<p>If $posttext=1 in config.php, shows you the latest note and the initial note. This displays to you only to avoid spam.</p>
+
+<h3>
+<a id="initial-or-note-or-first" class="anchor" href="#initial-or-note-or-first" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>initial (or) note (or) first</h3>
+
+<p>If $posttext=1 in config.php, shows you the initial note of the ticket. This displays to you only to avoid spam.</p>
+
+<h2>
+<a id="cwslack-activitiesphp" class="anchor" href="#cwslack-activitiesphp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>cwslack-activities.php</h2>
+
+<p>/act new*|[activity title]*|[assigned to]*</p>
+
+<p>All are required for activities. New will be replaced with more commands in the future.</p>
+
+<h2>
+<a id="cwslack-followphp" class="anchor" href="#cwslack-followphp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>cwslack-follow.php</h2>
+
+<p>/follow [ticket number]* (unfollow)</p>
+
+<p>Add unfollow to the end of the command to stop following a ticket.</p>
+
+<h2>
+<a id="cwslack-contactsphp" class="anchor" href="#cwslack-contactsphp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>cwslack-contacts.php</h2>
+
+<p>/contact [last name]* OR [first name] [last name]</p>
+
+<p>Either option works, but you cannot search by first name only.</p>
+
+<h2>
+<a id="cwslack-notesphp" class="anchor" href="#cwslack-notesphp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>cwslack-notes.php</h2>
+
+<p>/note [ticket number]* [internal OR external]* [ticket note]*</p>
+
+<p>This does allow spaces for the ticket note so do not wrap in quotation marks or anything.</p>
+
+<h2>
+<a id="cwslack-configsphp" class="anchor" href="#cwslack-configsphp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>cwslack-configs.php</h2>
+
+<p>/config [company name]*|[config name]* OR [config name]*</p>
+
+<p>Requires pipe symbol between the two, will return details on config that matches search.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/jundis/CWSlack-SlashCommands/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/jundis/CWSlack-SlashCommands/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/jundis/CWSlack-SlashCommands"></a> is maintained by <a href="https://github.com/jundis">jundis</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
