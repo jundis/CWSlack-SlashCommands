@@ -26,10 +26,10 @@ $apicompanyname = strtolower($companyname); //Company name all lower case for ap
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
 
 //Dates required for URL to function
-$datenow = gmdate("Y-m-d\TH:i", strtotime("-10 minutes"));
-$date2hours = gmdate("Y-m-d\TH:i", strtotime("+2 hours"));
+$datenow = gmdate("Y-m-d\TH:i", strtotime("-10 minutes")); //Date set to 10 minutes prior to now, to catch for tickets happening right now.
+$date2hours = gmdate("Y-m-d\TH:i", strtotime("+2 hours")); //Date set to 2 hours out so reminders up to 2 hours function.
 
-$url = $connectwise. "/v4_6_release/apis/3.0/schedule/entries?conditions=status/Name=%27Firm%27%20and%20dateStart%20%3E%20[" . $datenow . "]%20and%20dateStart%20%3C%20[". $date2hours . "]&orderBy=dateStart%20desc";
+$url = $connectwise. "/v4_6_release/apis/3.0/schedule/entries?conditions=status/Name=%27Firm%27%20and%20dateStart%20%3E%20[" . $datenow . "]%20and%20dateStart%20%3C%20[". $date2hours . "]&orderBy=dateStart%20desc"; //URL to access the schedule API
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
 
 
@@ -66,31 +66,32 @@ curl_close($ch);
 
 $dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
 
-foreach($dataTData as $entry)
+foreach($dataTData as $entry) //For each schedule entry returned
 {
-	$reminder = $entry->reminder->name;
-	$user = $entry->member->identifier;
-	$username = $entry->member->name;
-	$namearray = explode(" - ",$entry->name);
-	$companyarray = explode(" / ",$namearray[0]);
-	$company = $companyarray[0];
-	$summary = $namearray[1];
+	$reminder = $entry->reminder->name; //Set the reminder type
+	$user = $entry->member->identifier; //Set the user's ConnectWise username (e.g. jdoe)
+	$username = $entry->member->name; //Set the user's name (e.g. John Doe)
+	$namearray = explode(" - ",$entry->name); //Explode the summary field
+	$companyarray = explode(" / ",$namearray[0]); //Explode that into company/ticket number array.
+	$company = $companyarray[0]; //Set company to first part of second explode.
+	$summary = $namearray[1]; //Set the ticket summary to second part of first explode.
 	$datenow = date("Y-m-d\TH:i"); //Reusing datenow as non-GMT based time.
-	$datestart = date("Y-m-d\TH:i",strtotime($entry->dateStart));
+	$datestart = date("Y-m-d\TH:i",strtotime($entry->dateStart)); //Start time of the tickte.
 	
-	if($reminder != "0 minutes" && $posttousers == 1)
+	if($reminder != "0 minutes" && $posttousers == 1) //If reminder is not 0 minutes, proceed. Pointless to have 0 minute reminder as that is handled below.
 	{
-		$datereminder = date("Y-m-d\TH:i",strtotime($entry->dateStart . " -" . $reminder));
+		$datereminder = date("Y-m-d\TH:i",strtotime($entry->dateStart . " -" . $reminder)); //Set the reminder date to a readable comparable format.
 		
-		if($datenow==$datereminder)
+		if($datenow==$datereminder) //If datenow and datereminder are the same..
 		{
+		    //Setup the slack return text
 			$postfieldspre = array(
-				"channel"=>"@".$user,
+				"channel"=>"@".$user, //Send to user
 				"attachments"=>array(array(
-					"fallback" => "Firm with " . $company . " in " . $reminder . ".",
-					"title" => "<" . $ticketurl . $entry->objectId . "&companyName=" . $companyname . "|#" . $entry->objectId . ">: " . $summary,
-					"pretext" => "Firm starting in " . $reminder,
-					"text" =>  "You have a firm ticket with " . $company . " coming up. Please wrap up work on current ticket.",
+					"fallback" => "Firm with " . $company . " in " . $reminder . ".", //Notification, since there's only attachment and no text it will always use fallback.
+					"title" => "<" . $ticketurl . $entry->objectId . "&companyName=" . $companyname . "|#" . $entry->objectId . ">: " . $summary, //Title in bold
+					"pretext" => "Firm starting in " . $reminder, //Text before title.
+					"text" =>  "You have a firm ticket with " . $company . " coming up. Please wrap up work on current ticket.", //Reminder text.
 					"mrkdwn_in" => array(
 						"text",
 						"pretext"
@@ -100,6 +101,7 @@ foreach($dataTData as $entry)
 			$ch = curl_init();
 			$postfields = json_encode($postfieldspre);
 
+            //Creating array for Slack post.
 			$curlOpts = array(
 				CURLOPT_URL => $webhookurl,
 				CURLOPT_RETURNTRANSFER => true,
@@ -120,9 +122,9 @@ foreach($dataTData as $entry)
 		}
 	}
 	
-	if($datenow == $datestart)
+	if($datenow == $datestart) //If the start of the ticket is right now..
 	{
-		if($posttousers==1)
+		if($posttousers==1) //And user post is on.
 		{
 			$postfieldspre = array(
 				"channel"=>"@".$user,
@@ -158,10 +160,10 @@ foreach($dataTData as $entry)
 			}
 			curl_close($ch);
 		}
-		if($posttochan==1)
+		if($posttochan==1) //If channel post is on
 		{
 			$postfieldspre = array(
-				"channel"=>$timechan,
+				"channel"=>$timechan, //Post to channel set in config.php
 				"attachments"=>array(array(
 					"fallback" => "Firm for " . $username . " with " . $company . " now.",
 					"title" => "<" . $ticketurl . $entry->objectId . "&companyName=" . $companyname . "|#" . $entry->objectId . ">: " . $summary,
