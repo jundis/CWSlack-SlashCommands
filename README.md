@@ -103,8 +103,20 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 8. Change the $postupdated and $postadded to what you prefer. Enabling $postupdated can get spammy.
 9. Test it in Slack by creating a new ticket on the board you selected in step 6!
 
+## cwslack-firmalerts.php
 
-## cwslack-follow.php (Also requires cwslack-incoming.php to function)
+**(Requires some variables from cwslack-incoming.php to function if you don't use that)**
+
+1. Download the cwslack-firmalerts.php file and config.php file.
+2. Place on a compatible web server.
+3. Change $posttousers or $posttochan to 0 in config.php if you don't want it posting to one or the other.
+4. Setup a cron job or scheduled task on your server to run this PHP file **every minute.**  
+   ```Cron: * * * * * /usr/bin/php /var/www/cwslack-firmalerts.php >/dev/null 2>&1```
+5. Set a firm appointment and test
+
+## cwslack-follow.php
+
+**(Also requires cwslack-incoming.php to function)**
 
 1. Download the cwslack-follow.php file and config.php file.
 2. Place on a compatible web server
@@ -148,9 +160,11 @@ To enable ConnectWise link to follow and unfollow a ticket:
 \- Minus denotes required for cwslack-incoming.php  
 \# Pound denotes required for cwslack-follow.php  
 \& Ampersand denotes required for cwslack-contacts.php  
-\^ Caret denotes required for cwslack-notes.php
-\% Percent denotes required for cwslack-notes.php
+\^ Caret denotes required for cwslack-notes.php  
+\% Percent denotes required for cwslack-notes.php  
+\= Equals denotes required for cwslack-firmalerts.php
 
+####All
 * $connectwise * : This value needs to be set to your main ConnectWise URL.
   * Users of Hosted ConnectWise will need to use https://api-na.myconnectwise.net, https://api-eu.myconnectwise.net or https://api-au.myconnectwise.net
 * $companyname * : This value needs to be set to whatever your company name is that you use to login to ConnectWise.
@@ -159,11 +173,11 @@ To enable ConnectWise link to follow and unfollow a ticket:
 * $slacktoken * : Set to the token you got when creating a new slash command integration in Slack.
 * $timezone * : Set to your timezone according to http://php.net/manual/en/timezones.america.php .
 
-
+####Activities
 * $slackactivitiestoken + : Set to the token you got when creating a new slash command integration in Slack for /activities.
 
-
-* $webhookurl - : Set to the incoming web hook URL you got when creating a new incoming web hook in Slack.
+####Incoming
+* $webhookurl -/= : Set to the incoming web hook URL you got when creating a new incoming web hook in Slack.
 * $postadded - : Set to 1 if you want it to post new tickets to chat.
 * $postupdated - : Set to 1 if you want it to post new ticket updates to chat.
 * $allowzadmin - : Set to 1 if you want posts from zAdmin to go to chat. Set to 0 by default to avoid spam in high volume environments.
@@ -171,23 +185,32 @@ To enable ConnectWise link to follow and unfollow a ticket:
 * $badstatus : Set this if you have a status you want to ignore, set to Closed by default as tickets are rarely automatically closed.
 * $badcompany : Set this if you have a company you want to ignore, set to CatchAll by default to avoid spam from unknown incoming e-mails.
 * $posttext : Set this to 1 if you want to include the latest note with the Slack message. Set to 1 by default now.
+* $timeenabled : Set to 1 if you want to post all tickets past $timepast to a specific channel, $timechan
+* $timepast : Set to a time in hours where once reached all updates will post to #dispatch.
+* $timechan = : Set to a channel to post to for $timeenabled
 
+####FirmAlerts
+* $posttousers = : When set, will post to the user whenever the appointment reminder is reached.
+* $posttochan = : When set, will post to $timechan whenever the firm appointment starts.
 
+####Follow
 * $slackfollowtoken # : Set to the token you got when creating a new slash command integration in Slack for /follow.
 * $followenabled # : Defaults to 0, you need to change this to 1 if you want to enable follow.
 * $dir # : Directory on the server to store files. Please note that the user running php (www-data in Linux) needs write/read access to this folder.
 * $followtoken : Change to any value and use this in the ConnectWise link tables.
 * $unfollowtoken : Change to any value and use this in the ConnectWise link tables.
 
-
+####Contacts
 * $slackcontactstoken & : Set to the token you got when creating a new slash command integration in Slack for /contact.
 
-
+####Notes
 * $slacknotestoken ^ : Set to the token you got when creating a new slash command integration in Slack for /notes.
 * $usecwname ^ : If set to 0 which is default, notes are posted as user that is attached to API key. If set to 1, then it will post as the correct CW user but all names in Slack must be the same as in CW.
 
+####Configs
 * $slackconfigstoken % : Set to the token you got when creating a new slash command integration in Slack for /config.
 
+####General
 * $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
 
 
