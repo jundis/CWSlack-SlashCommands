@@ -34,13 +34,19 @@
 <p>The goal of this project is to fully integrate the ConnectWise software into Slack slash commands and incoming webhooks to make life as an MSP much easier. The ConnectWise main interface can be slow and bogged down through many pages, whereas the API has quick responses as long as you know what you're searching for.</p>
 
 <h3>
-<a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v1.7</h3>
+<a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v1.8</h3>
 
 <ul>
-<li>Fixed multiple error issues</li>
-<li>Added note time to /t commands</li>
-<li>Added cwslack-configs.php</li>
+<li><strong>Contacts module</strong>: #30 / #32 bug fix, now returns company phone number only if they have no contact info themselves.</li>
+<li><strong>Configs module</strong>: Include link to configuration.</li>
+<li><strong>Configs module</strong>: Now only searches active configurations </li>
+<li><strong>Configs module</strong>: Now accepts just a configuration name in addition to previously used company|config</li>
+<li><strong>Incoming module</strong>: Per suggestion #35, now allows for posting to a specific channel when an hour threshold (default 1 hour) is reached on any ticket. </li>
+<li><strong>Incoming module</strong>: Per suggestion #36, now includes company name in notifications. Thanks @damiankw </li>
+<li><strong>FirmAlerts module</strong>: Per suggestion #39, new module which will send a notification to users when their schedule entries marked firm hit the reminder threshold set on the entry, as well as notify both the user and a specified channel (controlled by $timechan) when the firm appointment is to start. Requires users name in ConnectWise be the same as in Slack, just like the /note module.</li>
 </ul>
+
+
 
 <p>The latest version of these scripts is available at the download links above, or you can visit the release page <a href="https://github.com/jundis/CWSlack-SlashCommands/releases">here</a>.</p>
 
