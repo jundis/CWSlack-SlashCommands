@@ -129,37 +129,42 @@ if ($dataCData->phoneNumber != NULL && $dataCData->phoneNumber != NULL)
     $cphone = preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $dataCData->phoneNumber);
 }
 
-$site=$dataTData[0]->site;
-$siteurl=$site->_info;
-//Company phone #
-$ch = curl_init(); //Initiate a curl session_cache_expire
 
-//Create curl array to set the API url, headers, and necessary flags.
-$curlOpts = array(
-    CURLOPT_URL => $siteurl->site_href,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => $header_data,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HEADER => 1,
-);
-curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
-
-$answerSData = curl_exec($ch); //Set $answerTData to the curl response to the API.
-$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-$curlBodySData = substr($answerSData, $headerLen); //Remove header data from the curl string.
-
-// If there was an error, show it
-if (curl_error($ch)) {
-    die(curl_error($ch));
-}
-curl_close($ch);
-
-$dataSData = json_decode($curlBodySData); //Decode the JSON returned by the CW API.
 $sphone = NULL; // Just in case.
 
-if ($dataSData->phoneNumber != NULL && $dataSData->phoneNumber != NULL)
-{
-    $sphone = preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $dataSData->phoneNumber);
+if($dataTData[0]->site!=NULL) {
+    $site = $dataTData[0]->site;
+
+    $siteurl = $site->_info;
+    //Company phone #
+    $ch = curl_init(); //Initiate a curl session_cache_expire
+
+    //Create curl array to set the API url, headers, and necessary flags.
+    $curlOpts = array(
+        CURLOPT_URL => $siteurl->site_href,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => $header_data,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HEADER => 1,
+    );
+    curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
+
+    $answerSData = curl_exec($ch); //Set $answerTData to the curl response to the API.
+    $headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
+    $curlBodySData = substr($answerSData, $headerLen); //Remove header data from the curl string.
+
+    // If there was an error, show it
+    if (curl_error($ch)) {
+        die(curl_error($ch));
+    }
+    curl_close($ch);
+
+    $dataSData = json_decode($curlBodySData); //Decode the JSON returned by the CW API.
+
+    if ($dataSData->phoneNumber != NULL && $dataSData->phoneNumber != NULL)
+    {
+        $sphone = preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $dataSData->phoneNumber);
+    }
 }
 
 $text="No contact info found."; //Set catch error "just in case"
