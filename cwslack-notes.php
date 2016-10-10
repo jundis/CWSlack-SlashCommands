@@ -96,6 +96,17 @@ else if ($command == "external")//If second part of text is external
         $postfieldspre = array("detailDescriptionFlag" => "True", "text" => $sentence);
     }
 }
+else if ($command == "externalemail" || $command == "emailexternal")//If second part of text is external
+{
+    if($usecwname==1)
+    {
+        $postfieldspre = array("detailDescriptionFlag" => "True", "processNotifications" => "True", "member"=>array("identifier"=>$_GET['user_name']), "text" => $sentence);
+    }
+    else
+    {
+        $postfieldspre = array("detailDescriptionFlag" => "True", "processNotifications" => "True", "text" => $sentence);
+    }
+}
 else //If second part of text is neither external or internal
 {
     die("Second part of text must be either internal or external."); //Return error text.
