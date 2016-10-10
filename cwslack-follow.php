@@ -24,8 +24,8 @@ require_once 'config.php';
 $link=0;
 
 if(empty($_GET['method']) || ($_GET['method'] != $followtoken && $_GET['method'] != $unfollowtoken)){
-	if(empty($_GET['token']) || $_GET['token'] != $slackfollowtoken) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-	if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
+	if(empty($_GET['token']) || $_GET['token'] != $slackfollowtoken) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+	if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 	
 	$exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 } else {
@@ -84,7 +84,7 @@ else
 	}
 	else
 	{
-		die; //If matches neither token, die.
+		die("Method does not match follow or unfollow tokens."); //If matches neither token, die.
 	}
 }
 

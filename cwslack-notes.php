@@ -22,8 +22,8 @@ ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
 require_once 'config.php';
 
-if(empty($_GET['token']) || ($_GET['token'] != $slacknotestoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
+if(empty($_GET['token']) || ($_GET['token'] != $slacknotestoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 
 $apicompanyname = strtolower($companyname); //Company name all lower case for api auth.
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
@@ -98,8 +98,7 @@ else if ($command == "external")//If second part of text is external
 }
 else //If second part of text is neither external or internal
 {
-    echo "Second part of text must be either internal or external."; //Return error text.
-    die; //Kill connection.
+    die("Second part of text must be either internal or external."); //Return error text.
 }
 $postfields = json_encode($postfieldspre); //Format the array as JSON
 //Same as previous curl arrays
@@ -128,8 +127,7 @@ if(array_key_exists("errors",$dataTNotes)) //If connectwise returned an error.
 {
     $errors = $dataTNotes->errors; //Make array easier to access.
 
-    echo "ConnectWise Error: " . $errors[0]->message; //Return CW error
-    die; //Kill connection
+    die("ConnectWise Error: " . $errors[0]->message); //Return CW error
 }
 else //No error
 {

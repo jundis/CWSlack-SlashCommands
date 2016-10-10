@@ -22,8 +22,8 @@ ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
 require_once 'config.php';
 
-if(empty($_GET['token']) || ($_GET['token'] != $slackcontactstoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
+if(empty($_GET['token']) || ($_GET['token'] != $slackcontactstoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 
 $apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
@@ -91,8 +91,7 @@ $dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW A
 
 if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 {
-	echo "No contact found or your API URL is incorrect."; //Return error.
-	die; //Kill the connection.
+	die("No contact found or your API URL is incorrect."); //Kill the connection.
 }
 
 $return="Nothing!"; //Create return value and set to a basic message just in case.

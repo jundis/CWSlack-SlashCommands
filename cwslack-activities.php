@@ -25,8 +25,8 @@ require_once 'config.php';
 $apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
 
-if(empty($_GET['token']) || ($_GET['token'] != $slackactivitiestoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
+if(empty($_GET['token']) || ($_GET['token'] != $slackactivitiestoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 $exploded = explode("|",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
 //Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.

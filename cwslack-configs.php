@@ -22,8 +22,8 @@ ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
 require_once 'config.php';
 
-if(empty($_GET['token']) || ($_GET['token'] != $slackconfigstoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
+if(empty($_GET['token']) || ($_GET['token'] != $slackconfigstoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 
 $apicompanyname = strtolower($companyname); //Company name all lower case for api auth.
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
@@ -54,7 +54,7 @@ else //If 2 parts don't exist
 }
 
 
-$url = str_replace(' ', '%20', $url);; //Encode URL to prevent errors with spaces.
+$url = str_replace(' ', '%20', $url); //Encode URL to prevent errors with spaces.
 
 $utc = time(); //Get the time.
 // Authorization array. Auto encodes API key for auhtorization above.
@@ -97,13 +97,11 @@ if(array_key_exists("errors",$dataTData)) //If connectwise returned an error.
 {
     $errors = $dataTData->errors; //Make array easier to access.
 
-    echo "ConnectWise Error: " . $errors[0]->message; //Return CW error
-    die; //Kill connection
+    die("ConnectWise Error: " . $errors[0]->message); //Return CW error
 }
 if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 {
-    echo "No configuration found."; //Return error.
-    die; //Kill the connection.
+    die("No configuration found."); //Return error.
 }
 
 $return="Nothing!"; //Create return value and set to a basic message just in case.

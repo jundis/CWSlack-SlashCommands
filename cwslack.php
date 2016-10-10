@@ -26,8 +26,8 @@ require_once 'config.php';
 $apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
 
-if(empty($_GET['token']) || ($_GET['token'] != $slacktoken)) die; //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die; //If there is no text added, kill the connection.
+if(empty($_GET['token']) || ($_GET['token'] != $slacktoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 $exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
 //This section checks if the ticket number is not equal to 6 digits (our tickets are in the hundreds of thousands but not near a million yet) and kills the connection if it's not.
@@ -113,8 +113,7 @@ $dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW A
 
 if($dataTData==NULL) 
 {
-	echo "Array not returned in line 195. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata;
-	die;
+	die("Array not returned in line 195. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata);
 }
 if(array_key_exists("code",$dataTData)) { //Check if array contains error code
 	if($dataTData->code == "NotFound") { //If error code is NotFound
