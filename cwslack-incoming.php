@@ -290,7 +290,7 @@ if($followenabled==1)
 					$postfieldspre = array(
 						"channel" => "@" . $username,
 						"attachments" => array(array(
-							"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+							"fallback" => (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) ." created #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 							"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
 							"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -307,7 +307,7 @@ if($followenabled==1)
 					$postfieldspre = array(
 						"channel" => "@" . $username,
 						"attachments" => array(array(
-							"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+							"fallback" => (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) ." created #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 							"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
 							"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -335,7 +335,7 @@ if($followenabled==1)
 					$postfieldspre = array(
 						"channel" => "@" . $username,
 						"attachments" => array(array(
-							"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+							"fallback" => $info->UpdatedBy . " updated #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 							"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
 							"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -351,7 +351,7 @@ if($followenabled==1)
 					$postfieldspre = array(
 						"channel" => "@" . $username,
 						"attachments" => array(array(
-							"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+							"fallback" => $info->UpdatedBy . " updated #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 							"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 							"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
 							"text" => $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -410,7 +410,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 			$postfieldspre = array(
 				"channel"=>$timechan,
 				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+					"fallback" => (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) ." created #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 					"color" => "#F0E68C",
 					"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
@@ -430,7 +430,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 			$postfieldspre = array(
 				"channel"=>$timechan,
 				"attachments"=>array(array(
-					"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+					"fallback" => (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) ." created #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 					"color" => "#F0E68C",
 					"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
@@ -461,7 +461,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 			$postfieldspre = array(
 				"channel" => $timechan,
 				"attachments" => array(array(
-					"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+					"fallback" => $info->UpdatedBy . " updated #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 					"color" => "#F0E68C",
 					"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
@@ -478,7 +478,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 			$postfieldspre = array(
 				"channel" => $timechan,
 				"attachments" => array(array(
-					"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+					"fallback" => $info->UpdatedBy . " updated #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 					"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: " . $info->Summary,
 					"color" => "#F0E68C",
 					"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
