@@ -140,7 +140,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 	{
 		$postfieldspre = array(
 			"attachments"=>array(array(
-				"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+				"fallback" => (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) ." created #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 				"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
 				"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -158,7 +158,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 	{
 		$postfieldspre = array(
 			"attachments"=>array(array(
-				"fallback" => "New ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+				"fallback" => (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) ." created #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 				"pretext" => "Ticket #" . $ticket . " has been created by " . (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) . ".",
 				"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -188,7 +188,7 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 	{
 		$postfieldspre = array(
 			"attachments"=>array(array(
-				"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+				"fallback" => $info->UpdatedBy . " updated #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 				"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
 				"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
@@ -205,7 +205,7 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 	{
 		$postfieldspre = array(
 		"attachments"=>array(array(
-			"fallback" => "Updated ticket #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+			"fallback" => $info->UpdatedBy . " updated #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 			"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
 			"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
 			"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
