@@ -258,9 +258,9 @@ Either option works, but you cannot search by first name only.
 
 ## cwslack-notes.php
 
-/note [ticket number]* [internal OR external]* [ticket note]*
+/note [ticket number]* [internal OR external OR externalemail]* [ticket note]*
 
-This does allow spaces for the ticket note so do not wrap in quotation marks or anything.
+This does allow spaces for the ticket note so do not wrap in quotation marks or anything. Using "externalemail" as the option will trigger notifications according to boxes checked on ticket "Send Notes as Email"
 
 ## cwslack-configs.php
 
