@@ -31,7 +31,7 @@ $info = json_decode(stripslashes($data->Entity)); //Decode the entity field whic
 //Connection kill blocks. Stops things from running if certain conditions are met.
 if(empty($_GET['id']) || empty($_GET['action']) || empty($info)) die; //If anything we need doesn't exist, kill connection.
 
-if($_GET['srDetailRecId']==0 && $_GET['timeRecId']==0) die; //Kill connection if the update is not a note, and is something like a status change. This will prevent duplicate entries.
+if($_GET['action'] == "updated" && $_GET['srDetailRecId']==0 && $_GET['timeRecId']==0) die; //Kill connection if the update is not a note, and is something like a status change. This will prevent duplicate entries.
 if(strtolower($_GET['memberId'])=="zadmin" && $allowzadmin == 0) die; //Die if $allowzadmin is not enabled.
 
 $badboards = explode("|",$badboard); //Explode with pipe seperator.
@@ -86,52 +86,61 @@ if($posttext==1) //Block for curl to get latest note
 
 	// If there was an error, show it
 	if (curl_error($ch1)) {
-		die(curl_error($ch1));
+		$posttext=0; //Sets $posttext to 0 if error ocurred.
 	}
 	curl_close($ch1);
 
 	$dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
 	//End ticket note block.
-	
-	//Block for cURL connections to Time Entries API
-	$ch2 = curl_init(); //Initiate a curl session
 
-	//Create curl array to set the API url, headers, and necessary flags.
-	$curlOpts2 = array(
-		CURLOPT_URL => $timeurl,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_HTTPHEADER => $header_data,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_HEADER => 1,
-	);
-	curl_setopt_array($ch2, $curlOpts2); //Set the curl array to $curlOpts
-
-	$answerTimeData = curl_exec($ch2); //Set $answerTData to the curl response to the API.
-	$headerLen = curl_getinfo($ch2, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-	$curlBodyTimeData = substr($answerTimeData, $headerLen); //Remove header data from the curl string.
-
-	// If there was an error, show it
-	if (curl_error($ch2)) {
-		die(curl_error($ch2));
-	}
-	curl_close($ch2);
-
-	$dataTimeData = json_decode($curlBodyTimeData); //Decode the JSON returned by the CW API.
-	//End time entry block.
-	
-	$createdby = $dataTData[0]->createdBy; //Set $createdby to the ticket note creator.
-	$text = $dataTData[0]->text; //Set $text to the ticket text.
-	if(array_key_exists(0,$dataTData) && array_key_exists(0,$dataTimeData)) //Check if arrays exist properly.
+	if($posttext==1) //Verifies no curl error occurred. If one has, ignore $posttext.
 	{
-		$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
-		$notetime = new DateTime($dataTData[0]->dateCreated); //Create new datetime object based on ticketnote note.
-		
-		if($timetime>$notetime) //If the time entry is newer than latest ticket note.
-		{
-			$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
-			$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
+		//Block for cURL connections to Time Entries API
+		$ch2 = curl_init(); //Initiate a curl session
+
+		//Create curl array to set the API url, headers, and necessary flags.
+		$curlOpts2 = array(
+			CURLOPT_URL => $timeurl,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER => $header_data,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HEADER => 1,
+		);
+		curl_setopt_array($ch2, $curlOpts2); //Set the curl array to $curlOpts
+
+		$answerTimeData = curl_exec($ch2); //Set $answerTData to the curl response to the API.
+		$headerLen = curl_getinfo($ch2, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
+		$curlBodyTimeData = substr($answerTimeData, $headerLen); //Remove header data from the curl string.
+
+		// If there was an error, show it
+		if (curl_error($ch2)) {
+			$posttext=0;
 		}
-	}
+		curl_close($ch2);
+		$dataTimeData = json_decode($curlBodyTimeData); //Decode the JSON returned by the CW API.
+		//End time entry block.
+
+		if($posttext==1 && ($dataTData[0]->text != NULL || $dataTimeData[0]->text != NULL)) //Verified no curl error occurred as well as makes sure that if both text values == null, then there is no text to post.
+		{
+			$createdby = $dataTData[0]->createdBy; //Set $createdby to the ticket note creator.
+			$text = $dataTData[0]->text; //Set $text to the ticket text.
+			if (array_key_exists(0, $dataTData) && array_key_exists(0, $dataTimeData)) //Check if arrays exist properly.
+			{
+				$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
+				$notetime = new DateTime($dataTData[0]->dateCreated); //Create new datetime object based on ticketnote note.
+
+				if ($timetime > $notetime) //If the time entry is newer than latest ticket note.
+				{
+					$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
+					$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
+				}
+			}
+		}
+		else
+		{
+			$posttext=0; //If text is null, ensure posttext = 0.
+		}
+}
 }
 
 if($_GET['action'] == "added" && $postadded == 1)
