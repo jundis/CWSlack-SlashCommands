@@ -53,7 +53,7 @@ $posttext = 1; //Set to 1 if you want it to post the latest note from the ticket
 $postcompany = 1; //Set to 1 if you want the Company to be posted in the clear text of the post (general what will be seen on IRC/XMPP)
 $timeenabled = 0; //Set to 1 if you want to post all tickets past $timepast to a specific channel, $timechan
 $timepast = 1.0; //Set to a time in hours where once reached all updates will post to #dispatch.
-$timechan = "#dispatch"; //Set to a channel to post to for $timeenabled
+$timechan = "#ticketstime"; //Set to a channel to post to for $timeenabled
 //"Bad" variables to block certain things from coming through in cwslack-incoming.php. Separate by a pipe symbol | to have multiple.
 $badboard = "Alerts"; //Set to any board name you want to fail, to avoid ticket creation/updates from this board posting to Slack.
 $badstatus = "Closed|Canceled"; //Set to any status name you want to fail, to avoid ticket creation/updates with this status from posting to Slack.
@@ -63,6 +63,8 @@ $badcompany = "CatchAll (for email connector)"; //Set to any company name you wa
 //This uses the variables $webhookurl and $timechan from cwslack-incoming.php above.
 $posttousers = 1; //When set, will post to the user whenever the appointment reminder is reached.
 $posttochan = 1; //When set, will post to $timechan whenever the firm appointment starts.
+$usetimechan = 1; //When set, this will use the $timechan variable instead of the one below.
+$firmalertchan = "#dispatch"; //When you want to split time alerts and firm alerts into their own channels.
 
 //cwslack-follow.php
 $slackfollowtoken = "Slack Token Here"; //Set your token for the follow slash command

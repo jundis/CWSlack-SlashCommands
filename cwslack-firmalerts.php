@@ -162,19 +162,38 @@ foreach($dataTData as $entry) //For each schedule entry returned
 		}
 		if($posttochan==1) //If channel post is on
 		{
-			$postfieldspre = array(
-				"channel"=>$timechan, //Post to channel set in config.php
-				"attachments"=>array(array(
-					"fallback" => "Firm for " . $username . " with " . $company . " now.",
-					"title" => "<" . $ticketurl . $entry->objectId . "&companyName=" . $companyname . "|#" . $entry->objectId . ">: " . $summary,
-					"pretext" => $username . " has a firm starting now.",
-					"text" =>  "Please remind the technician of this appointment with " . $company . ". They should be on the phone with them or calling them shortly.",
-					"mrkdwn_in" => array(
-						"text",
-						"pretext"
-						)
-					))
-				);
+		    if($usetimechan==1)
+            {
+                $postfieldspre = array(
+                    "channel"=>$timechan, //Post to channel set in config.php
+                    "attachments"=>array(array(
+                        "fallback" => "Firm for " . $username . " with " . $company . " now.",
+                        "title" => "<" . $ticketurl . $entry->objectId . "&companyName=" . $companyname . "|#" . $entry->objectId . ">: " . $summary,
+                        "pretext" => $username . " has a firm starting now.",
+                        "text" =>  "Please remind the technician of this appointment with " . $company . ". They should be on the phone with them or calling them shortly.",
+                        "mrkdwn_in" => array(
+                            "text",
+                            "pretext"
+                        )
+                    ))
+                );
+            }
+			else
+            {
+                $postfieldspre = array(
+                    "channel"=>$firmalertchan, //Post to channel set in config.php
+                    "attachments"=>array(array(
+                        "fallback" => "Firm for " . $username . " with " . $company . " now.",
+                        "title" => "<" . $ticketurl . $entry->objectId . "&companyName=" . $companyname . "|#" . $entry->objectId . ">: " . $summary,
+                        "pretext" => $username . " has a firm starting now.",
+                        "text" =>  "Please remind the technician of this appointment with " . $company . ". They should be on the phone with them or calling them shortly.",
+                        "mrkdwn_in" => array(
+                            "text",
+                            "pretext"
+                        )
+                    ))
+                );
+            }
 			$ch = curl_init();
 			$postfields = json_encode($postfieldspre);
 
