@@ -34,16 +34,16 @@
 <p>The goal of this project is to fully integrate the ConnectWise software into Slack slash commands and incoming webhooks to make life as an MSP much easier. The ConnectWise main interface can be slow and bogged down through many pages, whereas the API has quick responses as long as you know what you're searching for.</p>
 
 <h3>
-<a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v1.8</h3>
+<a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v1.9</h3>
 
 <ul>
-<li><strong>Contacts module</strong>: #30 / #32 bug fix, now returns company phone number only if they have no contact info themselves.</li>
-<li><strong>Configs module</strong>: Include link to configuration.</li>
-<li><strong>Configs module</strong>: Now only searches active configurations </li>
-<li><strong>Configs module</strong>: Now accepts just a configuration name in addition to previously used company|config</li>
-<li><strong>Incoming module</strong>: Per suggestion #35, now allows for posting to a specific channel when an hour threshold (default 1 hour) is reached on any ticket. </li>
-<li><strong>Incoming module</strong>: Per suggestion #36, now includes company name in notifications. Thanks @damiankw </li>
-<li><strong>FirmAlerts module</strong>: Per suggestion #39, new module which will send a notification to users when their schedule entries marked firm hit the reminder threshold set on the entry, as well as notify both the user and a specified channel (controlled by $timechan) when the firm appointment is to start. Requires users name in ConnectWise be the same as in Slack, just like the /note module.</li>
+<li><strong>All Modules</strong>: Better error text. Instead of just killing the connection with die(), it will provide an error message on why it's doing this.</li>
+<li><strong>Contacts</strong>: Fixed a null error for contacts without a site attached for issue #44 </li>
+<li><strong>Documentation</strong>: Typo fixes, pull #42. Thanks @damiankw!</li>
+<li><strong>Incoming</strong>: Added extra data to incoming notifications so it now displays the user who made/updated the ticket, instead of just saying "New Ticket" or "Updated Ticket". This will apply to followed tickets, time alerts, and normal incoming tickets.</li>
+<li><strong>Incoming</strong>: Fixed issue where tickets created without any internal or external note would not post to Slack when $posttext was set to 1, per issue #48.</li>
+<li><strong>FirmAlerts</strong>: Added a variable ($usetimechan) so you can choose to set the channel for firm alerts to be different than those of the time alerts. Default to 1. Per suggestion #49.</li>
+<li><strong>Notes</strong>: Added the "externalemail" option, which allows the note you are posting to process e-mails according to what is the default e-mail targets on that ticket.</li>
 </ul>
 
 
