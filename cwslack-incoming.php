@@ -61,6 +61,8 @@ $skip = 0; //Create variable to skip posting to Slack channel while also allowin
 $date=strtotime($info->EnteredDateUTC); //Convert date entered JSON result to time.
 $dateformat=date('m-d-Y g:i:sa',$date); //Convert previously converted time to a better time string.
 $ticket=$_GET['id'];
+$usetime = 0; //For posttext internal vs external flag.
+$dataarray = NULL; //For internal vs external flag.
 
 if($posttext==1) //Block for curl to get latest note
 {
@@ -132,7 +134,8 @@ if($posttext==1) //Block for curl to get latest note
 				if ($timetime > $notetime) //If the time entry is newer than latest ticket note.
 				{
 					$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
-					$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
+					$text = $dataTimeData[0]->notes; //
+					$usetime = 1; //Set time flag.
 				}
 			}
 		}
@@ -140,7 +143,16 @@ if($posttext==1) //Block for curl to get latest note
 		{
 			$posttext=0; //If text is null, ensure posttext = 0.
 		}
-}
+
+		if ($usetime == 1)
+		{
+			$dataarray = $dataTimeData[0];
+		}
+		else
+		{
+			$dataarray = $dataTData[0];
+		}
+	}
 }
 
 if($_GET['action'] == "added" && $postadded == 1)
@@ -180,7 +192,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 					)
 				),
 				array(
-					"pretext" => "Latest Note from: " . $createdby,
+					"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
 					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
@@ -226,7 +238,7 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 				)
 			),
 			array(
-				"pretext" => "Latest Note from: " . $createdby,
+				"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
 				"text" =>  $text,
 				"mrkdwn_in" => array(
 					"text",
@@ -329,7 +341,7 @@ if($followenabled==1)
 							)
 						),
 							array(
-								"pretext" => "Latest Note from: " . $createdby,
+								"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
 								"text" => $text,
 								"mrkdwn_in" => array(
 									"text",
@@ -372,7 +384,7 @@ if($followenabled==1)
 							)
 						),
 							array(
-								"pretext" => "Latest Note from: " . $createdby,
+								"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
 								"text" => $text,
 								"mrkdwn_in" => array(
 									"text",
@@ -453,7 +465,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 					)
 				),
 					array(
-						"pretext" => "Latest Note from: " . $createdby,
+						"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
 						"text" =>  $text,
 						"mrkdwn_in" => array(
 							"text",
@@ -500,7 +512,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 					)
 				),
 					array(
-						"pretext" => "Latest Note from: " . $createdby,
+						"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
 						"text" => $text,
 						"mrkdwn_in" => array(
 							"text",
