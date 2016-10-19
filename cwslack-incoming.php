@@ -63,6 +63,7 @@ $dateformat=date('m-d-Y g:i:sa',$date); //Convert previously converted time to a
 $ticket=$_GET['id'];
 $usetime = 0; //For posttext internal vs external flag.
 $dataarray = NULL; //For internal vs external flag.
+$dateformat = "None"; //Just in case!
 
 if($posttext==1) //Block for curl to get latest note
 {
@@ -147,11 +148,16 @@ if($posttext==1) //Block for curl to get latest note
 		if ($usetime == 1)
 		{
 			$dataarray = $dataTimeData[0];
+			$notedate = $dataTimeData[0]->dateEntered;
+			$dateformat2=date('m-d-Y g:i:sa',strtotime($notedate));
 		}
 		else
 		{
 			$dataarray = $dataTData[0];
+			$notedate = $dataTData[0]->dateCreated;
+			$dateformat2=date('m-d-Y g:i:sa',strtotime($notedate));
 		}
+
 	}
 }
 
@@ -192,7 +198,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 					)
 				),
 				array(
-					"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
+					"pretext" => "Latest " . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . " Note (" . $dateformat2 . ") from: " . $createdby,
 					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
@@ -238,7 +244,7 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 				)
 			),
 			array(
-				"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
+				"pretext" => "Latest " . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . " Note (" . $dateformat2 . ") from: " . $createdby,
 				"text" =>  $text,
 				"mrkdwn_in" => array(
 					"text",
@@ -341,7 +347,7 @@ if($followenabled==1)
 							)
 						),
 							array(
-								"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
+								"pretext" => "Latest " . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . " Note (" . $dateformat2 . ") from: " . $createdby,
 								"text" => $text,
 								"mrkdwn_in" => array(
 									"text",
@@ -384,7 +390,7 @@ if($followenabled==1)
 							)
 						),
 							array(
-								"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
+								"pretext" => "Latest " . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . " Note (" . $dateformat2 . ") from: " . $createdby,
 								"text" => $text,
 								"mrkdwn_in" => array(
 									"text",
@@ -465,7 +471,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 					)
 				),
 					array(
-						"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
+						"pretext" => "Latest " . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . " Note (" . $dateformat2 . ") from: " . $createdby,
 						"text" =>  $text,
 						"mrkdwn_in" => array(
 							"text",
@@ -512,7 +518,7 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 					)
 				),
 					array(
-						"pretext" => "Latest (" . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . ") Note from: " . $createdby,
+						"pretext" => "Latest " . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . " Note (" . $dateformat2 . ") from: " . $createdby,
 						"text" => $text,
 						"mrkdwn_in" => array(
 							"text",
