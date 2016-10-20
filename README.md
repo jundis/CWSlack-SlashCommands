@@ -25,8 +25,8 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 1. Download the respective php file, functions.php, and config.php files.
 2. Place on a compatible web server
 3. Create a new slack slash command integration at https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
-4. Set command to /t (or other if you prefer)
-5. Set the URL to https://domain.tld/cwslack.php
+4. Set command to reflect the task necessary. E.x. /t for tickets, /act for activities, /note for notes.
+5. Set the URL to https://domain.tld/cwslack.php (or other php file)
 6. Set Method to GET
 7. Copy the token
 8. Set a name, icon, and auto complete text if wanted.
