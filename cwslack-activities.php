@@ -60,33 +60,12 @@ if (array_key_exists(0,$exploded)) //If a string exists in the slash command arr
 //Need to create array before hand to ensure no errors occur.
 $dataResponse = array();
 
-if($command=="new") { 
-$ch = curl_init();
-
-$postfieldspre = array("name"=>$exploded[1],"status"=>array("id"=>1),"assignTo"=>array("identifier"=>$exploded[2])); //Command array to post activity
-$postfields = json_encode($postfieldspre); //Format the array as JSON
-
-$curlOpts = array(
-	CURLOPT_URL => $urlactivities,
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_HTTPHEADER => $header_data2,
-	CURLOPT_FOLLOWLOCATION => true,
-	CURLOPT_CUSTOMREQUEST => "POST",
-	CURLOPT_POSTFIELDS => $postfields,
-	CURLOPT_POST => 1,
-	CURLOPT_HEADER => 1,
-);
-curl_setopt_array($ch, $curlOpts);
-
-$answerResponse = curl_exec($ch);
-$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE); 
-$curlResponse = substr($answerResponse, $headerLen);
-// If there was an error, show it
-if (curl_error($ch)) {
-	die(curl_error($ch));
-}
-curl_close($ch);
-$dataResponse = json_decode($curlResponse);
+if($command=="new") {
+    $dataResponse = cURLPost(
+        $urlactivities,
+        $header_data2,
+        "POST",
+        array("name"=>$exploded[1],"status"=>array("id"=>1),"assignTo"=>array("identifier"=>$exploded[2])));
 }
 
 if(array_key_exists("code",$dataResponse)) { //Check if array contains error code

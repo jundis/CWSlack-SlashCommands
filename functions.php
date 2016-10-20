@@ -20,9 +20,14 @@
 // This file contains support functions for the CWSlack stack.
 // Do not modify unless you know what you're doing.
 
-function cURL($url,$header)
+/**
+ * @param $url
+ * @param $header
+ * @return mixed
+ */
+function cURL($url, $header)
 {
-    $ch = curl_init(); //Initiate a curl session_cache_expire
+    $ch = curl_init(); //Initiate a curl session
 
     //Create curl array to set the API url, headers, and necessary flags.
     $curlOpts = array(
@@ -45,6 +50,43 @@ function cURL($url,$header)
     curl_close($ch);
 
     return json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
+}
+
+/**
+ * @param $url
+ * @param $header
+ * @param $postfieldspre
+ * @return mixed
+ */
+function cURLPost($url, $header, $request, $postfieldspre)
+{
+    $ch = curl_init(); //Initiate a curl session
+
+    $postfields = json_encode($postfieldspre); //Format the array as JSON
+
+    //Same as previous curl array but includes required information for PATCH commands.
+    $curlOpts = array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => $header,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_CUSTOMREQUEST => $request,
+        CURLOPT_POSTFIELDS => $postfields,
+        CURLOPT_POST => 1,
+        CURLOPT_HEADER => 1,
+    );
+    curl_setopt_array($ch, $curlOpts);
+
+    $answerTCmd = curl_exec($ch);
+    $headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+    $curlBodyTCmd = substr($answerTCmd, $headerLen);
+    // If there was an error, show it
+    if (curl_error($ch)) {
+        die(curl_error($ch));
+    }
+    curl_close($ch);
+
+    return json_decode($curlBodyTCmd);
 }
 
 

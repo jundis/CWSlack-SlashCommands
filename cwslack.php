@@ -113,84 +113,14 @@ if($posttext==1) //Block for curl to get latest note
 {
 	$createdby = "Error"; //Create with error just in case.
 	$notetext = "Error"; //Create with error just in case.
-	
-	$ch1 = curl_init(); //Initiate a curl session_cache_expire
 
-	//Create curl array to set the API url, headers, and necessary flags.
-	$curlOpts1 = array(
-		CURLOPT_URL => $noteurl,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_HTTPHEADER => $header_data,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_HEADER => 1,
-	);
-	curl_setopt_array($ch1, $curlOpts1); //Set the curl array to $curlOpts
+	$dataTNotes = cURL($noteurl, $header_data); // Get the JSON returned by the CW API for $noteurl.
 
-	$answerTNotes = curl_exec($ch1); //Set $answerTData to the curl response to the API.
-	$headerLen = curl_getinfo($ch1, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-	$curlBodyTNotes = substr($answerTNotes, $headerLen); //Remove header data from the curl string.
+	$dataTimeData = cURL($timeurl, $header_data); // Get the JSON returned by the CW API for $timeurl.
 
-	// If there was an error, show it
-	if (curl_error($ch1)) {
-		die(curl_error($ch1));
-	}
-	curl_close($ch1);
-
-	$dataTNotes = json_decode($curlBodyTNotes); //Decode the JSON returned by the CW API.
-	
-	//Block for cURL connections to Time Entries API
-	$ch2 = curl_init(); //Initiate a curl session
-
-	//Create curl array to set the API url, headers, and necessary flags.
-	$curlOpts2 = array(
-		CURLOPT_URL => $timeurl,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_HTTPHEADER => $header_data,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_HEADER => 1,
-	);
-	curl_setopt_array($ch2, $curlOpts2); //Set the curl array to $curlOpts
-
-	$answerTimeData = curl_exec($ch2); //Set $answerTData to the curl response to the API.
-	$headerLen = curl_getinfo($ch2, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-	$curlBodyTimeData = substr($answerTimeData, $headerLen); //Remove header data from the curl string.
-
-	// If there was an error, show it
-	if (curl_error($ch2)) {
-		die(curl_error($ch2));
-	}
-	curl_close($ch2);
-
-	$dataTimeData = json_decode($curlBodyTimeData); //Decode the JSON returned by the CW API.
-	//End time entry block.
-	
 	if($command == "full" || $command == "notes" || $command == "all")
 	{
-		$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc";
-
-		$ch1 = curl_init(); //Initiate a curl session_cache_expire
-
-		//Create curl array to set the API url, headers, and necessary flags.
-		$curlOpts1 = array(
-			CURLOPT_URL => $noteurl,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HTTPHEADER => $header_data,
-			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_HEADER => 1,
-		);
-		curl_setopt_array($ch1, $curlOpts1); //Set the curl array to $curlOpts
-
-		$answerTNotes = curl_exec($ch1); //Set $answerTData to the curl response to the API.
-		$headerLen = curl_getinfo($ch1, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-		$curlBodyTNotes = substr($answerTNotes, $headerLen); //Remove header data from the curl string.
-
-		// If there was an error, show it
-		if (curl_error($ch1)) {
-			die(curl_error($ch1));
-		}
-		curl_close($ch1);
-
-		$dataTNotes2 = json_decode($curlBodyTNotes); //Decode the JSON returned by the CW API.
+		$dataTNotes2 = cURL($connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc", $header_data); // Get the JSON returned by the CW API for ticket notes.
 	}
 	$createdby = $dataTNotes[0]->createdBy; //Set $createdby to the ticket note creator.
 	$notetime = new DateTime($dataTNotes[0]->dateCreated); //Create new datetime object based on ticketnote note.
@@ -214,96 +144,60 @@ if($posttext==1) //Block for curl to get latest note
 //Priority command
 //- 
 if($command=="priority") { //Check if the second string in the text array from the slash command is priority
-$ch = curl_init();
-$priority = "0"; //Set priority = 0.
 
-//Check what $option3 was set to, the third string in the text array from the slash command.
-if ($option3 == "moderate") //If moderate
-{
-	$priority = "4"; //Set to moderate ID
-} else if ($option3=="critical")
-{
-	$priority = "1";
-} else if ($option3=="low")
-{
-	$priority = "3";
-}
-else //If unknown
-{
-	echo "Failed to get priority code"; //Send error message. Anything not Slack JSON formatted will return just to the user who submitted the slash command. Don't need to spam errors.
-	return;
-}
-$postfieldspre = array(array("op" => "replace", "path" => "/priority/id", "value" => $priority)); //Command array to replace the priority ID
-$postfields = json_encode($postfieldspre); //Format the array as JSON
+	$priority = "0"; //Set priority = 0.
 
-//Same as previous curl array but includes reequired information for PATCH commands.
-$curlOpts = array(
-	CURLOPT_URL => $urlticketdata,
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_HTTPHEADER => $header_data2,
-	CURLOPT_FOLLOWLOCATION => true,
-	CURLOPT_CUSTOMREQUEST => "PATCH",
-	CURLOPT_POSTFIELDS => $postfields,
-	CURLOPT_POST => 1,
-	CURLOPT_HEADER => 1,
-);
-curl_setopt_array($ch, $curlOpts);
+	//Check what $option3 was set to, the third string in the text array from the slash command.
+	if ($option3 == "moderate") //If moderate
+	{
+		$priority = "4"; //Set to moderate ID
+	} else if ($option3=="critical")
+	{
+		$priority = "1";
+	} else if ($option3=="low")
+	{
+		$priority = "3";
+	}
+	else //If unknown
+	{
+		echo "Failed to get priority code"; //Send error message. Anything not Slack JSON formatted will return just to the user who submitted the slash command. Don't need to spam errors.
+		return;
+	}
 
-$answerTCmd = curl_exec($ch);
-$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE); 
-$curlBodyTCmd = substr($answerTCmd, $headerLen);
-// If there was an error, show it
-if (curl_error($ch)) {
-	die(curl_error($ch));
-}
-curl_close($ch);
-$dataTCmd = json_decode($curlBodyTCmd);
+	$dataTCmd = cURLPost(
+		$urlticketdata,
+		$header_data2,
+		"PATCH",
+		array(array("op" => "replace", "path" => "/priority/id", "value" => $priority))
+	);
 }
 
 //-
 //Ticket Status change command.
 //-
 if($command=="status") {
-$ch = curl_init();
-$status = "0";
-if ($option3 == "scheduled" || $option3=="schedule")
-{
-	$status = "124";
-} else if ($option3=="completed")
-{
-	$status = "31";
-} else if ($option3=="n2s" || $option3=="needtoschedule" || $option3=="ns")
-{
-	$status = "121";
-}
-else
-{
-	echo "Failed to get status code";
-	return;
-}
-$postfieldspre = array(array("op" => "replace", "path" => "/status/id", "value" => $status)); //Command array to replace the status of a ticket.
-$postfields = json_encode($postfieldspre);
-$curlOpts = array(
-	CURLOPT_URL => $urlticketdata,
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_HTTPHEADER => $header_data2,
-	CURLOPT_FOLLOWLOCATION => true,
-	CURLOPT_CUSTOMREQUEST => "PATCH",
-	CURLOPT_POSTFIELDS => $postfields,
-	CURLOPT_POST => 1,
-	CURLOPT_HEADER => 1,
-);
-curl_setopt_array($ch, $curlOpts);
-
-$answerTCmd = curl_exec($ch);
-$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE); 
-$curlBodyTCmd = substr($answerTCmd, $headerLen);
-// If there was an error, show it
-if (curl_error($ch)) {
-	die(curl_error($ch));
-}
-curl_close($ch);
-$dataTCmd = json_decode($curlBodyTCmd);
+	$status = "0";
+	if ($option3 == "scheduled" || $option3=="schedule")
+	{
+		$status = "124";
+	} else if ($option3=="completed")
+	{
+		$status = "31";
+	} else if ($option3=="n2s" || $option3=="needtoschedule" || $option3=="ns")
+	{
+		$status = "121";
+	}
+	else
+	{
+		echo "Failed to get status code";
+		return;
+	}
+	$dataTCmd = cURLPost(
+		$urlticketdata,
+		$header_data2,
+		"PATCH",
+		array(array("op" => "replace", "path" => "/status/id", "value" => $status))
+	);
 }
 
 
