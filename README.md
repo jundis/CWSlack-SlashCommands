@@ -2,7 +2,7 @@
 
 This script, when hosted on a PHP supported web server, will act as a bridge between the JSON requests of Slack and the JSON responses of the ConnectWise REST API.
 
-cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, and cwslack-contacts.php were designed to be independent, but all rely on the config.php file. This allows you to pick and choose what you want and for different Slack commands instead of one universal /cw tickets 249123 and /cw contact john doe it can be /t 249123 and /c john doe.
+cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, and cwslack-contacts.php were designed to be independent, but all rely on the config.php and functions.php files. This allows you to pick and choose what you want and for different Slack commands instead of one universal /cw tickets 249123 and /cw contact john doe it can be /t 249123 and /c john doe.
 
 For requesting ticket information using /ticket #, use cwslack.php.
 
@@ -20,9 +20,9 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 
 # Installation Instructions
 
-## cwslack.php
+## cwslack.php, activities, contacts, notes, and configs
 
-1. Download the cwslack.php file and config.php file.
+1. Download the respective php file, functions.php, and config.php files.
 2. Place on a compatible web server
 3. Create a new slack slash command integration at https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
 4. Set command to /t (or other if you prefer)
@@ -33,61 +33,9 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 9. Modify the config.php file with your companies values and timezone. Full configuration info below.
 10. Test it in Slack!
 
-## cwslack-activities.php
-
-1. Download the cwslack-activities.php file and config.php file.
-2. Place on a compatible web server
-3. Create a new slack slash command integration at  https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
-4. Set command to /act (or other if you prefer)
-5. Set the URL to https://domain.tld/cwslack-activities.php
-6. Set Method to GET
-7. Copy the token
-8. Set a name, icon, and auto complete text if wanted.
-9. Modify the config.php file with your companies values, Full configuration info below.
-10. Test it in Slack!
-
-## cwslack-contacts.php
-
-1. Download the cwslack-contacts.php file and config.php file.
-2. Place on a compatible web server
-3. Create a new slack slash command integration at  https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
-4. Set command to /contact (or other if you prefer)
-5. Set the URL to https://domain.tld/cwslack-contacts.php
-6. Set Method to GET
-7. Copy the token
-8. Set a name, icon, and auto complete text if wanted.
-9. Modify the config.php file with your companies values, Full configuration info below.
-10. Test it in Slack!
-
-## cwslack-notes.php
-
-1. Download the cwslack-notes.php file and config.php file.
-2. Place on a compatible web server
-3. Create a new slack slash command integration at https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
-4. Set command to /note (or other if you prefer)
-5. Set the URL to https://domain.tld/cwslack-notes.php
-6. Set Method to GET
-7. Copy the token
-8. Set a name, icon, and auto complete text if wanted.
-9. Modify the config.php file with your companies values and timezone. Full configuration info below.
-10. Test it in Slack!
-
-## cwslack-configs.php
-
-1. Download the cwslack-configs.php file and config.php file.
-2. Place on a compatible web server
-3. Create a new slack slash command integration at https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
-4. Set command to /config (or other if you prefer)
-5. Set the URL to https://domain.tld/cwslack-configs.php
-6. Set Method to GET
-7. Copy the token
-8. Set a name, icon, and auto complete text if wanted.
-9. Modify the config.php file with your companies values and timezone. Full configuration info below.
-10. Test it in Slack!
-
 ## cwslack-incoming.php
 
-1. Download the cwslack-incoming.php file and config.php file.
+1. Download the cwslack-incoming.php, functions.php, and config.php files.
 2. Place on a compatible web server
 3. Create a new slack incoming web hook integration at https://my.slack.com/services/new/incoming-webhook/
 4. Set a name, icon, and if wanted.
@@ -107,7 +55,7 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 
 **(Requires some variables from cwslack-incoming.php to function if you don't use that)**
 
-1. Download the cwslack-firmalerts.php file and config.php file.
+1. Download the cwslack-firmalerts.php, functions.php, and config.php files.
 2. Place on a compatible web server.
 3. Change $posttousers or $posttochan to 0 in config.php if you don't want it posting to one or the other.
 4. Setup a cron job or scheduled task on your server to run this PHP file **every minute.**  
@@ -118,7 +66,7 @@ To follow tickets and get updates whenever they're updated, use cwslack-follow.p
 
 **(Also requires cwslack-incoming.php to function)**
 
-1. Download the cwslack-follow.php file and config.php file.
+1. Download the cwslack-follow.php, functions.php, and config.php files.
 2. Place on a compatible web server
 3. Create a new slack slash command integration at  https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
 4. Set command to /follow (or other if you prefer)
