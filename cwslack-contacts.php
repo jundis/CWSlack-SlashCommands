@@ -21,6 +21,7 @@
 ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
 require_once 'config.php';
+require_once 'functions.php';
 
 if(empty($_GET['token']) || ($_GET['token'] != $slackcontactstoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
@@ -65,29 +66,7 @@ $dataTData = array();
 //-
 //cURL connection to ConnectWise to pull Company API.
 //-
-$ch = curl_init(); //Initiate a curl session_cache_expire
-
-//Create curl array to set the API url, headers, and necessary flags.
-$curlOpts = array(
-	CURLOPT_URL => $url,
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_HTTPHEADER => $header_data,
-	CURLOPT_FOLLOWLOCATION => true,
-	CURLOPT_HEADER => 1,
-);
-curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
-
-$answerTData = curl_exec($ch); //Set $answerTData to the curl response to the API.
-$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-$curlBodyTData = substr($answerTData, $headerLen); //Remove header data from the curl string.
-
-// If there was an error, show it
-if (curl_error($ch)) {
-	die(curl_error($ch));
-}
-curl_close($ch);
-
-$dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
+$dataTData = cURL($url, $header_data);
 
 if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 {
@@ -97,30 +76,9 @@ if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 $return="Nothing!"; //Create return value and set to a basic message just in case.
 $company=$dataTData[0]->company; //Set company array for easier reference later on.
 $compurl=$company->_info;
+
 //Company phone #
-$ch = curl_init(); //Initiate a curl session_cache_expire
-
-//Create curl array to set the API url, headers, and necessary flags.
-$curlOpts = array(
-    CURLOPT_URL => $compurl->company_href,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => $header_data,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_HEADER => 1,
-);
-curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
-
-$answerCData = curl_exec($ch); //Set $answerTData to the curl response to the API.
-$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-$curlBodyCData = substr($answerCData, $headerLen); //Remove header data from the curl string.
-
-// If there was an error, show it
-if (curl_error($ch)) {
-    die(curl_error($ch));
-}
-curl_close($ch);
-
-$dataCData = json_decode($curlBodyCData); //Decode the JSON returned by the CW API.
+$dataCData = cURL($compurl->company_href, $header_data); //Decode the JSON returned by the CW API.
 $cphone = NULL; // Just in case.
 
 if ($dataCData->phoneNumber != NULL && $dataCData->phoneNumber != NULL)
@@ -136,29 +94,7 @@ if($dataTData[0]->site!=NULL) {
 
     $siteurl = $site->_info;
     //Company phone #
-    $ch = curl_init(); //Initiate a curl session_cache_expire
-
-    //Create curl array to set the API url, headers, and necessary flags.
-    $curlOpts = array(
-        CURLOPT_URL => $siteurl->site_href,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => $header_data,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HEADER => 1,
-    );
-    curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
-
-    $answerSData = curl_exec($ch); //Set $answerTData to the curl response to the API.
-    $headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-    $curlBodySData = substr($answerSData, $headerLen); //Remove header data from the curl string.
-
-    // If there was an error, show it
-    if (curl_error($ch)) {
-        die(curl_error($ch));
-    }
-    curl_close($ch);
-
-    $dataSData = json_decode($curlBodySData); //Decode the JSON returned by the CW API.
+    $dataSData = cURL($siteurl->site_href, $header_data); //Decode the JSON returned by the CW API.
 
     if ($dataSData->phoneNumber != NULL && $dataSData->phoneNumber != NULL)
     {

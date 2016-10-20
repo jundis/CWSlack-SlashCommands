@@ -21,6 +21,7 @@
 ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
 require_once 'config.php';
+require_once 'functions.php';
 
 if(empty($_GET['token']) || ($_GET['token'] != $slacknotestoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
@@ -111,28 +112,8 @@ else //If second part of text is neither external or internal
 {
     die("Second part of text must be either internal or external."); //Return error text.
 }
-$postfields = json_encode($postfieldspre); //Format the array as JSON
-//Same as previous curl arrays
-$curlOpts = array(
-    CURLOPT_URL => $noteurl,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => $header_data,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_POSTFIELDS => $postfields,
-    CURLOPT_POST => 1,
-    CURLOPT_HEADER => 1,
-);
-curl_setopt_array($ch, $curlOpts);
 
-$answerTCmd = curl_exec($ch);
-$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-$curlBodyTCmd = substr($answerTCmd, $headerLen);
-// If there was an error, show it
-if (curl_error($ch)) {
-    die(curl_error($ch));
-}
-curl_close($ch);
-$dataTNotes = json_decode($curlBodyTCmd);
+$dataTNotes = cURLPost($noteurl, $header_data, "POST", $postfieldspre);
 
 if(array_key_exists("errors",$dataTNotes)) //If connectwise returned an error.
 {

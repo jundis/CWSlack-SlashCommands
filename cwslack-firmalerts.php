@@ -21,6 +21,7 @@
 ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
 require_once 'config.php'; //Require the config file.
+require_once 'functions.php';
 
 $apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
@@ -41,30 +42,7 @@ $header_data2 =array(
  "Content-Type: application/json"
 );
 
-//Block for cURL connections to the schedule API
-$ch = curl_init(); //Initiate a curl session
-
-//Create curl array to set the API url, headers, and necessary flags.
-$curlOpts = array(
-	CURLOPT_URL => $url,
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_HTTPHEADER => $header_data,
-	CURLOPT_FOLLOWLOCATION => true,
-	CURLOPT_HEADER => 1,
-);
-curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
-
-$answerTData = curl_exec($ch); //Set $answerTData to the curl response to the API.
-$headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-$curlBodyTData = substr($answerTData, $headerLen); //Remove header data from the curl string.
-
-// If there was an error, show it
-if (curl_error($ch)) {
-	die(curl_error($ch));
-}
-curl_close($ch);
-
-$dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
+$dataTData = cURL($url, $header_data); //Decode the JSON returned by the CW API.
 
 foreach($dataTData as $entry) //For each schedule entry returned
 {
@@ -98,27 +76,8 @@ foreach($dataTData as $entry) //For each schedule entry returned
 						)
 					))
 				);
-			$ch = curl_init();
-			$postfields = json_encode($postfieldspre);
 
-            //Creating array for Slack post.
-			$curlOpts = array(
-				CURLOPT_URL => $webhookurl,
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_HTTPHEADER => $header_data2,
-				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_POSTFIELDS => $postfields,
-				CURLOPT_POST => 1,
-				CURLOPT_HEADER => 1,
-			);
-			curl_setopt_array($ch, $curlOpts);
-			$answer = curl_exec($ch);
-
-			// If there was an error, show it
-			if (curl_error($ch)) {
-				die(curl_error($ch));
-			}
-			curl_close($ch);
+            cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
 		}
 	}
 	
@@ -139,26 +98,8 @@ foreach($dataTData as $entry) //For each schedule entry returned
 						)
 					))
 				);
-			$ch = curl_init();
-			$postfields = json_encode($postfieldspre);
 
-			$curlOpts = array(
-				CURLOPT_URL => $webhookurl,
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_HTTPHEADER => $header_data2,
-				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_POSTFIELDS => $postfields,
-				CURLOPT_POST => 1,
-				CURLOPT_HEADER => 1,
-			);
-			curl_setopt_array($ch, $curlOpts);
-			$answer = curl_exec($ch);
-
-			// If there was an error, show it
-			if (curl_error($ch)) {
-				die(curl_error($ch));
-			}
-			curl_close($ch);
+            cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
 		}
 		if($posttochan==1) //If channel post is on
 		{
@@ -194,26 +135,8 @@ foreach($dataTData as $entry) //For each schedule entry returned
                     ))
                 );
             }
-			$ch = curl_init();
-			$postfields = json_encode($postfieldspre);
 
-			$curlOpts = array(
-				CURLOPT_URL => $webhookurl,
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_HTTPHEADER => $header_data2,
-				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_POSTFIELDS => $postfields,
-				CURLOPT_POST => 1,
-				CURLOPT_HEADER => 1,
-			);
-			curl_setopt_array($ch, $curlOpts);
-			$answer = curl_exec($ch);
-
-			// If there was an error, show it
-			if (curl_error($ch)) {
-				die(curl_error($ch));
-			}
-			curl_close($ch);
+            cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
 		}
 	}
 }

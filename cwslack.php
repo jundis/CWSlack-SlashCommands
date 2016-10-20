@@ -23,7 +23,6 @@ header('Content-Type: application/json'); //Set the header to return JSON, requi
 require_once 'config.php';
 require_once 'functions.php';
 
-
 $apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
 

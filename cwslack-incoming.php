@@ -21,6 +21,7 @@
 ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
 require_once 'config.php'; //Require the config file.
+require_once 'functions.php';
 
 $apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
 $authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
@@ -69,59 +70,12 @@ if($posttext==1) //Block for curl to get latest note
 {
 	$createdby = "Error"; //Create with error just in case.
 	$notetext = "Error"; //Create with error just in case.
-	
-	//Block for cURL connections to the ticket notes API
-	$ch1 = curl_init(); //Initiate a curl session
 
-	//Create curl array to set the API url, headers, and necessary flags.
-	$curlOpts1 = array(
-		CURLOPT_URL => $noteurl,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_HTTPHEADER => $header_data,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_HEADER => 1,
-	);
-	curl_setopt_array($ch1, $curlOpts1); //Set the curl array to $curlOpts
-
-	$answerTData = curl_exec($ch1); //Set $answerTData to the curl response to the API.
-	$headerLen = curl_getinfo($ch1, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-	$curlBodyTData = substr($answerTData, $headerLen); //Remove header data from the curl string.
-
-	// If there was an error, show it
-	if (curl_error($ch1)) {
-		$posttext=0; //Sets $posttext to 0 if error ocurred.
-	}
-	curl_close($ch1);
-
-	$dataTData = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
-	//End ticket note block.
+	$dataTData = cURL($noteurl, $header_data); //Decode the JSON returned by the CW API.
 
 	if($posttext==1) //Verifies no curl error occurred. If one has, ignore $posttext.
 	{
-		//Block for cURL connections to Time Entries API
-		$ch2 = curl_init(); //Initiate a curl session
-
-		//Create curl array to set the API url, headers, and necessary flags.
-		$curlOpts2 = array(
-			CURLOPT_URL => $timeurl,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HTTPHEADER => $header_data,
-			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_HEADER => 1,
-		);
-		curl_setopt_array($ch2, $curlOpts2); //Set the curl array to $curlOpts
-
-		$answerTimeData = curl_exec($ch2); //Set $answerTData to the curl response to the API.
-		$headerLen = curl_getinfo($ch2, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
-		$curlBodyTimeData = substr($answerTimeData, $headerLen); //Remove header data from the curl string.
-
-		// If there was an error, show it
-		if (curl_error($ch2)) {
-			$posttext=0;
-		}
-		curl_close($ch2);
-		$dataTimeData = json_decode($curlBodyTimeData); //Decode the JSON returned by the CW API.
-		//End time entry block.
+		$dataTimeData = cURL($timeurl, $header_data); //Decode the JSON returned by the CW API.
 
 		if($posttext==1 && ($dataTData[0]->text != NULL || $dataTimeData[0]->text != NULL)) //Verified no curl error occurred as well as makes sure that if both text values == null, then there is no text to post.
 		{
@@ -262,26 +216,7 @@ else
 
 if($skip==0)
 {
-	$ch = curl_init();
-	$postfields = json_encode($postfieldspre);
-
-	$curlOpts = array(
-		CURLOPT_URL => $webhookurl,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_HTTPHEADER => $header_data2,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_POSTFIELDS => $postfields,
-		CURLOPT_POST => 1,
-		CURLOPT_HEADER => 1,
-	);
-	curl_setopt_array($ch, $curlOpts);
-	$answer = curl_exec($ch);
-
-	// If there was an error, show it
-	if (curl_error($ch)) {
-		die(curl_error($ch));
-	}
-	curl_close($ch);
+	cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
 }
 
 if($followenabled==1)
@@ -402,27 +337,8 @@ if($followenabled==1)
 					);
 				}
 			}
-			$postfields = json_encode($postfieldspre);
 
-			//cURL block.
-			$ch = curl_init();
-			$curlOpts = array(
-				CURLOPT_URL => $webhookurl,
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_HTTPHEADER => $header_data2,
-				CURLOPT_FOLLOWLOCATION => true,
-				CURLOPT_POSTFIELDS => $postfields,
-				CURLOPT_POST => 1,
-				CURLOPT_HEADER => 1,
-			);
-			curl_setopt_array($ch, $curlOpts);
-			$answer = curl_exec($ch);
-
-			// If there was an error, show it
-			if (curl_error($ch)) {
-				die(curl_error($ch));
-			}
-			curl_close($ch);
+			cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
 		}
 	}
 }
@@ -530,27 +446,8 @@ if($timeenabled==1 && $info->ActualHours>$timepast)
 			);
 		}
 	}
-	$postfields = json_encode($postfieldspre);
 
-	//cURL block.
-	$ch = curl_init();
-	$curlOpts = array(
-		CURLOPT_URL => $webhookurl,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_HTTPHEADER => $header_data2,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_POSTFIELDS => $postfields,
-		CURLOPT_POST => 1,
-		CURLOPT_HEADER => 1,
-	);
-	curl_setopt_array($ch, $curlOpts);
-	$answer = curl_exec($ch);
-
-	// If there was an error, show it
-	if (curl_error($ch)) {
-		die(curl_error($ch));
-	}
-	curl_close($ch);
+	cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
 }
 
 
