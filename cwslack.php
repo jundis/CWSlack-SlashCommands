@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 */
 
+// This is a development branch, please use with caution as things will frequently be changing.
 
 ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
