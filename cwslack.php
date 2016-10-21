@@ -92,16 +92,13 @@ if($dataTData==NULL)
 }
 if(array_key_exists("code",$dataTData)) { //Check if array contains error code
 	if($dataTData->code == "NotFound") { //If error code is NotFound
-		echo "Connectwise ticket " . $ticketnumber . " was not found."; //Report that the ticket was not found.
-		return;
+		die("Connectwise ticket " . $ticketnumber . " was not found."); //Report that the ticket was not found.
 	}
 	if($dataTData->code == "Unauthorized") { //If error code is an authorization error
-		echo "401 Unauthorized, check API key to ensure it is valid."; //Fail case.
-		return;
+		die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
 	}
 	else {
-		echo "Unknown Error Occurred, check API key and other API settings." . $dataTData->code; //Fail case.
-		return;
+		die("Unknown Error Occurred, check API key and other API settings: " . $dataTData->code); //Fail case.
 	}
 }
 
