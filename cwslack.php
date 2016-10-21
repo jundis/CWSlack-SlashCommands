@@ -35,15 +35,12 @@ $exploded = explode(" ",$_GET['text']); //Explode the string attached to the sla
 if(!is_numeric($exploded[0])) {
 	//Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 	if ($exploded[0]=="help") {
-		$test=json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true));
-		echo $test;
-		return;
+		die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true)));
 	}
 	else //Else close the connection.
 	{
-		echo "Unknown entry for ticket number.";
-		return;
-	}; 
+		die("Unknown entry for ticket number.");
+	}
 }
 $ticketnumber = $exploded[0]; //Set the ticket number to the first string
 $command=NULL; //Create a command variable and set it to Null
@@ -69,7 +66,6 @@ if($command == "initial" || $command == "first" || $command == "note")
 	$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc";
 }
 
-$utc = time(); //Get the time.
 // Authorization array. Auto encodes API key for auhtorization above.
 $header_data =array(
  "Authorization: Basic ". $authorization,
