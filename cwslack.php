@@ -234,13 +234,16 @@ if($posttext==1) //Block for curl to get latest note
 		$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
 
 
-		if($timetime>$notetime) //If the time entry is newer than latest ticket note.
+		if ($timetime > $notetime) //If the time entry is newer than latest ticket note.
 		{
 			$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
 			$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
 			$notedate = $dataTimeData[0]->dateEntered;
 		}
 	}
+
+	$date2=strtotime($notedate);
+	$date2format=date('m-d-Y g:i:sa',$date2);
 }
 
 $date=strtotime($dataTData->dateEntered); //Convert date entered JSON result to time.
@@ -259,12 +262,6 @@ if($dataTData->resources != NULL)
 {
 	$resources=$dataTData->resources;
 }
-if($posttext==1)
-{
-	$date2=strtotime($notedate);
-	$date2format=date('m-d-Y g:i:sa',$date2);
-}
-
 
 if(!$dataTData->contact==NULL) { //Check if contact name exists in array.
 	$contact = $dataTData->contact->name; //Set contact variable to contact name.
