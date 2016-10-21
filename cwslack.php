@@ -94,6 +94,122 @@ if(array_key_exists("code",$dataTData)) { //Check if array contains error code
 	}
 }
 
+//-
+//Priority command
+//- 
+if($command=="priority") { //Check if the second string in the text array from the slash command is priority
+
+	$priority = "0"; //Set priority = 0.
+
+	//Check what $option3 was set to, the third string in the text array from the slash command.
+	if ($option3 == "moderate") //If moderate
+	{
+		$priority = "4"; //Set to moderate ID
+	} else if ($option3=="critical")
+	{
+		$priority = "1";
+	} else if ($option3=="low")
+	{
+		$priority = "3";
+	}
+	else //If unknown
+	{
+		die("Failed to get priority code: " . $option3); //Send error message. Anything not Slack JSON formatted will return just to the user who submitted the slash command. Don't need to spam errors.
+	}
+
+	$dataTCmd = cURLPost(
+		$urlticketdata,
+		$header_data2,
+		"PATCH",
+		array(array("op" => "replace", "path" => "/priority/id", "value" => $priority))
+	);
+
+	if(array_key_exists("code",$dataTCmd)) { //Check if array contains error code
+		if($dataTCmd->code == "NotFound") { //If error code is NotFound
+			die("Connectwise ticket " . $ticketnumber . " was not found."); //Report that the ticket was not found.
+		}
+		if($dataTCmd->code == "Unauthorized") { //If error code is an authorization error
+			die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
+		}
+		else {
+			die("Unknown Error Occurred, check API key and other API settings. Error: " . $dataTCmd->code); //Fail case.
+		}
+	}
+
+	$return =array(
+		"parse" => "full", //Parse all text.
+		"response_type" => "in_channel", //Send the response in the channel
+		"attachments"=>array(array(
+			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
+			"title" => "Ticket Summary: " . $dataTData->summary, //Set bolded title text
+			"pretext" => "Ticket #" . $dataTData->id . "'s priority has been set to " . $option3, //Set pretext
+			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.", //Set text to be returned
+			"mrkdwn_in" => array( //Set markdown values
+				"text",
+				"pretext"
+			)
+		))
+	);
+
+	die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+}
+
+//-
+//Ticket Status change command.
+//-
+if($command=="status") {
+	$status = "0";
+	if ($option3 == "scheduled" || $option3=="schedule")
+	{
+		$status = "124";
+	} else if ($option3=="completed")
+	{
+		$status = "31";
+	} else if ($option3=="n2s" || $option3=="needtoschedule" || $option3=="ns")
+	{
+		$status = "121";
+	}
+	else
+	{
+		die("Failed to get status code: " . $option3);
+	}
+	$dataTCmd = cURLPost(
+		$urlticketdata,
+		$header_data2,
+		"PATCH",
+		array(array("op" => "replace", "path" => "/status/id", "value" => $status))
+	);
+
+	if(array_key_exists("code",$dataTCmd)) { //Check if array contains error code
+		if($dataTCmd->code == "NotFound") { //If error code is NotFound
+			die("Connectwise ticket " . $ticketnumber . " was not found."); //Report that the ticket was not found.
+		}
+		if($dataTCmd->code == "Unauthorized") { //If error code is an authorization error
+			die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
+		}
+		else {
+			die("Unknown Error Occurred, check API key and other API settings. Error: " . $dataTCmd->code); //Fail case.
+		}
+	}
+
+	$return =array(
+		"parse" => "full",
+		"response_type" => "in_channel",
+		"attachments"=>array(array(
+			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
+			"title" => "Ticket Summary: " . $dataTData->summary,
+			"pretext" => "Ticket #" . $dataTData->id . "'s status has been set to " . $option3,
+			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.",
+			"mrkdwn_in" => array(
+				"text",
+				"pretext"
+			)
+		))
+	);
+
+	die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+}
+
 if($posttext==1) //Block for curl to get latest note
 {
 	$createdby = "Error"; //Create with error just in case.
@@ -126,76 +242,6 @@ if($posttext==1) //Block for curl to get latest note
 		}
 	}
 }
-//-
-//Priority command
-//- 
-if($command=="priority") { //Check if the second string in the text array from the slash command is priority
-
-	$priority = "0"; //Set priority = 0.
-
-	//Check what $option3 was set to, the third string in the text array from the slash command.
-	if ($option3 == "moderate") //If moderate
-	{
-		$priority = "4"; //Set to moderate ID
-	} else if ($option3=="critical")
-	{
-		$priority = "1";
-	} else if ($option3=="low")
-	{
-		$priority = "3";
-	}
-	else //If unknown
-	{
-		die("Failed to get priority code: " . $option3); //Send error message. Anything not Slack JSON formatted will return just to the user who submitted the slash command. Don't need to spam errors.
-	}
-
-	$dataTCmd = cURLPost(
-		$urlticketdata,
-		$header_data2,
-		"PATCH",
-		array(array("op" => "replace", "path" => "/priority/id", "value" => $priority))
-	);
-}
-
-//-
-//Ticket Status change command.
-//-
-if($command=="status") {
-	$status = "0";
-	if ($option3 == "scheduled" || $option3=="schedule")
-	{
-		$status = "124";
-	} else if ($option3=="completed")
-	{
-		$status = "31";
-	} else if ($option3=="n2s" || $option3=="needtoschedule" || $option3=="ns")
-	{
-		$status = "121";
-	}
-	else
-	{
-		die("Failed to get status code: " . $option3);
-	}
-	$dataTCmd = cURLPost(
-		$urlticketdata,
-		$header_data2,
-		"PATCH",
-		array(array("op" => "replace", "path" => "/status/id", "value" => $status))
-	);
-}
-
-
-if(array_key_exists("code",$dataTCmd)) { //Check if array contains error code
-	if($dataTCmd->code == "NotFound") { //If error code is NotFound
-		die("Connectwise ticket " . $ticketnumber . " was not found."); //Report that the ticket was not found.
-	}
-	if($dataTCmd->code == "Unauthorized") { //If error code is an authorization error
-		die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
-	}
-	else {
-		die("Unknown Error Occurred, check API key and other API settings. Error: " . $dataTCmd->code); //Fail case.
-	}
-}
 
 $date=strtotime($dataTData->dateEntered); //Convert date entered JSON result to time.
 $dateformat=date('m-d-Y g:i:sa',$date); //Convert previously converted time to a better time string.
@@ -224,42 +270,7 @@ if(!$dataTData->contact==NULL) { //Check if contact name exists in array.
 	$contact = $dataTData->contact->name; //Set contact variable to contact name.
 }
 
-
-if($command == "priority") //If command is priority.
-{
-	$return =array(
-		"parse" => "full", //Parse all text.
-		"response_type" => "in_channel", //Send the response in the channel
-		"attachments"=>array(array(
-			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
-			"title" => "Ticket Summary: " . $dataTData->summary, //Set bolded title text
-			"pretext" => "Ticket #" . $dataTData->id . "'s priority has been set to " . $option3, //Set pretext
-			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.", //Set text to be returned
-			"mrkdwn_in" => array( //Set markdown values
-				"text",
-				"pretext"
-				)
-			))
-		);
-}
-else if($command == "status") //If command is status.
-{
-	$return =array(
-		"parse" => "full",
-		"response_type" => "in_channel",
-		"attachments"=>array(array(
-			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
-			"title" => "Ticket Summary: " . $dataTData->summary,
-			"pretext" => "Ticket #" . $dataTData->id . "'s status has been set to " . $option3,
-			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.",
-			"mrkdwn_in" => array(
-				"text",
-				"pretext"
-				)
-			))
-		);
-}
-else if($command == "initial" || $command == "first" || $command == "note")
+if($command == "initial" || $command == "first" || $command == "note")
 {
 	if($posttext==0)
 	{
