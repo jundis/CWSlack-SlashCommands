@@ -24,8 +24,10 @@ header('Content-Type: application/json'); //Set the header to return JSON, requi
 require_once 'config.php';
 require_once 'functions.php';
 
-$apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
-$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
+// Authorization array. Auto encodes API key for auhtorization above.
+$header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
+// Authorization array, with extra json content-type used in patch commands to change tickets.
+$header_data2 = postHeader($companyname, $apipublickey, $apiprivatekey);
 
 if(empty($_GET['token']) || ($_GET['token'] != $slacktoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
@@ -65,16 +67,6 @@ else
 {
 	$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20desc";
 }
-
-// Authorization array. Auto encodes API key for auhtorization above.
-$header_data =array(
- "Authorization: Basic ". $authorization,
-);
-// Authorization array, with extra json content-type used in patch commands to change tickets.
-$header_data2 =array(
-"Authorization: Basic " . $authorization,
- "Content-Type: application/json"
-);
 
 //Need to create 3 arrays before hand to ensure no errors occur.
 $dataTNotes = array();

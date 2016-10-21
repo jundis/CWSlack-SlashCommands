@@ -23,8 +23,8 @@ header('Content-Type: application/json'); //Set the header to return JSON, requi
 require_once 'config.php';
 require_once 'functions.php';
 
-$apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
-$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
+// Authorization array. Auto encodes API key for auhtorization above.
+$header_data = postHeader($companyname, $apipublickey, $apiprivatekey);
 
 if(empty($_GET['token']) || ($_GET['token'] != $slackactivitiestoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
@@ -38,12 +38,6 @@ if ($exploded[0]=="help") {
 $urlactivities = $connectwise . "/v4_6_release/apis/3.0/sales/activities/";
 $activityurl = $connectwise . '/v4_6_release/ConnectWise.aspx?fullscreen=false&locale=en_US#startscreen=activity_detail&state={"p":"activity_detail", "s":{"p":{"pid":3, "rd":';
 $activityurl2 = ' ,"compId":0, "contId":0, "oppid":0}}}';
-
-// Authorization array, with extra json content-type used in patch commands to change tickets.
-$header_data =array(
-    "Authorization: Basic " . $authorization,
-    "Content-Type: application/json"
-);
 
 $command=NULL; //Create a command variable and set it to Null
 if (array_key_exists(0,$exploded)) //If a string exists in the slash command array, make it the command.

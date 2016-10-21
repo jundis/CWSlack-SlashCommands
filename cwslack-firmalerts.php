@@ -23,9 +23,6 @@ header('Content-Type: application/json'); //Set the header to return JSON, requi
 require_once 'config.php'; //Require the config file.
 require_once 'functions.php';
 
-$apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
-$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
-
 //Dates required for URL to function
 $datenow = gmdate("Y-m-d\TH:i", strtotime("-10 minutes")); //Date set to 10 minutes prior to now, to catch for tickets happening right now.
 $date2hours = gmdate("Y-m-d\TH:i", strtotime("+2 hours")); //Date set to 2 hours out so reminders up to 2 hours function.
@@ -35,9 +32,8 @@ $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_r
 
 
 //Set headers for cURL requests. $header_data covers API authentication while $header_data2 covers the Slack output.
-$header_data =array(
- "Authorization: Basic ". $authorization,
-);
+$header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
+
 $header_data2 =array(
  "Content-Type: application/json"
 );

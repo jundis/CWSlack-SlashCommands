@@ -89,5 +89,23 @@ function cURLPost($url, $header, $request, $postfieldspre)
     return json_decode($curlBodyTCmd);
 }
 
+function authHeader($company, $publickey, $privatekey)
+{
+    $apicompanyname = strtolower($company); //Company name all lower case for api auth.
+    $authorization = base64_encode($apicompanyname . "+" . $publickey . ":" . $privatekey); //Encode the API, needed for authorization.
+
+    return array("Authorization: Basic ". $authorization);
+}
+
+function postHeader($company, $publickey, $privatekey)
+{
+    $apicompanyname = strtolower($company); //Company name all lower case for api auth.
+    $authorization = base64_encode($apicompanyname . "+" . $publickey . ":" . $privatekey); //Encode the API, needed for authorization.
+
+    return array(
+        "Authorization: Basic " . $authorization,
+        "Content-Type: application/json"
+    );
+}
 
 ?>

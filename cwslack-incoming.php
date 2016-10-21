@@ -23,9 +23,6 @@ header('Content-Type: application/json'); //Set the header to return JSON, requi
 require_once 'config.php'; //Require the config file.
 require_once 'functions.php';
 
-$apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
-$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
-
 $data = json_decode(file_get_contents('php://input')); //Decode incoming body from connectwise callback.
 $info = json_decode(stripslashes($data->Entity)); //Decode the entity field which contains the JSON data we want.
 
@@ -51,9 +48,7 @@ $dataTData = array(); //Blank array.
 $dataTimeData = array(); //Blank array.
 
 //Set headers for cURL requests. $header_data covers API authentication while $header_data2 covers the Slack output.
-$header_data =array(
- "Authorization: Basic ". $authorization,
-);
+$header_data = authHeader($companyname, $apipublickey, $apiprivatekey); // Authorization array. Auto encodes API key for auhtorization.
 $header_data2 =array(
  "Content-Type: application/json"
 );
