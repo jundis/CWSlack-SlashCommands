@@ -55,15 +55,15 @@ if (array_key_exists(2,$exploded)) //If a third string exists in the slash comma
 }
 //Set URLs
 $urlticketdata = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
-$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20desc";
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Ticket URL for connectwise.
 $timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries?conditions=chargeToId=" . $ticketnumber . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
-
-
-//Set noteurl to use ascending if an initial note command is passed.
-if($command == "initial" || $command == "first" || $command == "note") 
+if($command == "initial" || $command == "first" || $command == "note") //Set noteurl to use ascending if an initial note command is passed, else use descending.
 {
 	$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc";
+}
+else
+{
+	$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20desc";
 }
 
 // Authorization array. Auto encodes API key for auhtorization above.
@@ -115,6 +115,7 @@ if($posttext==1) //Block for curl to get latest note
 	{
 		$dataTNotes2 = cURL($connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc", $header_data); // Get the JSON returned by the CW API for ticket notes.
 	}
+
 	$createdby = $dataTNotes[0]->createdBy; //Set $createdby to the ticket note creator.
 	$notetime = new DateTime($dataTNotes[0]->dateCreated); //Create new datetime object based on ticketnote note.
 	$notedate = $dataTNotes[0]->dateCreated;
@@ -153,8 +154,7 @@ if($command=="priority") { //Check if the second string in the text array from t
 	}
 	else //If unknown
 	{
-		echo "Failed to get priority code"; //Send error message. Anything not Slack JSON formatted will return just to the user who submitted the slash command. Don't need to spam errors.
-		return;
+		die("Failed to get priority code: " . $option3); //Send error message. Anything not Slack JSON formatted will return just to the user who submitted the slash command. Don't need to spam errors.
 	}
 
 	$dataTCmd = cURLPost(
@@ -182,8 +182,7 @@ if($command=="status") {
 	}
 	else
 	{
-		echo "Failed to get status code";
-		return;
+		die("Failed to get status code: " . $option3);
 	}
 	$dataTCmd = cURLPost(
 		$urlticketdata,
@@ -196,16 +195,13 @@ if($command=="status") {
 
 if(array_key_exists("code",$dataTCmd)) { //Check if array contains error code
 	if($dataTCmd->code == "NotFound") { //If error code is NotFound
-		echo "Connectwise ticket " . $ticketnumber . " was not found."; //Report that the ticket was not found.
-		return;
+		die("Connectwise ticket " . $ticketnumber . " was not found."); //Report that the ticket was not found.
 	}
 	if($dataTCmd->code == "Unauthorized") { //If error code is an authorization error
-		echo "401 Unauthorized, check API key to ensure it is valid."; //Fail case.
-		return;
+		die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
 	}
 	else {
-		echo "Unknown Error Occurred, check API key and other API settings. Error: " . $dataTCmd->code; //Fail case.
-		return;
+		die("Unknown Error Occurred, check API key and other API settings. Error: " . $dataTCmd->code); //Fail case.
 	}
 }
 
