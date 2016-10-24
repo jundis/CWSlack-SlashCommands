@@ -92,7 +92,7 @@ $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help ar
 //Timezone Setting to be used for all files.
 date_default_timezone_set($timezone);
 
-if ($followenabled==1) //Setup directory for Follow module.
+if ($usedatabase!=1) //Setup directory for Follow module.
 {
     if ( !file_exists($dir) ) {
         $oldmask = umask(0);  // helpful when used in linux server

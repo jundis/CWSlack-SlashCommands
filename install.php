@@ -19,11 +19,11 @@
         {
             echo "<p>MySQL Configuration</p>";
 
-            echo "<form action=\"test.php?page=Test MySQL\" method='post'>
-                    <label for='dbHost'>MySQL Host: </label><input type='text' name='dbhost' id='dbHost'><br>
-                    <label for='dbUsername'>MySQL Username: </label><input type='text' name='dbusername' id='dbUsername'><br>
-                    <label for='dbPassword'>MySQL Password: </label><input type='password' name='dbpassword' id='dbPassword'><br>
-                    <label for='dbName'>Database Name: </label><input type='text' name='dbname' id='dbName'><br><br>
+            echo "<div class='row'><form action=\"install.php?page=Test MySQL\" method='post'>
+                    <div class=\"col-sm-6\"><label for='dbHost'>MySQL Host: </label></div><div class=\"col-sm-6\"><input type='text' name='dbhost' id='dbHost'><br></div>
+                    <div class=\"col-sm-6\"><label for='dbUsername'>MySQL Username: </label></div><div class=\"col-sm-6\"><input type='text' name='dbusername' id='dbUsername'><br></div>
+                    <div class=\"col-sm-6\"><label for='dbPassword'>MySQL Password: </label></div><div class=\"col-sm-6\"><input type='password' name='dbpassword' id='dbPassword'><br></div>
+                    <div class=\"col-sm-6\"><label for='dbName'>Database Name: </label></div><div class=\"col-sm-6\"><input type='text' name='dbname' id='dbName'></div></div><br><br>
                     <input type=\"submit\" name='page' value=\"Test MySQL\" /></form>";
             echo "</form></div></div></body></html>";
             die();
@@ -42,7 +42,7 @@
                 echo "<div class=\"alert alert-danger\" role=\"alert\">";
                 echo "Connection Error: " . mysqli_connect_error();
                 echo "</div>";
-                echo "<form action=\"test.php\">
+                echo "<form action=\"install.php\">
                                 <input type=\"submit\" name='page' value=\"Retry MySQL\" />
                                 </form>";
                 die();
@@ -63,7 +63,7 @@
                     echo "<div class=\"alert alert-danger\" role=\"alert\">";
                     echo "Database Creation Error: " . mysqli_error($mysql);
                     echo "</div>";
-                    echo "<form action=\"test.php\">
+                    echo "<form action=\"install.php\">
                                 <input type=\"submit\" name='page' value=\"Retry MySQL\" />
                                 </form>";
                     die();
@@ -80,7 +80,7 @@
                 echo "<div class=\"alert alert-danger\" role=\"alert\">";
                 echo "follow Table Creation Error: " . mysqli_error($mysql);
                 echo "</div>";
-                echo "<form action=\"test.php\">
+                echo "<form action=\"install.php\">
                                 <input type=\"submit\" name='page' value=\"Retry MySQL\" />
                                 </form>";
                 die();
@@ -96,7 +96,7 @@
                 echo "<div class=\"alert alert-danger\" role=\"alert\">";
                 echo "usermap Table Creation Error: " . mysqli_error($mysql);
                 echo "</div>";
-                echo "<form action=\"test.php\">
+                echo "<form action=\"install.php\">
                                 <input type=\"submit\" name='page' value=\"Retry MySQL\" />
                                 </form>";
                 die();
@@ -112,7 +112,7 @@
                 echo "<div class=\"alert alert-danger\" role=\"alert\">";
                 echo "usermap Table Creation Error: " . mysqli_error($mysql);
                 echo "</div>";
-                echo "<form action=\"test.php\">
+                echo "<form action=\"install.php\">
                                 <input type=\"submit\" name='page' value=\"Retry MySQL\" />
                                 </form>";
                 die();
@@ -197,7 +197,7 @@
 
                     if(empty($curl_error) && empty($mysql_error) && empty($php_error))
                     {
-                        echo "<form action=\"test.php\">
+                        echo "<form action=\"install.php\">
                                 <input type=\"submit\" name='page' value=\"Proceed\" />
                                 </form>";
                     }
