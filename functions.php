@@ -62,6 +62,12 @@ function cURL($url, $header)
             die("Unknown Error Occurred, check API key and other API settings. Error: " . $jsonDecode->code); //Fail case.
         }
     }
+    if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
+    {
+        $errors = $dataTData->errors; //Make array easier to access.
+
+        die("ConnectWise Error: " . $errors[0]->message); //Return CW error
+    }
 
     return $jsonDecode;
 }
@@ -112,6 +118,12 @@ function cURLPost($url, $header, $request, $postfieldspre)
         else {
             die("Unknown Error Occurred, check API key and other API settings. Error: " . $jsonDecode->code); //Fail case.
         }
+    }
+    if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
+    {
+        $errors = $jsonDecode->errors; //Make array easier to access.
+
+        die("ConnectWise Error: " . $errors[0]->message); //Return CW error
     }
 
     return $jsonDecode;
