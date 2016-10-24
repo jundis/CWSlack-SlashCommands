@@ -82,17 +82,6 @@ if($dataTData==NULL)
 {
 	die("Array not returned in line 195. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata);
 }
-if(array_key_exists("code",$dataTData)) { //Check if array contains error code
-	if($dataTData->code == "NotFound") { //If error code is NotFound
-		die("Connectwise ticket " . $ticketnumber . " was not found."); //Report that the ticket was not found.
-	}
-	if($dataTData->code == "Unauthorized") { //If error code is an authorization error
-		die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
-	}
-	else {
-		die("Unknown Error Occurred, check API key and other API settings: " . $dataTData->code); //Fail case.
-	}
-}
 
 //-
 //Priority command
@@ -123,18 +112,6 @@ if($command=="priority") { //Check if the second string in the text array from t
 		"PATCH",
 		array(array("op" => "replace", "path" => "/priority/id", "value" => $priority))
 	);
-
-	if(array_key_exists("code",$dataTCmd)) { //Check if array contains error code
-		if($dataTCmd->code == "NotFound") { //If error code is NotFound
-			die("Connectwise ticket " . $ticketnumber . " was not found."); //Report that the ticket was not found.
-		}
-		if($dataTCmd->code == "Unauthorized") { //If error code is an authorization error
-			die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
-		}
-		else {
-			die("Unknown Error Occurred, check API key and other API settings. Error: " . $dataTCmd->code); //Fail case.
-		}
-	}
 
 	$return =array(
 		"parse" => "full", //Parse all text.
@@ -179,18 +156,6 @@ if($command=="status") {
 		"PATCH",
 		array(array("op" => "replace", "path" => "/status/id", "value" => $status))
 	);
-
-	if(array_key_exists("code",$dataTCmd)) { //Check if array contains error code
-		if($dataTCmd->code == "NotFound") { //If error code is NotFound
-			die("Connectwise ticket " . $ticketnumber . " was not found."); //Report that the ticket was not found.
-		}
-		if($dataTCmd->code == "Unauthorized") { //If error code is an authorization error
-			die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
-		}
-		else {
-			die("Unknown Error Occurred, check API key and other API settings. Error: " . $dataTCmd->code); //Fail case.
-		}
-	}
 
 	$return =array(
 		"parse" => "full",
