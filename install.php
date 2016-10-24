@@ -15,18 +15,99 @@
             <h3>CWSlack-SlashCommands Installer</h3>
         <?php
 
-        if($_GET["page"]=="Proceed")
+        if($_GET["page"]=="Proceed" || $_GET["page"]=="Retry MySQL")
         {
-            echo "<form action=\"test.php\">
+            echo "<p>MySQL Configuration</p>";
+
+            echo "<form action=\"test.php?page=Test MySQL\" method='post'>
+                    <p><label for='dbHost'>MySQL Host: </label><input type='text' name='dbhost' id='dbHost'></p>
+                    <p><label for='dbUsername'>MySQL Username: </label><input type='text' name='dbusername' id='dbUsername'></p>
+                    <p><label for='dbPassword'>MySQL Password: </label><input type='password' name='dbpassword' id='dbPassword'></p>
+                    <p><label for='dbName'>Database Name: </label><input type='text' name='dbname' id='dbName'></p>
                     <input type=\"submit\" name='page' value=\"Test MySQL\" /></form>";
             echo "</form></div></div></body></html>";
             die();
         }
         if($_GET["page"]=="Test MySQL")
         {
-            echo "Success<br><form action=\"test.php\">
-                    <input type=\"submit\" name='page' value=\"Test MySQL\" /></form>";
-            echo "</div></div></body></html>";
+            $dbhost = $_POST["dbhost"];
+            $dbusername = $_POST["dbusername"];
+            $dbpassword = $_POST["dbpassword"];
+            $dbdatabase = $_POST["dbname"];
+
+            $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword);
+
+            if (!$mysql)
+            {
+                echo "<div class=\"alert alert-danger\" role=\"alert\">";
+                echo "Connection Error: " . mysqli_connect_error();
+                echo "</div>";
+                echo "<form action=\"test.php\">
+                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                </form>";
+                die();
+            }
+
+            $dbselect = mysqli_select_db($mysql,$dbdatabase);
+            if(!$dbselect)
+            {
+                //Select database failed
+                $sql = "CREATE DATABASE " . $dbdatabase;
+                if (mysqli_query($mysql,$sql))
+                {
+                    //Database created successfully
+                    $dbselect = mysqli_select_db($mysql,$dbdatabase);
+                }
+                else
+                {
+                    echo "<div class=\"alert alert-danger\" role=\"alert\">";
+                    echo "Database Creation Error: " . mysqli_error($mysql);
+                    echo "</div>";
+                    echo "<form action=\"test.php\">
+                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                </form>";
+                    die();
+                }
+            }
+
+            $sql = "CREATE TABLE IF NOT EXISTS follow (id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY, ticketnumber INT(10) NOT NULL, slackuser VARCHAR(25) NOT NULL)";
+            if(mysqli_query($mysql,$sql))
+            {
+                //Table created successfully
+            }
+            else
+            {
+                echo "<div class=\"alert alert-danger\" role=\"alert\">";
+                echo "follow Table Creation Error: " . mysqli_error($mysql);
+                echo "</div>";
+                echo "<form action=\"test.php\">
+                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                </form>";
+                die();
+            }
+
+            $sql = "CREATE TABLE IF NOT EXISTS usermap (slackuser VARCHAR(25) PRIMARY KEY, cwname VARCHAR(25) NOT NULL)";
+            if(mysqli_query($mysql,$sql))
+            {
+                //Table created successfully
+            }
+            else
+            {
+                echo "<div class=\"alert alert-danger\" role=\"alert\">";
+                echo "usermap Table Creation Error: " . mysqli_error($mysql);
+                echo "</div>";
+                echo "<form action=\"test.php\">
+                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                </form>";
+                die();
+            }
+
+            echo "<div class=\"alert alert-success\" role=\"alert\">";
+            echo "Successfully connected and setup MySQL Database!<br><form action=\"test.php\">
+                    <input type=\"submit\" name='page' value=\"Script Configuration\" /></form>";
+            echo "</div></div></div></body></html>";
+
+            mysqli_close($mysql);
             die();
         }
 
