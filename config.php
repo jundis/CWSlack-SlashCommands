@@ -83,6 +83,7 @@ $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help ar
 
 //Timezone Setting to be used for all files.
 date_default_timezone_set($timezone);
+//Setup directory
 if ( !file_exists($dir) ) {
      $oldmask = umask(0);  // helpful when used in linux server  
      mkdir ($dir, 0744);

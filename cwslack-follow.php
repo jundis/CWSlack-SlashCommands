@@ -101,7 +101,7 @@ if($command=="unfollow") //If unfollow is set in the text received from Slack.
 		{
 			$output[] = $line; //Output the line to the file again.
 		}
-		else //If it is not
+		else //If it is the ticket number.
 		{
 			if($tempex[1]!=$username) //If the second part is not the username of sender.
 			{

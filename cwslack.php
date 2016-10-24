@@ -106,11 +106,11 @@ if($command=="priority") { //Check if the second string in the text array from t
 		die("Failed to get priority code: " . $option3); //Send error message. Anything not Slack JSON formatted will return just to the user who submitted the slash command. Don't need to spam errors.
 	}
 
-	$dataTCmd = cURLPost(
-		$urlticketdata,
-		$header_data2,
-		"PATCH",
-		array(array("op" => "replace", "path" => "/priority/id", "value" => $priority))
+	$dataTCmd = cURLPost( //Function for POST requests in cURL
+		$urlticketdata, //URL
+		$header_data2, //Header
+		"PATCH", //Request type
+		array(array("op" => "replace", "path" => "/priority/id", "value" => $priority)) //POST Body
 	);
 
 	$return =array(
