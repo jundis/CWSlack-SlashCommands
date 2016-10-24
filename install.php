@@ -12,7 +12,7 @@
     <body>
     <div class="container">
         <div class="jumbotron">
-            <h3>CWSlack-SlashCommands Installer</h3>
+            <h3>CWSlack-SlashCommands MySQL Installer</h3>
         <?php
 
         if($_GET["page"]=="Proceed" || $_GET["page"]=="Retry MySQL")
@@ -20,10 +20,10 @@
             echo "<p>MySQL Configuration</p>";
 
             echo "<form action=\"test.php?page=Test MySQL\" method='post'>
-                    <p><label for='dbHost'>MySQL Host: </label><input type='text' name='dbhost' id='dbHost'></p>
-                    <p><label for='dbUsername'>MySQL Username: </label><input type='text' name='dbusername' id='dbUsername'></p>
-                    <p><label for='dbPassword'>MySQL Password: </label><input type='password' name='dbpassword' id='dbPassword'></p>
-                    <p><label for='dbName'>Database Name: </label><input type='text' name='dbname' id='dbName'></p>
+                    <label for='dbHost'>MySQL Host: </label><input type='text' name='dbhost' id='dbHost'><br>
+                    <label for='dbUsername'>MySQL Username: </label><input type='text' name='dbusername' id='dbUsername'><br>
+                    <label for='dbPassword'>MySQL Password: </label><input type='password' name='dbpassword' id='dbPassword'><br>
+                    <label for='dbName'>Database Name: </label><input type='text' name='dbname' id='dbName'><br><br>
                     <input type=\"submit\" name='page' value=\"Test MySQL\" /></form>";
             echo "</form></div></div></body></html>";
             die();
@@ -102,12 +102,52 @@
                 die();
             }
 
+            $sql = "CREATE TABLE IF NOT EXISTS usermap (slackuser VARCHAR(25) PRIMARY KEY, cwname VARCHAR(25) NOT NULL)";
+            if(mysqli_query($mysql,$sql))
+            {
+                //Table created successfully
+            }
+            else
+            {
+                echo "<div class=\"alert alert-danger\" role=\"alert\">";
+                echo "usermap Table Creation Error: " . mysqli_error($mysql);
+                echo "</div>";
+                echo "<form action=\"test.php\">
+                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                </form>";
+                die();
+            }
+
             echo "<div class=\"alert alert-success\" role=\"alert\">";
-            echo "Successfully connected and setup MySQL Database!<br><form action=\"test.php\">
-                    <input type=\"submit\" name='page' value=\"Script Configuration\" /></form>";
+            echo "Successfully connected and setup MySQL Database!<br><br>You can now finish configuring the options in config.php and then test it out!";
             echo "</div></div></div></body></html>";
 
             mysqli_close($mysql);
+
+            $filedata = file('config.php');
+            $newdata = array();
+
+            foreach ($filedata as $data) {
+                if (stristr($data, '$dbhost')) {
+                    $newdata[] =  '$dbhost = "'.$dbhost.'""; //Your MySQL DB';
+                }
+                if (stristr($data, '$dbusername')) {
+                    $newdata[] =  '$dbusername = "'.$dbusername.'"; //Your MySQL DB Username';
+                }
+                if (stristr($data, '$dbpassword')) {
+                    $newdata[] ='$dbpassword = "'.$dbpassword.'"; //Your MySQL DB Password';
+                }
+                if (stristr($data, '$dbdatabase')) {
+                    $newdata[] = '$dbdatabase = "'.$dbdatabase.'"; //Change if you have an existing database you want to use, otherwise leave as default.';
+                }
+                if (stristr($data, '$usedatabase')) {
+                    $newdata[] = '$usedatabase = 1; // Set to 0 by default, set to 1 if you want to enable MySQL.';
+                }
+                $newdata[] = $data;
+            }
+
+            file_put_contents('config.php', implode('', $newdata));
+
             die();
         }
 

@@ -92,55 +92,7 @@ $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help ar
 //Timezone Setting to be used for all files.
 date_default_timezone_set($timezone);
 
-//Setup MySQL
-if($usedatabase == 1)
-{
-    $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword);
-
-    if (!$mysql)
-    {
-        die("Connection Error: " . mysqli_connect_error());
-    }
-
-    $dbselect = mysqli_select_db($mysql,$dbdatabase);
-    if(!$dbselect)
-    {
-        //Select database failed
-        $sql = "CREATE DATABASE " . $dbdatabase;
-        if (mysqli_query($mysql,$sql))
-        {
-            //Database created successfully
-        }
-        else
-        {
-            die("Database Creation Error: " . mysqli_error($mysql));
-        }
-    }
-
-    $sql = "CREATE TABLE IF NOT EXISTS follow (id INT(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY, ticketnumber INT(10) NOT NULL, slackuser VARCHAR(25) NOT NULL)";
-    if(mysqli_query($mysql,$sql))
-    {
-        //Table created successfully
-    }
-    else
-    {
-        die("follow Table Creation Error: " . mysqli_error($mysql));
-    }
-
-    $sql = "CREATE TABLE IF NOT EXISTS usermap (slackuser VARCHAR(25) PRIMARY KEY, cwname VARCHAR(25) NOT NULL)";
-    if(mysqli_query($mysql,$sql))
-    {
-        //Table created successfully
-    }
-    else
-    {
-        die("usermap Table Creation Error: " . mysqli_error($mysql));
-    }
-
-
-    mysqli_close($mysql);
-}
-else if ($followenabled==1) //Setup directory for Follow module.
+if ($followenabled==1) //Setup directory for Follow module.
 {
     if ( !file_exists($dir) ) {
         $oldmask = umask(0);  // helpful when used in linux server
