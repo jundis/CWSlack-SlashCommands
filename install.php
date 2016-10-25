@@ -50,6 +50,10 @@
                     <div class=\"col-sm-6\"><label for='slackNotestoken'>/note Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacknotestoken' id='slackNotestoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackConfigstoken'>/config Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackconfigstoken' id='slackConfigstoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackFollowtoken'>/follow Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackfollowtoken' id='slackFollowtoken'><br></div>
+                    <h4>Incoming Module</h4>
+                    <div class=\"col-sm-6\"><label for='webHookurl'>Web Hook URL: </label></div><div class=\"col-sm-6\"><input type='text' name='webhookurl' id='webHookurl'><br></div>
+                    <div class=\"col-sm-6\"><label for=''>Post New Tickets: </label></div><div class=\"col-sm-6\"><input type='text' name='' id=''><br></div>
+                    <div class=\"col-sm-6\"><label for=''>: </label></div><div class=\"col-sm-6\"><input type='text' name='' id=''><br></div>
                     </div><br><br>
                     <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Save Settings\" /></form>";
             echo "</form></div></div></body></html>";
