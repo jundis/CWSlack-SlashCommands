@@ -24,7 +24,34 @@
                     <div class=\"col-sm-6\"><label for='dbUsername'>MySQL Username: </label></div><div class=\"col-sm-6\"><input type='text' name='dbusername' id='dbUsername'><br></div>
                     <div class=\"col-sm-6\"><label for='dbPassword'>MySQL Password: </label></div><div class=\"col-sm-6\"><input type='password' name='dbpassword' id='dbPassword'><br></div>
                     <div class=\"col-sm-6\"><label for='dbName'>Database Name: </label></div><div class=\"col-sm-6\"><input type='text' name='dbname' id='dbName'></div></div><br><br>
-                    <input type=\"submit\" name='page' value=\"Test MySQL\" /></form>";
+                    <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Test MySQL\" /></form>";
+            echo "</form></div></div></body></html>";
+            die();
+        }
+        if($_GET["page"]=="Setup Settings" || $_GET["page"]=="Skip to Config.php Settings")
+        {
+            echo "<p>Settings Configuration</p>";
+
+            echo "<div class='row'><form action=\"install.php?page=Save Settings\" method='post'>
+                    Ensure that your URL is set to https://cw.domain.tld OR if you're hosted, use https://api-country.myconnectwise.net.<br>
+                    <div class=\"col-sm-6\"><label for='connectWise'>ConnectWise URL: </label></div><div class=\"col-sm-6\"><input type='text' name='connectwise' id='connectWise'><br></div>
+                    Set company name to the one you use when logging into ConnectWise<br>
+                    <div class=\"col-sm-6\"><label for='companyName'>Company Name: </label></div><div class=\"col-sm-6\"><input type='text' name='companyname' id='companyName'><br></div>
+                    Set API keys according to the README.md API instructions.<br>
+                    <div class=\"col-sm-6\"><label for='apiPublickey'>Public API Key: </label></div><div class=\"col-sm-6\"><input type='text' name='apipublickey' id='apiPublickey'><br></div>
+                    <div class=\"col-sm-6\"><label for='apiPrivatekey'>Private API Key: </label></div><div class=\"col-sm-6\"><input type='text' name='apiprivatekey' id='apiPrivatekey'><br></div>
+                    Set time zone to PHP supported format such as America/Chicago. Full list <a href='http://php.net/manual/en/timezones.php'>here.</a><br>
+                    <div class=\"col-sm-6\"><label for='timeZone'>Time Zone: </label></div><div class=\"col-sm-6\"><input type='text' name='timezone' id='timeZone'><br></div>
+                    <br><br>
+                    Set each of these to the respective Slack Token that you've setup. Leave blank if you do not need them.
+                    <div class=\"col-sm-6\"><label for='slackToken'>/tickets Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacktoken' id='slackToken'><br></div>
+                    <div class=\"col-sm-6\"><label for='slackActivitiestoken'>/activities Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackactivitiestoken' id='slackActivitiestoken'><br></div>
+                    <div class=\"col-sm-6\"><label for='slackContactstoken'>/contact Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackcontactstoken' id='slackContactstoken'><br></div>
+                    <div class=\"col-sm-6\"><label for='slackNotestoken'>/note Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacknotestoken' id='slackNotestoken'><br></div>
+                    <div class=\"col-sm-6\"><label for='slackConfigstoken'>/config Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackconfigstoken' id='slackConfigstoken'><br></div>
+                    <div class=\"col-sm-6\"><label for='slackFollowtoken'>/follow Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackfollowtoken' id='slackFollowtoken'><br></div>
+                    </div><br><br>
+                    <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Save Settings\" /></form>";
             echo "</form></div></div></body></html>";
             die();
         }
@@ -43,7 +70,7 @@
                 echo "Connection Error: " . mysqli_connect_error();
                 echo "</div>";
                 echo "<form action=\"install.php\">
-                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Retry MySQL\" />
                                 </form>";
                 die();
             }
@@ -64,7 +91,7 @@
                     echo "Database Creation Error: " . mysqli_error($mysql);
                     echo "</div>";
                     echo "<form action=\"install.php\">
-                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Retry MySQL\" />
                                 </form>";
                     die();
                 }
@@ -81,7 +108,7 @@
                 echo "follow Table Creation Error: " . mysqli_error($mysql);
                 echo "</div>";
                 echo "<form action=\"install.php\">
-                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Retry MySQL\" />
                                 </form>";
                 die();
             }
@@ -97,7 +124,7 @@
                 echo "usermap Table Creation Error: " . mysqli_error($mysql);
                 echo "</div>";
                 echo "<form action=\"install.php\">
-                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Retry MySQL\" />
                                 </form>";
                 die();
             }
@@ -113,14 +140,17 @@
                 echo "usermap Table Creation Error: " . mysqli_error($mysql);
                 echo "</div>";
                 echo "<form action=\"install.php\">
-                                <input type=\"submit\" name='page' value=\"Retry MySQL\" />
+                                <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Retry MySQL\" />
                                 </form>";
                 die();
             }
 
             echo "<div class=\"alert alert-success\" role=\"alert\">";
-            echo "Successfully connected and setup MySQL Database!<br><br>You can now finish configuring the options in config.php and then test it out!";
-            echo "</div><div class=\"alert alert-info\" role=\"alert\">Please remove install.php to avoid people accessing it externally.</div></div></div></body></html>";
+            echo "Successfully connected and setup MySQL Database!<br><br>You can now finish configuring the options in config.php and then test it out! You can also click the button below to configure the config.php file with this script.";
+            echo "</div><div class=\"alert alert-info\" role=\"alert\">Please remove install.php to avoid people accessing it externally if you manually configure settings.</div></div>";
+            echo "<form action=\"install.php\">
+                                <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Setup Settings\" />
+                                </form></div></body></html>";
 
             mysqli_close($mysql);
 
@@ -201,12 +231,15 @@
                     if(empty($curl_error) && empty($mysql_error) && empty($php_error))
                     {
                         echo "<form action=\"install.php\">
-                                <input type=\"submit\" name='page' value=\"Proceed\" />
+                                <input type=\"submit\" name='page' class=\"btn btn-success\" value=\"Proceed\" />
+                                </form>";
+                        echo "<form action=\"install.php\">
+                                <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Skip to Config.php Settings\" />
                                 </form>";
                     }
                     else
                     {
-                        echo "<button type='button' disabled>Resolve errors before proceeding</button>";
+                        echo "<button type='button' class=\"btn btn-danger\" disabled>Resolve errors before proceeding</button>";
                     }
                 ?>
             </div>
