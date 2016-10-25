@@ -1,5 +1,5 @@
 <?php
-/* 	
+/*
 	CWSlack-SlashCommands
     Copyright (C) 2016  jundis
 
@@ -14,7 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Receive connector for Connectwise Callbacks
@@ -50,12 +50,38 @@ foreach($dataTData as $entry) //For each schedule entry returned
 	$company = $companyarray[0]; //Set company to first part of second explode.
 	$summary = $namearray[1]; //Set the ticket summary to second part of first explode.
 	$datenow = date("Y-m-d\TH:i"); //Reusing datenow as non-GMT based time.
-	$datestart = date("Y-m-d\TH:i",strtotime($entry->dateStart)); //Start time of the tickte.
-	
+	$datestart = date("Y-m-d\TH:i",strtotime($entry->dateStart)); //Start time of the ticket.
+
+    //Username mapping code
+    if($usedatabase==1)
+    {
+        $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
+        $mysqlerror=0;
+        if (!$mysql) //Check for errors
+        {
+            die("Connection Error: " . mysqli_connect_error());
+        }
+
+        $sql = "SELECT * FROM `usermap` WHERE `cwname`=\"" . $user . "\""; //SQL Query to select all ticket number entries
+
+        $result = mysqli_query($mysql, $sql); //Run result
+        $rowcount = mysqli_num_rows($result);
+        if($rowcount > 1) //If there were too many rows matching query
+        {
+            die("Error: too many users somehow?"); //This should NEVER happen.
+        }
+        else if ($rowcount == 1)
+        {
+            $row = mysqli_fetch_assoc($result); //Row association.
+
+            $user = $row["slackuser"];
+        }
+    }
+
 	if($reminder != "0 minutes" && $posttousers == 1) //If reminder is not 0 minutes, proceed. Pointless to have 0 minute reminder as that is handled below.
 	{
 		$datereminder = date("Y-m-d\TH:i",strtotime($entry->dateStart . " -" . $reminder)); //Set the reminder date to a readable comparable format.
-		
+
 		if($datenow==$datereminder) //If datenow and datereminder are the same..
 		{
 		    //Setup the slack return text
@@ -76,7 +102,7 @@ foreach($dataTData as $entry) //For each schedule entry returned
             cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
 		}
 	}
-	
+
 	if($datenow == $datestart) //If the start of the ticket is right now..
 	{
 		if($posttousers==1) //And user post is on.
