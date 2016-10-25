@@ -85,9 +85,44 @@ else //If second part of text is neither external or internal
     die("Second part of text must be either internal or external."); //Return error text.
 }
 
-if($usecwname==1)
+//Username mapping code
+if($usedatabase==1)
 {
-    $postfieldspre["member"] = array("identifier"=>$_GET['user_name']);
+    $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
+    $mysqlerror=0;
+    if (!$mysql) //Check for errors
+    {
+        die("Connection Error: " . mysqli_connect_error());
+    }
+
+    $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $_GET["user_name"] . "\""; //SQL Query to select all ticket number entries
+
+    $result = mysqli_query($mysql, $sql); //Run result
+    $rowcount = mysqli_num_rows($result);
+    if($rowcount > 1) //If there were too many rows matching query
+    {
+        die("Error: too many users somehow?"); //This should NEVER happen.
+    }
+    else if ($rowcount == 1)
+    {
+        $row = mysqli_fetch_assoc($result); //Row association.
+
+        $postfieldspre["member"] = array("identifier"=>$row["cwname"]);
+    }
+    else
+    {
+        if($usecwname==1)
+        {
+            $postfieldspre["member"] = array("identifier"=>$_GET['user_name']);
+        }
+    }
+}
+else
+{
+    if($usecwname==1)
+    {
+        $postfieldspre["member"] = array("identifier"=>$_GET['user_name']);
+    }
 }
 
 $dataTNotes = cURLPost($noteurl, $header_data, "POST", $postfieldspre);
