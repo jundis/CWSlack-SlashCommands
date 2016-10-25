@@ -18,17 +18,11 @@ To search for ConnectWise configuration records, use cwslack-configs.php.
 
 To follow tickets and get updates whenever they're updated, use cwslack-follow.php (requires cwslack-incoming.php).
 
-To modify the MySQL database in Slack, please configure and setup cwslack-dbmanage.php
-
 # Installation Instructions
 
-This script set and all modules require PHP version 5 and the cURL extension, and many require a MySQL or MariaDB server.
+## cwslack.php, activities, contacts, notes, and configs
 
-For non-MySQL installation instructions, please see README_NoMySQL.md
-
-## cwslack.php, activities, contacts, notes, configs, and dbmanage
-
-1. Download the respective php file, functions.php, install.php, and config.php files.
+1. Download the respective php file, functions.php, and config.php files.
 2. Place on a compatible web server
 3. Create a new slack slash command integration at https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
 4. Set command to reflect the task necessary. E.x. /t for tickets, /act for activities, /note for notes.
@@ -36,13 +30,12 @@ For non-MySQL installation instructions, please see README_NoMySQL.md
 6. Set Method to GET
 7. Copy the token
 8. Set a name, icon, and auto complete text if wanted.
-9. Run install.php and proceed through database setup. This will also verify you have the required PHP and cURL versions.
-10. Modify the config.php file with your companies values and timezone. Full configuration info below.
-11. Test it in Slack!
+9. Modify the config.php file with your companies values and timezone. Full configuration info below.
+10. Test it in Slack!
 
 ## cwslack-incoming.php
 
-1. Download the cwslack-incoming.php, functions.php, install.php, and config.php files.
+1. Download the cwslack-incoming.php, functions.php, and config.php files.
 2. Place on a compatible web server
 3. Create a new slack incoming web hook integration at https://my.slack.com/services/new/incoming-webhook/
 4. Set a name, icon, and if wanted.
@@ -62,19 +55,18 @@ For non-MySQL installation instructions, please see README_NoMySQL.md
 
 **(Requires some variables from cwslack-incoming.php to function if you don't use that)**
 
-1. Download the cwslack-firmalerts.php, functions.php, install.php, and config.php files.
+1. Download the cwslack-firmalerts.php, functions.php, and config.php files.
 2. Place on a compatible web server.
-3. Run install.php and proceed through database setup. This will also verify you have the required PHP and cURL versions.
-4. Change $posttousers or $posttochan to 0 in config.php if you don't want it posting to one or the other.
-5. Setup a cron job or scheduled task on your server to run this PHP file **every minute.**  
+3. Change $posttousers or $posttochan to 0 in config.php if you don't want it posting to one or the other.
+4. Setup a cron job or scheduled task on your server to run this PHP file **every minute.**  
    ```Cron: * * * * * /usr/bin/php /var/www/cwslack-firmalerts.php >/dev/null 2>&1```
-6. Set a firm appointment and test
+5. Set a firm appointment and test
 
 ## cwslack-follow.php
 
 **(Also requires cwslack-incoming.php to function)**
 
-1. Download the cwslack-follow.php, functions.php, install.php, and config.php files.
+1. Download the cwslack-follow.php, functions.php, and config.php files.
 2. Place on a compatible web server
 3. Create a new slack slash command integration at  https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
 4. Set command to /follow (or other if you prefer)
@@ -82,9 +74,8 @@ For non-MySQL installation instructions, please see README_NoMySQL.md
 6. Set Method to GET
 7. Copy the token
 8. Set a name, icon, and auto complete text if wanted.
-9. Run install.php and proceed through database setup. This will also verify you have the required PHP and cURL versions.
-10. Modify the config.php file with your companies values and timezone. Full configuration info below.
-11. Test it in Slack!
+9. Modify the config.php file with your companies values, Full configuration info below.
+10. Test it in Slack!
 
 To enable ConnectWise link to follow and unfollow a ticket:
 
@@ -119,9 +110,7 @@ To enable ConnectWise link to follow and unfollow a ticket:
 \& Ampersand denotes required for cwslack-contacts.php  
 \^ Caret denotes required for cwslack-notes.php  
 \% Percent denotes required for cwslack-notes.php  
-\= Equals denotes required for cwslack-firmalerts.php    
-\@ At denotes required for cwslack-dbmanage.php
-
+\= Equals denotes required for cwslack-firmalerts.php
 
 ####All
 * $connectwise * : This value needs to be set to your main ConnectWise URL.
@@ -131,11 +120,6 @@ To enable ConnectWise link to follow and unfollow a ticket:
 * $apiprivatekey * : Set to your Private Key from API setup
 * $slacktoken * : Set to the token you got when creating a new slash command integration in Slack.
 * $timezone * : Set to your timezone according to http://php.net/manual/en/timezones.america.php .
-* $usedatabase #,^,=,@ : Automatically configured by install.php
-* $dbhost #,^,=,@ : Automatically configured by install.php
-* $dbusername #,^,=,@ : Automatically configured by install.php
-* $dbpassword #,^,=,@ : Automatically configured by install.php
-* $dbdatabase #,^,=,@ : Automatically configured by install.php
 
 ####Activities
 * $slackactivitiestoken + : Set to the token you got when creating a new slash command integration in Slack for /activities.
@@ -173,11 +157,6 @@ To enable ConnectWise link to follow and unfollow a ticket:
 
 ####Configs
 * $slackconfigstoken % : Set to the token you got when creating a new slash command integration in Slack for /config.
-
-####DBManage
-
-* $slackdbmantoken @ : Set your token for the database management slash command
-* $adminlist @ : Usernames that are allowed to use this command. Separate by pipe symbol as seen in example if you need multiple people to have access.
 
 ####General
 * $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
@@ -233,17 +212,6 @@ This does allow spaces for the ticket note so do not wrap in quotation marks or 
 
 ## cwslack-configs.php
 
-/config [company name]\*|[config name]*
+/config [company name]*|[config name]*
 
 Requires pipe symbol between the two, will return details on config that matches search.
-
-## cwslack-dbmanage.php
-
-/dbm [command]* [options]
-
-Commands available: 
-* help - Display this help text
-* listmap - List all username mappings between CW and Slack
-* addmap [slackname]* [cwname]* - Associate the two names
-* removemap [slackname]* - Remove a mapping
-* clearfollow confirm* - Clears the follow database
