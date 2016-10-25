@@ -111,8 +111,6 @@ if($usedatabase==1)
 			die("MySQL Error: " . mysqli_error($mysql));
 		}
 	}
-
-	mysqli_close($mysql);
 }
 else
 {
