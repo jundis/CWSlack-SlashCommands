@@ -89,7 +89,7 @@ else //If second part of text is neither external or internal
 if($usedatabase==1)
 {
     $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
-    $mysqlerror=0;
+
     if (!$mysql) //Check for errors
     {
         die("Connection Error: " . mysqli_connect_error());
@@ -103,17 +103,17 @@ if($usedatabase==1)
     {
         die("Error: too many users somehow?"); //This should NEVER happen.
     }
-    else if ($rowcount == 1)
+    else if ($rowcount == 1) //If exactly 1 row is found.
     {
         $row = mysqli_fetch_assoc($result); //Row association.
 
-        $postfieldspre["member"] = array("identifier"=>$row["cwname"]);
+        $postfieldspre["member"] = array("identifier"=>$row["cwname"]); //Return the connectwise name of the row found as the CW member name.
     }
-    else
+    else //If no rows are found
     {
-        if($usecwname==1)
+        if($usecwname==1) //If variable enabled
         {
-            $postfieldspre["member"] = array("identifier"=>$_GET['user_name']);
+            $postfieldspre["member"] = array("identifier"=>$_GET['user_name']); //Return the slack username as the user for the ticket note. If the user does not exist in CW, it will use the API username.
         }
     }
 }

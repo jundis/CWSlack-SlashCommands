@@ -56,10 +56,10 @@ foreach($dataTData as $entry) //For each schedule entry returned
     if($usedatabase==1)
     {
         $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
-        $mysqlerror=0;
+
         if (!$mysql) //Check for errors
         {
-            die("Connection Error: " . mysqli_connect_error());
+            die("Connection Error: " . mysqli_connect_error()); //Return error
         }
 
         $sql = "SELECT * FROM `usermap` WHERE `cwname`=\"" . $user . "\""; //SQL Query to select all ticket number entries
@@ -70,12 +70,13 @@ foreach($dataTData as $entry) //For each schedule entry returned
         {
             die("Error: too many users somehow?"); //This should NEVER happen.
         }
-        else if ($rowcount == 1)
+        else if ($rowcount == 1) //If exactly 1 row was found.
         {
             $row = mysqli_fetch_assoc($result); //Row association.
 
-            $user = $row["slackuser"];
+            $user = $row["slackuser"]; //Return the slack username portion of the found row as the $user variable to be used as part of the notification.
         }
+        //If no rows are found here, then it just uses whatever if found as $user previously from the ticket.
     }
 
 	if($reminder != "0 minutes" && $posttousers == 1) //If reminder is not 0 minutes, proceed. Pointless to have 0 minute reminder as that is handled below.
