@@ -129,7 +129,7 @@
 
             foreach ($filedata as $data) {
                 if (stristr($data, '$dbhost')) {
-                    $newdata[] =  '$dbhost = "'.$dbhost.'""; //Your MySQL DB';
+                    $newdata[] =  '$dbhost = "'.$dbhost.'; //Your MySQL DB';
                 }
                 if (stristr($data, '$dbusername')) {
                     $newdata[] =  '$dbusername = "'.$dbusername.'"; //Your MySQL DB Username';
