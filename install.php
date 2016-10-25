@@ -129,7 +129,7 @@
 
             foreach ($filedata as $data) {
                 if (stristr($data, '$dbhost')) {
-                    $newdata[] =  '$dbhost = "'.$dbhost.'; //Your MySQL DB';
+                    $newdata[] =  '$dbhost = "'.$dbhost.'"; //Your MySQL DB';
                 }
                 if (stristr($data, '$dbusername')) {
                     $newdata[] =  '$dbusername = "'.$dbusername.'"; //Your MySQL DB Username';
@@ -143,7 +143,10 @@
                 if (stristr($data, '$usedatabase')) {
                     $newdata[] = '$usedatabase = 1; // Set to 0 by default, set to 1 if you want to enable MySQL.';
                 }
-                $newdata[] = $data;
+                else
+                {
+                    $newdata[] = $data;
+                }
             }
 
             file_put_contents('config.php', implode('', $newdata));
