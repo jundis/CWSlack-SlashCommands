@@ -129,19 +129,19 @@
 
             foreach ($filedata as $data) {
                 if (stristr($data, '$dbhost')) {
-                    $newdata[] =  '$dbhost = "'.$dbhost.'"; //Your MySQL DB';
+                    $newdata[] =  '$dbhost = "'.$dbhost.'"; //Your MySQL DB' . PHP_EOL;
                 }
-                if (stristr($data, '$dbusername')) {
-                    $newdata[] =  '$dbusername = "'.$dbusername.'"; //Your MySQL DB Username';
+                else if (stristr($data, '$dbusername')) {
+                    $newdata[] =  '$dbusername = "'.$dbusername.'"; //Your MySQL DB Username' . PHP_EOL;
                 }
-                if (stristr($data, '$dbpassword')) {
-                    $newdata[] ='$dbpassword = "'.$dbpassword.'"; //Your MySQL DB Password';
+                else if (stristr($data, '$dbpassword')) {
+                    $newdata[] ='$dbpassword = "'.$dbpassword.'"; //Your MySQL DB Password' . PHP_EOL;
                 }
-                if (stristr($data, '$dbdatabase')) {
-                    $newdata[] = '$dbdatabase = "'.$dbdatabase.'"; //Change if you have an existing database you want to use, otherwise leave as default.';
+                else if (stristr($data, '$dbdatabase')) {
+                    $newdata[] = '$dbdatabase = "'.$dbdatabase.'"; //Change if you have an existing database you want to use, otherwise leave as default.' . PHP_EOL;
                 }
-                if (stristr($data, '$usedatabase')) {
-                    $newdata[] = '$usedatabase = 1; // Set to 0 by default, set to 1 if you want to enable MySQL.';
+                else if (stristr($data, '$usedatabase')) {
+                    $newdata[] = '$usedatabase = 1; // Set to 0 by default, set to 1 if you want to enable MySQL.' . PHP_EOL;
                 }
                 else
                 {
