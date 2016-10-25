@@ -81,6 +81,9 @@ $dir="/var/www/storage/"; //Needs to be set to a directory writeable by PHP for 
 $followtoken="follow"; //Change to random text to be used in your CW follow link if you use it. Defaults to follow which is fine for testing.
 $unfollowtoken="unfollow"; //Change to random text to be used in your CW unfollow link if you use it. Defaults to unfollow which is fine for testing.
 
+//cwslack-dbmanage.php
+$slackdbmantoken = "Slack Token Here"; //Set your token for the database management slash command
+$adminlist = "admin1|admin2"; //Separate by pipe symbol as seen in example if you need multiple people to have access.
 
 //Change optional
 $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help article URL here.
