@@ -120,7 +120,7 @@
 
             echo "<div class=\"alert alert-success\" role=\"alert\">";
             echo "Successfully connected and setup MySQL Database!<br><br>You can now finish configuring the options in config.php and then test it out!";
-            echo "</div></div></div></body></html>";
+            echo "</div><div class=\"alert alert-info\" role=\"alert\">Please remove install.php to avoid people accessing it externally.</div></div></div></body></html>";
 
             mysqli_close($mysql);
 
