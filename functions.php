@@ -105,7 +105,10 @@ function cURLPost($url, $header, $request, $postfieldspre)
         die(curl_error($ch));
     }
     curl_close($ch);
-
+    if($curlBodyTCmd == "ok") //Slack catch
+    {
+        return null;
+    }
     $jsonDecode = json_decode($curlBodyTCmd); //Decode the JSON returned by the CW API.
 
     if(array_key_exists("code",$jsonDecode)) { //Check if array contains error code
