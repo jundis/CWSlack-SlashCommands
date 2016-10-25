@@ -80,10 +80,36 @@ else
 
 if($usedatabase==1)
 {
-	$mysql = mysqli_connect($dbhost, $dbusername, $dbpassword);
+	$mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase);
 	if (!$mysql)
 	{
 		die("Connection Error: " . mysqli_connect_error());
+	}
+
+	if ($command == "unfollow")
+	{
+		$sql = "DELETE FROM `follow` WHERE `ticketnumber`=\"" . $ticketnumber . "\" AND `slackuser`=\"" . $username . "\"";
+
+		if(mysqli_query($mysql,$sql))
+		{
+			die("Successfully unfollowed ticket #".$ticketnumber);
+		}
+		else
+		{
+			die("MySQL Error: " . mysqli_error($mysql));
+		}
+	}
+	else
+	{
+		$sql = "INSERT INTO `follow` (`id`, `ticketnumber`, `slackuser`) VALUES (NULL, '" . $ticketnumber . "', '" . $username . "');";
+		if(mysqli_query($mysql,$sql))
+		{
+			die("Successfully followed ticket #".$ticketnumber);
+		}
+		else
+		{
+			die("MySQL Error: " . mysqli_error($mysql));
+		}
 	}
 
 	mysqli_close($mysql);
