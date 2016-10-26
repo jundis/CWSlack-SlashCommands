@@ -8,6 +8,7 @@
         <meta name="author" content="">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <title>CWSlack Installer</title>
     </head>
     <body>
     <div class="container">
@@ -25,38 +26,57 @@
                     <div class=\"col-sm-6\"><label for='dbPassword'>MySQL Password: </label></div><div class=\"col-sm-6\"><input type='password' name='dbpassword' id='dbPassword'><br></div>
                     <div class=\"col-sm-6\"><label for='dbName'>Database Name: </label></div><div class=\"col-sm-6\"><input type='text' name='dbname' id='dbName'></div></div><br><br>
                     <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Test MySQL\" /></form>";
-            echo "</form></div></div></body></html>";
+            echo "</div></div></body></html>";
             die();
         }
         if($_GET["page"]=="Setup Settings" || $_GET["page"]=="Skip to Config.php Settings")
         {
             echo "<p>Settings Configuration</p>";
 
-            echo "<div class='row'><form action=\"install.php?page=Save Settings\" method='post'>
-                    Ensure that your URL is set to https://cw.domain.tld OR if you're hosted, use https://api-country.myconnectwise.net.<br>
-                    <div class=\"col-sm-6\"><label for='connectWise'>ConnectWise URL: </label></div><div class=\"col-sm-6\"><input type='text' name='connectwise' id='connectWise'><br></div>
-                    Set company name to the one you use when logging into ConnectWise<br>
-                    <div class=\"col-sm-6\"><label for='companyName'>Company Name: </label></div><div class=\"col-sm-6\"><input type='text' name='companyname' id='companyName'><br></div>
-                    Set API keys according to the README.md API instructions.<br>
-                    <div class=\"col-sm-6\"><label for='apiPublickey'>Public API Key: </label></div><div class=\"col-sm-6\"><input type='text' name='apipublickey' id='apiPublickey'><br></div>
-                    <div class=\"col-sm-6\"><label for='apiPrivatekey'>Private API Key: </label></div><div class=\"col-sm-6\"><input type='text' name='apiprivatekey' id='apiPrivatekey'><br></div>
-                    Set time zone to PHP supported format such as America/Chicago. Full list <a href='http://php.net/manual/en/timezones.php'>here.</a><br>
-                    <div class=\"col-sm-6\"><label for='timeZone'>Time Zone: </label></div><div class=\"col-sm-6\"><input type='text' name='timezone' id='timeZone'><br></div>
-                    <br><br>
-                    Set each of these to the respective Slack Token that you've setup. Leave blank if you do not need them.
+            echo "<form action=\"install.php?page=Save Settings\" method='post'>
+                    <div class=\"col-sm-12\">Ensure that your URL is set to https://cw.domain.tld OR if you're hosted, use https://api-country.myconnectwise.net.</div>
+                    <div class=\"col-sm-6\"><label for='connectWise'>ConnectWise URL: </label></div><div class=\"col-sm-6\"><input type='text' name='connectwise' id='connectWise' placeholder='https://cw.domain.tld'><br></div>
+                    <div class=\"col-sm-12\">Set company name to the one you use when logging into ConnectWise</div>
+                    <div class=\"col-sm-6\"><label for='companyName'>Company Name: </label></div><div class=\"col-sm-6\"><input type='text' name='companyname' id='companyName' placeholder='mycompany'><br></div>
+                    <div class=\"col-sm-12\">Set API keys according to the README.md API instructions.</div>
+                    <div class=\"col-sm-6\"><label for='apiPublickey'>Public API Key: </label></div><div class=\"col-sm-6\"><input type='text' name='apipublickey' id='apiPublickey' placeholder='publickey'><br></div>
+                    <div class=\"col-sm-6\"><label for='apiPrivatekey'>Private API Key: </label></div><div class=\"col-sm-6\"><input type='text' name='apiprivatekey' id='apiPrivatekey' placeholder='privatekey'><br></div>
+                    <div class=\"col-sm-12\">Set time zone to PHP supported format such as America/Chicago. Full list <a href='http://php.net/manual/en/timezones.php'>here.</a></div>
+                    <div class=\"col-sm-6\"><label for='timeZone'>Time Zone: </label></div><div class=\"col-sm-6\"><input type='text' name='timezone' id='timeZone' placeholder='America/Chicago'><br></div>
+                    <br>
+                    <div class=\"col-sm-12\"><h4>Tokens</h4></div>
+                    <div class=\"col-sm-12\">Set each of these to the respective Slack Token that you've setup. Leave blank if you do not need them.</div>
                     <div class=\"col-sm-6\"><label for='slackToken'>/tickets Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacktoken' id='slackToken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackActivitiestoken'>/activities Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackactivitiestoken' id='slackActivitiestoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackContactstoken'>/contact Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackcontactstoken' id='slackContactstoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackNotestoken'>/note Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacknotestoken' id='slackNotestoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackConfigstoken'>/config Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackconfigstoken' id='slackConfigstoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackFollowtoken'>/follow Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackfollowtoken' id='slackFollowtoken'><br></div>
-                    <h4>Incoming Module</h4>
-                    <div class=\"col-sm-6\"><label for='webHookurl'>Web Hook URL: </label></div><div class=\"col-sm-6\"><input type='text' name='webhookurl' id='webHookurl'><br></div>
-                    <div class=\"col-sm-6\"><label for=''>Post New Tickets: </label></div><div class=\"col-sm-6\"><input type='text' name='' id=''><br></div>
-                    <div class=\"col-sm-6\"><label for=''>: </label></div><div class=\"col-sm-6\"><input type='text' name='' id=''><br></div>
-                    </div><br><br>
-                    <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Save Settings\" /></form>";
-            echo "</form></div></div></body></html>";
+                    <div class=\"col-sm-12\"><h4>Incoming Module</h4></div>
+                    <div class=\"col-sm-6\"><label for='webHookurl'>Web Hook URL: </label></div><div class=\"col-sm-6\"><input type='text' name='webhookurl' id='webHookurl' placeholder='https://hooks.slack.com/services/...'></div>
+                    <div class=\"col-sm-7\"><label for='postAdded'>Post new tickets to Slack: </label></div><div class=\"col-sm-5\"><input type='radio' name='postadded' value='yes' id='postAdded' checked> Yes <input type='radio' name='postadded' value='no'> No</div>
+                    <div class=\"col-sm-7\"><label for='postUpdated'>Post updated tickets to Slack: </label></div><div class=\"col-sm-5\"><input type='radio' name='postupdated' id='postUpdated' value='yes'> Yes <input type='radio' name='postupdated' value='no' checked> No</div>
+                    <div class=\"col-sm-7\"><label for='allowZadmin'>Post zAdmin updates? Required for customer created tickets to post: </label></div><div class=\"col-sm-5\"><input type='radio' name='allowzadmin' value='yes' id='allowZadmin'> Yes <input type='radio' name='allowzadmin' value='no' checked> No </div>
+                    <div class=\"col-sm-7\"><label for='postText'>Post ticket notes with /t and incoming: </label></div><div class=\"col-sm-5\"><input type='radio' name='posttext' value='yes' id='postText' checked> Yes <input type='radio' name='posttext' value='no' > No </div>
+                    <div class=\"col-sm-7\"><label for='postCompany'>Add company name to notifications: </label></div><div class=\"col-sm-5\"><input type='radio' name='postcompany' value='yes' id='postCompany' checked> Yes <input type='radio' name='postcompany' value='no' > No </div>
+                    <div class=\"col-sm-7\"><label for='timeEnabled'>Post all tickets past a set actual hours to a channel: </label></div><div class=\"col-sm-5\"><input type='radio' name='timeenabled' value='yes' id='timeEnabled'> Yes <input type='radio' name='timeenabled' value='no' checked> No </div>
+                    <div class=\"col-sm-6\"><label for='timePast'>If above enabled, time in hours where all updates will post: </label></div><div class=\"col-sm-6\"><input type='text' name='timepast' id='timePast' placeholder='1.0'></div>
+                    <div class=\"col-sm-6\"><label for='timeChan'>If above enabled, Channel to post time alerts to: </label></div><div class=\"col-sm-6\"><input type='text' name='timechan' id='timeChan' placeholder='#ticketstime'></div>
+                    <div class=\"col-sm-12\">Set these to any \"bad\" things you don't want posting updates. Use the pipe symbol | to separate multiple items.
+                    <div class=\"col-sm-6\"><label for='badBoard'>Board blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badboard' id='badBoard' placeholder='Alerts'></div>
+                    <div class=\"col-sm-6\"><label for='badStatus'>Status blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badstatus' id='badStatus' placeholder='Closed|Canceled'></div>
+                    <div class=\"col-sm-6\"><label for='badCompany'>Company Blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badcompany' id='badCompany' placeholder='CatchAll'></div>
+                    <div class=\"col-sm-12\"><h4>FirmAlerts Module</h4></div>
+                    <div class=\"col-sm-7\"><label for=''>: </label></div><div class=\"col-sm-5\"><input type='radio' name='' value='yes' id=''> Yes <input type='radio' name='' value='no' checked> No </div>
+                    <div class=\"col-sm-7\"><label for=''>: </label></div><div class=\"col-sm-5\"><input type='radio' name='' value='yes' id=''> Yes <input type='radio' name='' value='no' checked> No </div>
+                    <div class=\"col-sm-7\"><label for=''>: </label></div><div class=\"col-sm-5\"><input type='radio' name='' value='yes' id=''> Yes <input type='radio' name='' value='no' checked> No </div>
+                    <div class=\"col-sm-6\"><label for=''>: </label></div><div class=\"col-sm-6\"><input type='text' name='' id=''></div>
+
+                    <div class=\"col-sm-7\"><label for=''>: </label></div><div class=\"col-sm-5\"><input type='radio' name='' value='yes' id=''> Yes <input type='radio' name='' value='no' checked> No </div>
+                    <div class=\"col-sm-6\"><label for=''>: </label></div><div class=\"col-sm-6\"><input type='text' name='' id=''></div>
+                    <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Save Settings\" /></form>
+                    <br><br>";
+            echo "</div></div></body></html>";
             die();
         }
         if($_GET["page"]=="Test MySQL")
