@@ -33,7 +33,7 @@
         {
             echo "<p>Settings Configuration</p>";
 
-            echo "<form action=\"install.php?page=Save Settings\" method='post'>
+            echo "<div class='row'><form action=\"install.php?page=Save Settings\" method='post'>
                     <div class=\"col-sm-12\">Ensure that your URL is set to https://cw.domain.tld OR if you're hosted, use https://api-country.myconnectwise.net.</div>
                     <div class=\"col-sm-6\"><label for='connectWise'>ConnectWise URL: </label></div><div class=\"col-sm-6\"><input type='text' name='connectwise' id='connectWise' placeholder='https://cw.domain.tld'><br></div>
                     <div class=\"col-sm-12\">Set company name to the one you use when logging into ConnectWise</div>
@@ -62,20 +62,19 @@
                     <div class=\"col-sm-7\"><label for='timeEnabled'>Post all tickets past a set actual hours to a channel: </label></div><div class=\"col-sm-5\"><input type='radio' name='timeenabled' value='yes' id='timeEnabled'> Yes <input type='radio' name='timeenabled' value='no' checked> No </div>
                     <div class=\"col-sm-6\"><label for='timePast'>If above enabled, time in hours where all updates will post: </label></div><div class=\"col-sm-6\"><input type='text' name='timepast' id='timePast' placeholder='1.0'></div>
                     <div class=\"col-sm-6\"><label for='timeChan'>If above enabled, Channel to post time alerts to: </label></div><div class=\"col-sm-6\"><input type='text' name='timechan' id='timeChan' placeholder='#ticketstime'></div>
-                    <div class=\"col-sm-12\">Set these to any \"bad\" things you don't want posting updates. Use the pipe symbol | to separate multiple items.
+                    <div class=\"col-sm-12\">Set these to any \"bad\" things you don't want posting updates. Use the pipe symbol | to separate multiple items.</div>
                     <div class=\"col-sm-6\"><label for='badBoard'>Board blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badboard' id='badBoard' placeholder='Alerts'></div>
                     <div class=\"col-sm-6\"><label for='badStatus'>Status blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badstatus' id='badStatus' placeholder='Closed|Canceled'></div>
                     <div class=\"col-sm-6\"><label for='badCompany'>Company Blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badcompany' id='badCompany' placeholder='CatchAll'></div>
                     <div class=\"col-sm-12\"><h4>FirmAlerts Module</h4></div>
-                    <div class=\"col-sm-7\"><label for=''>: </label></div><div class=\"col-sm-5\"><input type='radio' name='' value='yes' id=''> Yes <input type='radio' name='' value='no' checked> No </div>
-                    <div class=\"col-sm-7\"><label for=''>: </label></div><div class=\"col-sm-5\"><input type='radio' name='' value='yes' id=''> Yes <input type='radio' name='' value='no' checked> No </div>
-                    <div class=\"col-sm-7\"><label for=''>: </label></div><div class=\"col-sm-5\"><input type='radio' name='' value='yes' id=''> Yes <input type='radio' name='' value='no' checked> No </div>
-                    <div class=\"col-sm-6\"><label for=''>: </label></div><div class=\"col-sm-6\"><input type='text' name='' id=''></div>
+                    <div class=\"col-sm-7\"><label for='postTousers'>Send message to user for their firm appointments: </label></div><div class=\"col-sm-5\"><input type='radio' name='posttousers' value='yes' id='postTousers' checked> Yes <input type='radio' name='posttousers' value='no' > No </div>
+                    <div class=\"col-sm-7\"><label for='postTochan'>Send message to a specific channel for all firm appointments: </label></div><div class=\"col-sm-5\"><input type='radio' name='posttochan' value='yes' id='postTochan' checked> Yes <input type='radio' name='posttochan' value='no' > No </div>
+                    <div class=\"col-sm-7\"><label for='useTimechan'>Use the same channel as time alerts set above: </label></div><div class=\"col-sm-5\"><input type='radio' name='usetimechan' value='yes' id='useTimechan' checked> Yes <input type='radio' name='usetimechan' value='no' > No </div>
+                    <div class=\"col-sm-6\"><label for='firmAlertchan'>Channel to post firm alerts to if above is no: </label></div><div class=\"col-sm-6\"><input type='text' name='firmalertchan' id='firmAlertchan' placeholder='#dispatch'></div>
 
                     <div class=\"col-sm-7\"><label for=''>: </label></div><div class=\"col-sm-5\"><input type='radio' name='' value='yes' id=''> Yes <input type='radio' name='' value='no' checked> No </div>
                     <div class=\"col-sm-6\"><label for=''>: </label></div><div class=\"col-sm-6\"><input type='text' name='' id=''></div>
-                    <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Save Settings\" /></form>
-                    <br><br>";
+                    <br><br><div class=\"col-sm-6\"><input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Save Settings\" /></div></form></div>";
             echo "</div></div></body></html>";
             die();
         }
