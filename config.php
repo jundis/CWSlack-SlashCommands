@@ -76,10 +76,10 @@ $firmalertchan = "#dispatch"; //When you want to split time alerts and firm aler
 //cwslack-follow.php
 //Requires cwslack-incoming.php to function.
 $slackfollowtoken = "Slack Token Here"; //Set your token for the follow slash command
-$followenabled=0; //When set to 1, follow commands and the follow scripts will be enabled.
-$dir="/var/www/storage/"; //Needs to be set to a directory writeable by PHP for storage of the storage.txt file. Not needed if using MySQL.
-$followtoken="follow"; //Change to random text to be used in your CW follow link if you use it. Defaults to follow which is fine for testing.
-$unfollowtoken="unfollow"; //Change to random text to be used in your CW unfollow link if you use it. Defaults to unfollow which is fine for testing.
+$followenabled = 0; //When set to 1, follow commands and the follow scripts will be enabled.
+$dir = "/var/www/storage/"; //Needs to be set to a directory writeable by PHP for storage of the storage.txt file. Not needed if using MySQL.
+$followtoken = "follow"; //Change to random text to be used in your CW follow link if you use it. Defaults to follow which is fine for testing.
+$unfollowtoken = "unfollow"; //Change to random text to be used in your CW unfollow link if you use it. Defaults to unfollow which is fine for testing.
 
 //cwslack-dbmanage.php
 $slackdbmantoken = "Slack Token Here"; //Set your token for the database management slash command
