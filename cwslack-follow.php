@@ -33,17 +33,7 @@ if(empty($_GET['method']) || ($_GET['method'] != $followtoken && $_GET['method']
 	$link=1;
 }
 
-//File Handling block
-if(file_exists($dir."storage.txt")) //Check if storage file exists.
-{
-	$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //If so, open it.
-}
-else
-{
-	$f = fopen($dir."storage.txt", 'w') or die("can't open file"); //If not, create it.
-	fclose($f); //Close newly created file.
-	$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //Open it again for reading.
-}
+$command=NULL; //Set a null command variable, so it has something set no matter what.
 
 //Check for command errors.
 if($link==0 && !is_numeric($exploded[0])) {
@@ -57,10 +47,9 @@ if($link==0 && !is_numeric($exploded[0])) {
 	{
 		echo "Unknown entry for ticket number.";
 		return;
-	}; 
+	}
 }
 
-$command=NULL; //Set a null command variable, so it has something set no matter what.
 
 if($link==0){
 	$ticketnumber = $exploded[0]; //Read ticket number to variable for convenience.
@@ -70,15 +59,15 @@ if($link==0){
 	{
 		$command = $exploded[1];
 	}
-} 
-else 
+}
+else
 {
 	$ticketnumber = $_GET['srnumber'];
 	$username = $_GET['memberid'];
 	if($_GET['method']==$followtoken)
 	{
 		//For future use.
-	} 
+	}
 	else if ($_GET['method']==$unfollowtoken)
 	{
 		$command="unfollow"; //Set command to unfollow if it matches the CW unfollowtoken
@@ -89,39 +78,90 @@ else
 	}
 }
 
-if($command=="unfollow") //If unfollow is set in the text received from Slack.
+if($usedatabase==1)
 {
-	$lines = explode("\n",$file); //Explode the file into each line
-
-	foreach($lines as $line) //For each line in the file...
+	$mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase);
+	if (!$mysql)
 	{
-		$tempex = explode("^",$line); //Explode the line into parts based on character set by this file's output.
+		die("Connection Error: " . mysqli_connect_error());
+	}
 
-		if($tempex[0]!=$ticketnumber) //If the first part of the line is not the ticket number
+	if ($command == "unfollow")
+	{
+		$sql = "DELETE FROM `follow` WHERE `ticketnumber`=\"" . $ticketnumber . "\" AND `slackuser`=\"" . $username . "\"";
+
+		if(mysqli_query($mysql,$sql))
 		{
-			$output[] = $line; //Output the line to the file again.
+			die("Successfully unfollowed ticket #".$ticketnumber);
 		}
-		else //If it is not
+		else
 		{
-			if($tempex[1]!=$username) //If the second part is not the username of sender.
-			{
-				$output[]=$line; //Output the line to the file again.
-			}
-			else //If the ticket number and username match.
-			{
-				//Do not output this line.
-			}
+			die("MySQL Error: " . mysqli_error($mysql));
 		}
 	}
-	echo "Unfollowed ticket #" .$ticketnumber; //Return text to Slack
-	$out = implode("\n",$output); //Implode all lines.
-	file_put_contents($dir."/storage.txt",$out); //Output to file again, excluding the line unfollowed.
+	else
+	{
+		$sql = "INSERT INTO `follow` (`id`, `ticketnumber`, `slackuser`) VALUES (NULL, '" . $ticketnumber . "', '" . $username . "');";
+		if(mysqli_query($mysql,$sql))
+		{
+			die("Successfully followed ticket #".$ticketnumber);
+		}
+		else
+		{
+			die("MySQL Error: " . mysqli_error($mysql));
+		}
+	}
 }
-else //If no command.
+else
 {
-	file_put_contents($dir."/storage.txt","\n".$ticketnumber."^".$username,FILE_APPEND); //Take the ticket number and the username of the person who submitted it and output to storage file, seperated by ^ sign.
-	echo "Now following ticket #" . $ticketnumber; //Return text to Slack notifying of follow.
+	//File Handling block
+	if(file_exists($dir."storage.txt")) //Check if storage file exists.
+	{
+		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //If so, open it.
+	}
+	else
+	{
+		$f = fopen($dir."storage.txt", 'w') or die("can't open file"); //If not, create it.
+		fclose($f); //Close newly created file.
+		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //Open it again for reading.
+	}
+
+
+	if($command=="unfollow") //If unfollow is set in the text received from Slack.
+	{
+		$lines = explode("\n",$file); //Explode the file into each line
+
+		foreach($lines as $line) //For each line in the file...
+		{
+			$tempex = explode("^",$line); //Explode the line into parts based on character set by this file's output.
+
+			if($tempex[0]!=$ticketnumber) //If the first part of the line is not the ticket number
+			{
+				$output[] = $line; //Output the line to the file again.
+			}
+			else //If it is the ticket number.
+			{
+				if($tempex[1]!=$username) //If the second part is not the username of sender.
+				{
+					$output[]=$line; //Output the line to the file again.
+				}
+				else //If the ticket number and username match.
+				{
+					//Do not output this line.
+				}
+			}
+		}
+		echo "Unfollowed ticket #" .$ticketnumber; //Return text to Slack
+		$out = implode("\n",$output); //Implode all lines.
+		file_put_contents($dir."/storage.txt",$out); //Output to file again, excluding the line unfollowed.
+	}
+	else //If no command.
+	{
+		file_put_contents($dir."/storage.txt","\n".$ticketnumber."^".$username,FILE_APPEND); //Take the ticket number and the username of the person who submitted it and output to storage file, seperated by ^ sign.
+		echo "Now following ticket #" . $ticketnumber; //Return text to Slack notifying of follow.
+	}
 }
+
 
 
 ?>

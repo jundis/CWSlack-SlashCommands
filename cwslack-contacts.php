@@ -26,15 +26,11 @@ require_once 'functions.php';
 if(empty($_GET['token']) || ($_GET['token'] != $slackcontactstoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 
-$apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
-$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
 $exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
 //Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 if ($exploded[0]=="help") {
-	$test=json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true)); //Encode a JSON response with a help URL.
-	echo $test; //Return the JSON
-	return; //Kill the connection.
+    die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true))); //Encode a JSON response with a help URL.
 }
 
 $firstname=NULL; //Create a first name variable and set it to Null
@@ -56,9 +52,8 @@ if (array_key_exists(1,$exploded)) //If two parts of the array exists
 
 $utc = time(); //Get the time.
 // Authorization array. Auto encodes API key for auhtorization above.
-$header_data =array(
- "Authorization: Basic ". $authorization,
-);
+$header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
+
 
 //Need to create array before hand to ensure no errors occur.
 $dataTData = array();

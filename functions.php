@@ -49,7 +49,27 @@ function cURL($url, $header)
     }
     curl_close($ch);
 
-    return json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
+    $jsonDecode = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
+
+    if(array_key_exists("code",$jsonDecode)) { //Check if array contains error code
+        if($jsonDecode->code == "NotFound") { //If error code is NotFound
+            die("Connectwise record was not found."); //Report that the ticket was not found.
+        }
+        if($jsonDecode->code == "Unauthorized") { //If error code is an authorization error
+            die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
+        }
+        else {
+            die("Unknown Error Occurred, check API key and other API settings. Error: " . $jsonDecode->code); //Fail case.
+        }
+    }
+    if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
+    {
+        $errors = $dataTData->errors; //Make array easier to access.
+
+        die("ConnectWise Error: " . $errors[0]->message); //Return CW error
+    }
+
+    return $jsonDecode;
 }
 
 /**
@@ -85,9 +105,50 @@ function cURLPost($url, $header, $request, $postfieldspre)
         die(curl_error($ch));
     }
     curl_close($ch);
+    if($curlBodyTCmd == "ok") //Slack catch
+    {
+        return null;
+    }
+    $jsonDecode = json_decode($curlBodyTCmd); //Decode the JSON returned by the CW API.
 
-    return json_decode($curlBodyTCmd);
+    if(array_key_exists("code",$jsonDecode)) { //Check if array contains error code
+        if($jsonDecode->code == "NotFound") { //If error code is NotFound
+            die("Connectwise record was not found."); //Report that the ticket was not found.
+        }
+        if($jsonDecode->code == "Unauthorized") { //If error code is an authorization error
+            die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
+        }
+        else {
+            die("Unknown Error Occurred, check API key and other API settings. Error: " . $jsonDecode->code); //Fail case.
+        }
+    }
+    if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
+    {
+        $errors = $jsonDecode->errors; //Make array easier to access.
+
+        die("ConnectWise Error: " . $errors[0]->message); //Return CW error
+    }
+
+    return $jsonDecode;
 }
 
+function authHeader($company, $publickey, $privatekey)
+{
+    $apicompanyname = strtolower($company); //Company name all lower case for api auth.
+    $authorization = base64_encode($apicompanyname . "+" . $publickey . ":" . $privatekey); //Encode the API, needed for authorization.
+
+    return array("Authorization: Basic ". $authorization);
+}
+
+function postHeader($company, $publickey, $privatekey)
+{
+    $apicompanyname = strtolower($company); //Company name all lower case for api auth.
+    $authorization = base64_encode($apicompanyname . "+" . $publickey . ":" . $privatekey); //Encode the API, needed for authorization.
+
+    return array(
+        "Authorization: Basic " . $authorization,
+        "Content-Type: application/json"
+    );
+}
 
 ?>

@@ -23,9 +23,6 @@ header('Content-Type: application/json'); //Set the header to return JSON, requi
 require_once 'config.php'; //Require the config file.
 require_once 'functions.php';
 
-$apicompanyname = strtolower($companyname); //Company name all lower case for api auth. 
-$authorization = base64_encode($apicompanyname . "+" . $apipublickey . ":" . $apiprivatekey); //Encode the API, needed for authorization.
-
 $data = json_decode(file_get_contents('php://input')); //Decode incoming body from connectwise callback.
 $info = json_decode(stripslashes($data->Entity)); //Decode the entity field which contains the JSON data we want.
 
@@ -51,9 +48,7 @@ $dataTData = array(); //Blank array.
 $dataTimeData = array(); //Blank array.
 
 //Set headers for cURL requests. $header_data covers API authentication while $header_data2 covers the Slack output.
-$header_data =array(
- "Authorization: Basic ". $authorization,
-);
+$header_data = authHeader($companyname, $apipublickey, $apiprivatekey); // Authorization array. Auto encodes API key for auhtorization.
 $header_data2 =array(
  "Content-Type: application/json"
 );
@@ -221,27 +216,53 @@ if($skip==0)
 
 if($followenabled==1)
 {
-	if(file_exists($dir."storage.txt")) //Check if storage file exists.
+	$alerts = array(); //Create a blank array.
+
+	if($usedatabase==1)
 	{
-		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //If so, open it.
+		$mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
+		if (!$mysql) //Check for errors
+		{
+			die("Connection Error: " . mysqli_connect_error()); //Die with error if error found
+		}
+
+		$sql = "SELECT * FROM `follow` WHERE `ticketnumber`=\"" . $ticket . "\""; //SQL Query to select all ticket number entries
+
+		$result = mysqli_query($mysql, $sql); //Run result
+
+		if(mysqli_num_rows($result) > 0) //If there were rows matching query
+		{
+			while($row = mysqli_fetch_assoc($result)) //While we still have rows to work with
+			{
+				$alerts[]=$row["slackuser"]; //Add user to alerts array.
+			}
+		}
 	}
 	else
 	{
-		$f = fopen($dir."storage.txt", 'w') or die("can't open file"); //If not, create it.
-		fclose($f); //Close newly created file.
-		$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //Open it again for reading.
-	}
-	$lines = explode("\n",$file); //Create array with each line being it's own part of the array.
-	$alerts = array(); //Create a blank array.
-	foreach($lines as $line) //Read through each line in the file.
-	{
-		$tempex = explode("^",$line); //Explode line based on seperator from cwslack-follow.php
-
-		if($tempex[0]==$ticket) //If the first part of the line is the ticket number..
+		if(file_exists($dir."storage.txt")) //Check if storage file exists.
 		{
-			$alerts[]=$tempex[1]; //Then add the username to the alerts array.
+			$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //If so, open it.
+		}
+		else
+		{
+			$f = fopen($dir."storage.txt", 'w') or die("can't open file"); //If not, create it.
+			fclose($f); //Close newly created file.
+			$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //Open it again for reading.
+		}
+		$lines = explode("\n",$file); //Create array with each line being it's own part of the array.
+
+		foreach($lines as $line) //Read through each line in the file.
+		{
+			$tempex = explode("^",$line); //Explode line based on seperator from cwslack-follow.php
+
+			if($tempex[0]==$ticket) //If the first part of the line is the ticket number..
+			{
+				$alerts[]=$tempex[1]; //Then add the username to the alerts array.
+			}
 		}
 	}
+
 	if(!empty($alerts)) {
 		foreach ($alerts as $username) //For each user in alerts array, set $postfieldspre to the follow message.
 		{

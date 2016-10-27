@@ -26,7 +26,14 @@ $connectwise = "https://cw.domain.com"; //Set your Connectwise URL
 $companyname = "MyCompany"; //Set your company name from Connectwise. This is the company name field from login.
 $apipublickey = "Key"; //Public API key
 $apiprivatekey = "Key"; //Private API key
-$timezone = "America/Chicago"; //Set your timezone here. 
+$timezone = "America/Chicago"; //Set your timezone here.
+
+// Database Configuration, required for if you want to use MySQL/Maria DB features.
+$usedatabase = 0; // Set to 0 by default, set to 1 if you want to enable MySQL.
+$dbhost = "127.0.0.1"; //Your MySQL DB
+$dbusername = "username"; //Your MySQL DB Username
+$dbpassword = "password"; //Your MySQL DB Password
+$dbdatabase = "cwslack"; //Change if you have an existing database you want to use, otherwise leave as default.
 
 //cwslack.php
 $slacktoken = "Slack Token Here"; //Set token from the Slack slash command screen.
@@ -39,7 +46,7 @@ $slackcontactstoken = "Slack Token Here"; //Set your token for the contacts slas
 
 //cwlsack-notes.php
 $slacknotestoken = "Slack Token Here"; //Set your token for the notes slash command
-$usecwname = 0; //If set to 1, it will create tickets using the user's slack name. Command will fail if their slack name is not the same as connectwise name.
+$usecwname = 1; //If set to 1, it will create tickets using the user's slack name. Command will fail if their slack name is not the same as connectwise name.
 
 //cwslack-configs.php
 $slackconfigstoken = "Slack Token Here"; //Set your token for the configs slash command
@@ -67,12 +74,16 @@ $usetimechan = 1; //When set, this will use the $timechan variable instead of th
 $firmalertchan = "#dispatch"; //When you want to split time alerts and firm alerts into their own channels.
 
 //cwslack-follow.php
+//Requires cwslack-incoming.php to function.
 $slackfollowtoken = "Slack Token Here"; //Set your token for the follow slash command
-$followenabled=0; //When set to 1, follow commands and the follow scripts will be enabled.
-$dir="/var/www/storage/"; //Needs to be set to a directory writeable by PHP for storage of the storage.txt file.
-$followtoken="follow"; //Change to random text to be used in your CW follow link if you use it. Defaults to follow which is fine for testing.
-$unfollowtoken="unfollow"; //Change to random text to be used in your CW unfollow link if you use it. Defaults to unfollow which is fine for testing.
+$followenabled = 0; //When set to 1, follow commands and the follow scripts will be enabled.
+$dir = "/var/www/storage/"; //Needs to be set to a directory writeable by PHP for storage of the storage.txt file. Not needed if using MySQL.
+$followtoken = "follow"; //Change to random text to be used in your CW follow link if you use it. Defaults to follow which is fine for testing.
+$unfollowtoken = "unfollow"; //Change to random text to be used in your CW unfollow link if you use it. Defaults to unfollow which is fine for testing.
 
+//cwslack-dbmanage.php
+$slackdbmantoken = "Slack Token Here"; //Set your token for the database management slash command
+$adminlist = "admin1|admin2"; //Separate by pipe symbol as seen in example if you need multiple people to have access.
 
 //Change optional
 $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help article URL here.
@@ -83,9 +94,13 @@ $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help ar
 
 //Timezone Setting to be used for all files.
 date_default_timezone_set($timezone);
-if ( !file_exists($dir) ) {
-     $oldmask = umask(0);  // helpful when used in linux server  
-     mkdir ($dir, 0744);
- }
+
+if ($usedatabase!=1) //Setup directory for Follow module.
+{
+    if ( !file_exists($dir) ) {
+        $oldmask = umask(0);  // helpful when used in linux server
+        mkdir ($dir, 0744);
+    }
+}
 
 ?>
