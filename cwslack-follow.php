@@ -63,7 +63,25 @@ if($link==0){
 else
 {
 	$ticketnumber = $_GET['srnumber'];
-	$username = $_GET['memberid'];
+	$mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase);
+	if (!$mysql) //Check for errors
+	{
+		die("Connection Error: " . mysqli_connect_error());
+	}
+	$sql = "SELECT slackuser FROM usermap where cwname = '".$_GET['memberid']."'";
+	$result = mysqli_query($mysql, $sql); //Run result
+	// Check for mapping, otherwise use Connectwise
+	if(mysqli_num_rows($result) > 0)
+	{
+		$user = mysqli_fetch_assoc($result);
+		$username = $user['slackuser'];
+	}
+	else
+	{
+		$username = $_GET['memberid'];
+	}
+	mysqli_close($mysql);
+
 	if($_GET['method']==$followtoken)
 	{
 		//For future use.
