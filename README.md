@@ -16,6 +16,8 @@ To post new notes to tickets, use cwslack-notes.php.
 
 To search for ConnectWise configuration records, use cwslack-configs.php.
 
+To add, modify, and review ticket tasks, use cwslack-tasks.php
+
 To follow tickets and get updates whenever they're updated, use cwslack-follow.php (requires cwslack-incoming.php).
 
 To modify the MySQL database in Slack, please configure and setup cwslack-dbmanage.php
@@ -26,7 +28,7 @@ This script set and all modules require PHP version 5 and the cURL extension, an
 
 For non-MySQL installation instructions, please see README_NoMySQL.md
 
-## cwslack.php, activities, contacts, notes, configs, and dbmanage
+## cwslack.php, activities, contacts, notes, configs, tasks, and dbmanage
 
 1. Download the respective php file, functions.php, install.php, and config.php files.
 2. Place on a compatible web server
