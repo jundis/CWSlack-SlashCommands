@@ -53,6 +53,7 @@
                     <div class=\"col-sm-6\"><label for='slackNotestoken'>/note Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacknotestoken' id='slackNotestoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackConfigstoken'>/config Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackconfigstoken' id='slackConfigstoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackFollowtoken'>/follow Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackfollowtoken' id='slackFollowtoken'><br></div>
+                    <div class=\"col-sm-6\"><label for='slackTaskstoken'>/task Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacktaskstoken' id='slackTaskstoken'><br></div>
                     <div class=\"col-sm-12\">The one below is for the use of the DBManage module, not needed if you plan to do all MySQL work in a different way.</div>
                     <div class=\"col-sm-6\"><label for='slackDbmantoken'>/dbm Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackdbmantoken' id='slackDbmantoken'><br></div>
                     <div class=\"col-sm-12\"><h4>Incoming Module</h4></div>
@@ -276,6 +277,12 @@
                     } else if (stristr($data, '$slackdbmantoken =')) {
                         if (!empty($_POST["slackdbmantoken"])) {
                             $newdata[] = '$slackdbmantoken = "' . $_POST["slackdbmantoken"] . '"; //Set your token for the database management slash command' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$slacktaskstoken =')) {
+                        if (!empty($_POST["slacktaskstoken"])) {
+                            $newdata[] = '$slacktaskstoken = "' . $_POST["slacktaskstoken"] . '"; //Set your token for the tasks slash command' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }
