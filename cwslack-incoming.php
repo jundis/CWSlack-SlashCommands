@@ -24,6 +24,10 @@ require_once 'config.php'; //Require the config file.
 require_once 'functions.php';
 
 $data = json_decode(file_get_contents('php://input')); //Decode incoming body from connectwise callback.
+if($data==NULL)
+{
+	die("No ticket data was submitted. This is expected behavior if you are just browsing to this page with a web browser.");
+}
 $info = json_decode(stripslashes($data->Entity)); //Decode the entity field which contains the JSON data we want.
 
 //Connection kill blocks. Stops things from running if certain conditions are met.
