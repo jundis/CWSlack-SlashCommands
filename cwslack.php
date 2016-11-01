@@ -188,27 +188,54 @@ if($posttext==1) //Block for curl to get latest note
 	{
 		$dataTNotes2 = cURL($connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc", $header_data); // Get the JSON returned by the CW API for ticket notes.
 	}
-
-	$createdby = $dataTNotes[0]->createdBy; //Set $createdby to the ticket note creator.
-	$notetime = new DateTime($dataTNotes[0]->dateCreated); //Create new datetime object based on ticketnote note.
-	$notedate = $dataTNotes[0]->dateCreated;
-
-	$text = $dataTNotes[0]->text; //Set $text to the ticket text.
-	if(array_key_exists(0,$dataTNotes) && array_key_exists(0,$dataTimeData) && $command != "initial" && $command != "first" && $command != "note") //Check if arrays exist properly.
+	if(!array_key_exists(0, $dataTNotes))
 	{
-		$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
+		$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
+		$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
+		$notedate = $dataTimeData[0]->dateEntered;
+
+		$date2 = strtotime($notedate);
+		$date2format = date('m-d-Y g:i:sa', $date2);
+	}
+	else if($dataTNotes[0]->text != NULL || $dataTimeData[0]->text != NULL) //Makes sure that if both text values == null, then there is no text to post.
+	{
+		if($dataTNotes[0]->text != NULL) {
+
+			$createdby = $dataTNotes[0]->createdBy; //Set $createdby to the ticket note creator.
+			$notetime = new DateTime($dataTNotes[0]->dateCreated); //Create new datetime object based on ticketnote note.
+			$notedate = $dataTNotes[0]->dateCreated;
+
+			$text = $dataTNotes[0]->text; //Set $text to the ticket text.
+			if (array_key_exists(0, $dataTNotes) && array_key_exists(0, $dataTimeData) && $command != "initial" && $command != "first" && $command != "note") //Check if arrays exist properly.
+			{
+				$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
 
 
-		if ($timetime > $notetime) //If the time entry is newer than latest ticket note.
+				if ($timetime > $notetime) //If the time entry is newer than latest ticket note.
+				{
+					$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
+					$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
+					$notedate = $dataTimeData[0]->dateEntered;
+				}
+			}
+
+			$date2 = strtotime($notedate);
+			$date2format = date('m-d-Y g:i:sa', $date2);
+		}
+		else
 		{
 			$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
 			$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
 			$notedate = $dataTimeData[0]->dateEntered;
+
+			$date2 = strtotime($notedate);
+			$date2format = date('m-d-Y g:i:sa', $date2);
 		}
 	}
-
-	$date2=strtotime($notedate);
-	$date2format=date('m-d-Y g:i:sa',$date2);
+	else
+	{
+		$posttext=0;
+	}
 }
 
 $date=strtotime($dataTData->dateEntered); //Convert date entered JSON result to time.
