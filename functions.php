@@ -115,8 +115,12 @@ function cURLPost($url, $header, $request, $postfieldspre)
         if($jsonDecode->code == "NotFound") { //If error code is NotFound
             die("Connectwise record was not found."); //Report that the ticket was not found.
         }
-        if($jsonDecode->code == "Unauthorized") { //If error code is an authorization error
+        else if($jsonDecode->code == "Unauthorized") { //If error code is an authorization error
             die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
+        }
+        else if($jsonDecode->code == NULL)
+        {
+            //do nothing.
         }
         else {
             die("Unknown Error Occurred, check API key and other API settings. Error: " . $jsonDecode->code); //Fail case.
