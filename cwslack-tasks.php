@@ -57,16 +57,28 @@ $taskurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnum
 if (array_key_exists(1, $exploded)) //If a second string exists in the slash command array, make it the command.
 {
     $command = $exploded[1];
-    if (array_key_exists(2, $exploded)) //If a third string exists in the slash command array, make it the task number.
+    if ($command!="new"&&$command!="add"&&array_key_exists(2, $exploded)) //If a third string exists in the slash command array, make it the task number.
     {
         $task = $exploded[2];
     }
-    if (array_key_exists(3, $exploded)) //If a fourth string exists in the slash command array, make it the sentence for notes.
+    if($command=="new"||$command=="add")
     {
-        unset($exploded[0]);
-        unset($exploded[1]);
-        unset($exploded[2]);
-        $sentence = implode(" ", $exploded); //Set the sentence
+        if (array_key_exists(2, $exploded)) //If a third string exists in the slash command array, make it the sentence for notes.
+        {
+            unset($exploded[0]);
+            unset($exploded[1]);
+            $sentence = implode(" ", $exploded); //Set the sentence
+        }
+    }
+    else
+    {
+        if (array_key_exists(3, $exploded)) //If a fourth string exists in the slash command array, make it the sentence for notes.
+        {
+            unset($exploded[0]);
+            unset($exploded[1]);
+            unset($exploded[2]);
+            $sentence = implode(" ", $exploded); //Set the sentence
+        }
     }
 }
 else
@@ -84,7 +96,7 @@ if($command=="list")
     }
     foreach($taskdata as $t)
     {
-        $output = $output . $t->priority. " | " . ($t->closedFlag ? "Done" : "Open") . " | " . $t->notes . "\n";
+        $output = $output . "Task #" . $t->priority. " | Status: " . ($t->closedFlag ? "*Done*" : "*Open*") . ":\n" . $t->notes . "\n";
     }
 
     $return =array(
@@ -106,19 +118,156 @@ if($command=="list")
 }
 else if ($command=="open"||$command=="reopen")
 {
+    $taskid=NULL; //Set ID to NULL for later.
 
+    $taskdata = cURL($taskurl, $header_data); // Get the JSON returned by the CW API for $taskurl.
+    if(empty($taskdata))
+    {
+        die("No tasks found on ticket #".$ticketnumber);
+    }
+    foreach($taskdata as $t)
+    {
+        if($t->priority==$task)
+        {
+            $taskid = $t->id;
+            if($t->closedFlag==false)
+            {
+                die("Task #" .$task . " is already open.");
+            }
+        }
+    }
+    if($taskid==NULL)
+    {
+        die("Task #" . $task . " not found on Ticket #" . $ticketnumber . ".");
+    }
+
+    $taskpatch = $taskurl . "/" . $taskid;
+
+    $dataTCmd = cURLPost(
+        $taskpatch,
+        $header_data2,
+        "PATCH",
+        array(array("op" => "replace", "path" => "/closedFlag", "value" => false))
+    );
+
+    echo "Task #" . $task . " has been marked open.";
 }
 else if ($command=="close"||$command=="complete"||$command=="done"||$command=="completed")
 {
+    $taskid=NULL; //Set ID to NULL for later.
 
+    $taskdata = cURL($taskurl, $header_data); // Get the JSON returned by the CW API for $taskurl.
+    if(empty($taskdata))
+    {
+        die("No tasks found on ticket #".$ticketnumber);
+    }
+    foreach($taskdata as $t)
+    {
+        if($t->priority==$task)
+        {
+            $taskid = $t->id;
+            if($t->closedFlag==true)
+            {
+                die("Task #" .$task . " is already marked done.");
+            }
+        }
+    }
+    if($taskid==NULL)
+    {
+        die("Task #" . $task . " not found on Ticket #" . $ticketnumber . ".");
+    }
+
+    $taskpatch = $taskurl . "/" . $taskid;
+
+    $dataTCmd = cURLPost(
+        $taskpatch,
+        $header_data2,
+        "PATCH",
+        array(array("op" => "replace", "path" => "/closedFlag", "value" => true))
+    );
+    if($sentence != NULL) {
+        $dataTCmd = cURLPost(
+            $taskpatch,
+            $header_data2,
+            "PATCH",
+            array(array("op" => "replace", "path" => "/resolution", "value" => $sentence))
+        );
+
+        echo "Task #" . $task . " has been marked completed with resolution note: " . $sentence;
+    }
+    else
+    {
+        echo "Task #" . $task . " has been marked completed.";
+    }
 }
-else if ($command=="update"||$command=="change")
+else if ($command=="update"||$command=="change"||$command=="note")
 {
+    $taskid=NULL; //Set ID to NULL for later.
 
+    $taskdata = cURL($taskurl, $header_data); // Get the JSON returned by the CW API for $taskurl.
+    if(empty($taskdata))
+    {
+        die("No tasks found on ticket #".$ticketnumber);
+    }
+    foreach($taskdata as $t)
+    {
+        if($t->priority==$task)
+        {
+            $taskid = $t->id;
+            if($t->closedFlag==true)
+            {
+                die("Task #" .$task . " is already marked done.");
+            }
+        }
+    }
+    if($taskid==NULL)
+    {
+        die("Task #" . $task . " not found on Ticket #" . $ticketnumber . ".");
+    }
+
+    $taskpatch = $taskurl . "/" . $taskid;
+
+    if($sentence != NULL) {
+        $dataTCmd = cURLPost(
+            $taskpatch,
+            $header_data2,
+            "PATCH",
+            array(array("op" => "replace", "path" => "/notes", "value" => $sentence))
+        );
+
+        echo "Task #" . $task . " has been updated with note: " . $sentence;
+    }
+    else
+    {
+        echo "No note provided for update.";
+    }
 }
 else if ($command=="new"||$command=="add")
 {
+    $priority = 1;
+    $taskdata = cURL($taskurl, $header_data); // Get the JSON returned by the CW API for $taskurl.
+    if(empty($taskdata))
+    {
+        //Do nothing.
+    }
+    else
+    {
+        $priority = sizeof($taskdata) + 1;
+    }
+    if($sentence != NULL) {
+        $dataTCmd = cURLPost(
+            $taskurl,
+            $header_data2,
+            "POST",
+            array("notes"=>$sentence,"priority"=>$priority)
+        );
 
+        echo "A new task has been created with note: " . $sentence;
+    }
+    else
+    {
+        echo "No note provided for new task.";
+    }
 }
 else
 {
