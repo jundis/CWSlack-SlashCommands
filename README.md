@@ -239,6 +239,18 @@ This does allow spaces for the ticket note so do not wrap in quotation marks or 
 
 Requires pipe symbol between the two, will return details on config that matches search.
 
+## cwslack-tasks.php
+
+/tasks [ticket number]\* [command]\* [task number] [note]
+
+Commands:
+
+* list : List all tasks on [ticket number]
+* open/reopen : Mark a task as open, removing the done flag, requires [task number].
+* close/complete/done/completed : Mark a task as done, requires [task number]. Can also add [note] for a resolution note.
+* update/change/note : Change the note on a task, requires [task number] and [note].
+* new/add : Add a new task to the end of the priority list, requires [note] but do not include [task number].
+
 ## cwslack-dbmanage.php
 
 /dbm [command]* [options]
