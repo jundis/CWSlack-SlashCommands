@@ -34,16 +34,17 @@
 <p>The goal of this project is to fully integrate the ConnectWise software into Slack slash commands and incoming webhooks to make life as an MSP much easier. The ConnectWise main interface can be slow and bogged down through many pages, whereas the API has quick responses as long as you know what you're searching for.</p>
 
 <h3>
-<a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v1.9</h3>
+<a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v2.1</h3>
 
 <ul>
-<li><strong>All Modules</strong>: Better error text. Instead of just killing the connection with die(), it will provide an error message on why it's doing this.</li>
-<li><strong>Contacts</strong>: Fixed a null error for contacts without a site attached for issue #44 </li>
-<li><strong>Documentation</strong>: Typo fixes, pull #42. Thanks @damiankw!</li>
-<li><strong>Incoming</strong>: Added extra data to incoming notifications so it now displays the user who made/updated the ticket, instead of just saying "New Ticket" or "Updated Ticket". This will apply to followed tickets, time alerts, and normal incoming tickets.</li>
-<li><strong>Incoming</strong>: Fixed issue where tickets created without any internal or external note would not post to Slack when $posttext was set to 1, per issue #48.</li>
-<li><strong>FirmAlerts</strong>: Added a variable ($usetimechan) so you can choose to set the channel for firm alerts to be different than those of the time alerts. Default to 1. Per suggestion #49.</li>
-<li><strong>Notes</strong>: Added the "externalemail" option, which allows the note you are posting to process e-mails according to what is the default e-mail targets on that ticket.</li>
+<li><strong>Incoming</strong>: Add identifier to notes to show internal vs external note for issue #50</li>
+<li><strong>Incoming</strong>: Add date/time to all notes for issue #51</li>
+<li><strong>All</strong>: Refactor numerous back end code, removed useless lines, creating a new functions.php file that is <strong>REQUIRED</strong> for all files to work properly. Per issue #53</li>
+<li><strong>All</strong>: Completely redo error codes to make them handle much better.</li>
+<li><strong>Notes and FirmAlerts</strong>: Implemented MySQL code to be able to map usernames by either modifying SQL manually or using /dbm</li>
+<li><strong>Follow and Incoming</strong>: Converted /follow to use MySQL for storing data. Can be completely cleared with /dbm clearfollow</li>
+<li><strong>DBManage</strong>: New module for controlling the MySQL database. See /dbm help for more info, Slack name must be in $adminlist to use.</li>
+<li><strong>Install Script</strong>: New install script to comfigure everything from scratch. Recommended everyone use for 2.0 release.</li>
 </ul>
 
 
