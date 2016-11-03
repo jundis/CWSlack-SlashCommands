@@ -54,6 +54,12 @@ $slackconfigstoken = "Slack Token Here"; //Set your token for the configs slash 
 //cwslack-tasks.php
 $slacktaskstoken = "Slack Token Here"; //Set your token for the tasks slash command
 
+//cwslack-time.php
+$slacktimetoken = "Slack Token Here"; //Set your token for the tasks slash command
+//Find status IDs here: https://cw.YOURDOMAIN.com/v4_6_release/apis/3.0/service/boards/1/statuses
+$timeresolution = 0; //Set to the status you want it to change tickets to when a resolution note is posted. 0 means no change.
+$timedetail = 0; //Set to the status you want it to change tickets to when a detail note is posted. 0 means no change.
+
 //cwslack-incoming.php
 $webhookurl = "https://hooks.slack.com/services/tokens"; //Change this to the URL retrieved from incoming webhook setup for Slack.
 $postadded = 1; //Set this to post new tickets to slack.
