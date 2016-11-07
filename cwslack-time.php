@@ -48,9 +48,10 @@ $sentence=NULL; //Create a option variable and set it to Null
 
 //Set URL
 $timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries";
+$urlticketdata = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
 
 //Dates
-$datenow = date("Y-m-d\TH:i"); //Date as non-GMT based time.
+$datenow = gmdate("Y-m-d\TH:i:s\Z"); //Date as GMT based time.
 $datestart = NULL;
 
 if (array_key_exists(1, $exploded)) //If a second string exists in the slash command array, make it the command.
@@ -60,11 +61,11 @@ if (array_key_exists(1, $exploded)) //If a second string exists in the slash com
     {
         if(strpos($exploded[2],"m")!==false && strpos($exploded[2],"h")==false)
         {
-            $datestart = date("Y-m-d\TH:i",strtotime("-" . preg_replace('/[^a-zA-Z]+/', "", $exploded[2]) . " minutes")); //Start time of the ticket.
+            $datestart = gmdate("Y-m-d\TH:i:s\Z",strtotime("-" . preg_replace('/[^0-9,.]/', "", $exploded[2]) . " minutes")); //Start time of the ticket.
         }
         else if(strpos($exploded[2],"h")!==false && strpos($exploded[2],"m")==false)
         {
-            $datestart = date("Y-m-d\TH:i",strtotime("-" . preg_replace('/[^a-zA-Z]+/', "", $exploded[2]) . " minutes")); //Start time of the ticket.
+            $datestart = gmdate("Y-m-d\TH:i:s\Z",strtotime("-" . preg_replace('/[^0-9,.]/', "", $exploded[2]) . " hours")); //Start time of the ticket.
         }
         else
         {
@@ -102,15 +103,15 @@ $ch = curl_init();
 $postfieldspre = NULL; //avoid errors.
 if($command == "internal" || $command == "i") //If second part of text is internal
 {
-    $postfieldspre = array("addToInternalAnalysisFlag" => "True", "internalNotes" => $sentence, "chargeToType" => "ServiceTicket", "chargeToId" => $ticketnumber, "timeStart" => $datestart, "timeEnd" => $datenow, "billableOption" => "DoNotBill"); //Post ticket as API user
+    $postfieldspre = array("addToInternalAnalysisFlag" => "True", "notes" => $sentence, "chargeToType" => "ServiceTicket", "chargeToId" => $ticketnumber, "timeStart" => $datestart, "timeEnd" => $datenow, "billableOption" => "DoNotBill", "workType" => array("name" => $timeinternalworktype)); //Post ticket as API user
 }
 else if ($command == "external" || $command == "detail" || $command == "detailed" || $command == "d")//If second part of text is detail
 {
-    $postfieldspre = array("addToDetailDescriptionFlag" => "True", "notes" => $sentence, "chargeToType" => "ServiceTicket", "chargeToId" => $ticketnumber, "timeStart" => $datestart, "timeEnd" => $datenow, "billableOption" => "Billable"); //Post ticket as API user
+    $postfieldspre = array("addToDetailDescriptionFlag" => "True", "notes" => $sentence, "chargeToType" => "ServiceTicket", "chargeToId" => $ticketnumber, "timeStart" => $datestart, "timeEnd" => $datenow, "billableOption" => "Billable", "workType" => array("name" => $timedetailworktype)); //Post ticket as API user
 }
 else if ($command == "resolution" || $command == "resolved" || $command == "r")//If second part of text is resolution
 {
-    $postfieldspre = array("addToResolutionFlag" => "True", "notes" => $sentence, "chargeToType" => "ServiceTicket", "chargeToId" => $ticketnumber, "timeStart" => $datestart, "timeEnd" => $datenow, "billableOption" => "Billable"); //Post ticket as API user
+    $postfieldspre = array("addToResolutionFlag" => "True", "notes" => $sentence, "chargeToType" => "ServiceTicket", "chargeToId" => $ticketnumber, "timeStart" => $datestart, "timeEnd" => $datenow, "billableOption" => "Billable", "workType" => array("name" => $timeresolutionworktype)); //Post ticket as API user
 }
 else //If second part of text is neither external or internal
 {
@@ -139,13 +140,15 @@ if($usedatabase==1)
     {
         $row = mysqli_fetch_assoc($result); //Row association.
 
-        $postfieldspre["member"] = array("member"=>$row["cwname"]); //Return the connectwise name of the row found as the CW member name.
+        $postfieldspre["member"] = array("name"=>$row["cwname"]); //Return the connectwise name of the row found as the CW member name.
+        $postfieldspre["enteredBy"] = $row["cwname"];
     }
     else //If no rows are found
     {
         if($usecwname==1) //If variable enabled
         {
-            $postfieldspre["member"] = array("member"=>$_GET['user_name']); //Return the slack username as the user for the ticket note. If the user does not exist in CW, it will use the API username.
+            $postfieldspre["member"] = array("name"=>$_GET['user_name']); //Return the slack username as the user for the ticket note. If the user does not exist in CW, it will use the API username.
+            $postfieldspre["enteredBy"] = $_GET['user_name'];
         }
     }
 }
@@ -153,7 +156,8 @@ else
 {
     if($usecwname==1)
     {
-        $postfieldspre["member"] = array("member"=>$_GET['user_name']);
+        $postfieldspre["member"] = array("name"=>$_GET['user_name']);
+        $postfieldspre["enteredBy"] = $_GET['user_name'];
     }
 }
 
@@ -167,7 +171,7 @@ if(array_key_exists("errors",$dataTNotes)) //If connectwise returned an error.
 }
 else //No error
 {
-    echo "New " . $command . " note created on #" . $ticketnumber . ": " . $sentence; //Return new ticket posted message.
+    echo "New " . $command . " time entry created on #" . $ticketnumber . ": " . $sentence; //Return new ticket posted message.
 }
 
 ?>
