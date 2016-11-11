@@ -43,6 +43,12 @@ if (in_array($info->BoardName,$badboards)) die;
 if (in_array($info->StatusName,$badstatuses)) die;
 if (in_array($info->CompanyName,$badcompanies)) die;
 
+$channel = NULL; //Set channel to NULL for future use.
+if(!empty($_GET['channel']))  //If using channels in URL is set, and channel is not empty..
+{
+	$channel = $_GET['channel']; //Set $channel to the channel.
+}
+
 //URL creation
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
 $noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $_GET['id'] . "/notes?orderBy=id%20desc"; //Set the URL required for cURL requests to ticket note API.
@@ -119,6 +125,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 	if($posttext==0)
 	{
 		$postfieldspre = array(
+			"channel" => ($channel!=NULL ? "#" . $channel : NULL),
 			"attachments"=>array(array(
 				"fallback" => (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) ." created #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
@@ -137,6 +144,7 @@ if($_GET['action'] == "added" && $postadded == 1)
 	else
 	{
 		$postfieldspre = array(
+			"channel" => ($channel!=NULL ? "#" . $channel : NULL),
 			"attachments"=>array(array(
 				"fallback" => (strtolower($_GET['memberId'])=="zadmin" ? $info->ContactName : $info->UpdatedBy) ." created #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
@@ -167,6 +175,7 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 	if($posttext==0)
 	{
 		$postfieldspre = array(
+			"channel" => ($channel!=NULL ? "#" . $channel : NULL),
 			"attachments"=>array(array(
 				"fallback" => $info->UpdatedBy . " updated #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
 				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
@@ -184,28 +193,29 @@ else if($_GET['action'] == "updated" && $postupdated == 1)
 	else
 	{
 		$postfieldspre = array(
-		"attachments"=>array(array(
-			"fallback" => $info->UpdatedBy . " updated #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
-			"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
-			"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
-			"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
-			"\n" . $dateformat . " | " . $info->StatusName . //Return "Date Entered / Status" string
-			"\n" . $info->Resources, //Return assigned resources
-			"mrkdwn_in" => array(
-				"text",
-				"pretext"
-				)
-			),
-			array(
-				"pretext" => "Latest " . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . " Note (" . $dateformat2 . ") from: " . $createdby,
-				"text" =>  $text,
+			"channel" => ($channel!=NULL ? "#" . $channel : NULL),
+			"attachments"=>array(array(
+				"fallback" => $info->UpdatedBy . " updated #" . $ticket . " - " . ($postcompany ? "(" . $info->CompanyName . ") " : "") . $info->Summary,
+				"title" => "<" . $ticketurl . $ticket . "&companyName=" . $companyname . "|#" . $ticket . ">: ". $info->Summary,
+				"pretext" => "Ticket #" . $ticket . " has been updated by " . $info->UpdatedBy . ".",
+				"text" =>  $info->CompanyName . " | " . $info->ContactName . //Return "Company / Contact" string
+				"\n" . $dateformat . " | " . $info->StatusName . //Return "Date Entered / Status" string
+				"\n" . $info->Resources, //Return assigned resources
 				"mrkdwn_in" => array(
 					"text",
-					"pretext",
-					"title"
+					"pretext"
 					)
-			))
-		);
+				),
+				array(
+					"pretext" => "Latest " . ($dataarray->internalAnalysisFlag == "true" ? "Internal" : "External") . " Note (" . $dateformat2 . ") from: " . $createdby,
+					"text" =>  $text,
+					"mrkdwn_in" => array(
+						"text",
+						"pretext",
+						"title"
+						)
+				))
+			);
 	}
 }
 else
