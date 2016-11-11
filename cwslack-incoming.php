@@ -42,6 +42,13 @@ $badcompanies = explode("|",$badcompany); //Explode with pipe seperator.
 if (in_array($info->BoardName,$badboards)) die;
 if (in_array($info->StatusName,$badstatuses)) die;
 if (in_array($info->CompanyName,$badcompanies)) die;
+if (!empty($_GET['board']))
+{
+	if($_GET['board'] != $info->BoardName)
+	{
+		die("Incorrect board");
+	}
+}
 
 $channel = NULL; //Set channel to NULL for future use.
 if(!empty($_GET['channel']))  //If using channels in URL is set, and channel is not empty..
