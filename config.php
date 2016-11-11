@@ -55,7 +55,7 @@ $slackconfigstoken = "Slack Token Here"; //Set your token for the configs slash 
 $slacktaskstoken = "Slack Token Here"; //Set your token for the tasks slash command
 
 //cwslack-time.php
-$slacktimetoken = "Slack Token Here"; //Set your token for the tasks slash command
+$slacktimetoken = "Slack Token Here"; //Set your token for the time slash command
 $timedetailworktype = "Remote Support"; //Set to the worktype name you want it to change tickets to when a note is posted to detailed.
 $timeinternalworktype = "Admin"; //Set to the worktype name you want it to change tickets to when a note is posted to internal.
 $timeresolutionworktype = "Remote Support"; //Set to the worktype name you want it to change tickets to when a note is posted to resolution.

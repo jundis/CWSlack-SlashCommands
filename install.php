@@ -54,6 +54,7 @@
                     <div class=\"col-sm-6\"><label for='slackConfigstoken'>/config Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackconfigstoken' id='slackConfigstoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackFollowtoken'>/follow Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackfollowtoken' id='slackFollowtoken'><br></div>
                     <div class=\"col-sm-6\"><label for='slackTaskstoken'>/task Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacktaskstoken' id='slackTaskstoken'><br></div>
+                    <div class=\"col-sm-6\"><label for='slackTimetoken'>/times Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacktimetoken' id='slackTimetoken'><br></div>
                     <div class=\"col-sm-12\">The one below is for the use of the DBManage module, not needed if you plan to do all MySQL work in a different way.</div>
                     <div class=\"col-sm-6\"><label for='slackDbmantoken'>/dbm Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackdbmantoken' id='slackDbmantoken'><br></div>
                     <div class=\"col-sm-12\"><h4>Incoming Module</h4></div>
@@ -70,6 +71,10 @@
                     <div class=\"col-sm-6\"><label for='badBoard'>Board blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badboard' id='badBoard' placeholder='Alerts'></div>
                     <div class=\"col-sm-6\"><label for='badStatus'>Status blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badstatus' id='badStatus' placeholder='Closed|Canceled'></div>
                     <div class=\"col-sm-6\"><label for='badCompany'>Company Blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badcompany' id='badCompany' placeholder='CatchAll'></div>
+                    <div class=\"col-sm-12\"><h4>Time Module</h4></div>
+                    <div class=\"col-sm-6\"><label for='timeDetailworktype'>Detailed notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timedetailworktype' id='timeDetailworktype' placeholder='Remote Support'></div>
+                    <div class=\"col-sm-6\"><label for='timeInternalworktype'>Internal notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timeinternalworktype' id='timeInternalworktype' placeholder='Admin'></div>
+                    <div class=\"col-sm-6\"><label for='timeResolutionworktype'>Resolution notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timeresolutionworktype' id='timeResolutionworktype' placeholder='Remote Support'></div>
                     <div class=\"col-sm-12\"><h4>FirmAlerts Module</h4></div>
                     <div class=\"col-sm-7\"><label for='postTousers'>Send message to user for their firm appointments: </label></div><div class=\"col-sm-5\"><input type='radio' name='posttousers' value='yes' id='postTousers' checked> Yes <input type='radio' name='posttousers' value='no' > No </div>
                     <div class=\"col-sm-7\"><label for='postTochan'>Send message to a specific channel for all firm appointments: </label></div><div class=\"col-sm-5\"><input type='radio' name='posttochan' value='yes' id='postTochan' checked> Yes <input type='radio' name='posttochan' value='no' > No </div>
@@ -280,6 +285,12 @@
                         } else {
                             $newdata[] = $data;
                         }
+                    } else if (stristr($data, '$slacktimetoken =')) {
+                        if (!empty($_POST["slacktimetoken"])) {
+                            $newdata[] = '$slacktimetoken = "' . $_POST["slacktimetoken"] . '"; //Set your token for the time slash command' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
                     } else if (stristr($data, '$slacktaskstoken =')) {
                         if (!empty($_POST["slacktaskstoken"])) {
                             $newdata[] = '$slacktaskstoken = "' . $_POST["slacktaskstoken"] . '"; //Set your token for the tasks slash command' . PHP_EOL;
@@ -403,6 +414,24 @@
                     } else if (stristr($data, '$adminlist =')) {
                         if (!empty($_POST["adminlist"])) {
                             $newdata[] = '$adminlist = "' . $_POST["adminlist"] . '"; //Separate by pipe symbol as seen in example if you need multiple people to have access.' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$timedetailworktype =')) {
+                        if (!empty($_POST["timedetailworktype"])) {
+                            $newdata[] = '$timedetailworktype = "' . $_POST["timedetailworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to detailed.' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$timeinternalworktype =')) {
+                        if (!empty($_POST["timeinternalworktype"])) {
+                            $newdata[] = '$timeinternalworktype = "' . $_POST["timeinternalworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to internal.' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$timeresolutionworktype =')) {
+                        if (!empty($_POST["timeresolutionworktype"])) {
+                            $newdata[] = '$timeresolutionworktype = "' . $_POST["timeresolutionworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to resolution.' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }
