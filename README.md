@@ -14,6 +14,8 @@ To search for ConnectWise contact info, use cwslack-contacts.php.
 
 To post new notes to tickets, use cwslack-notes.php.
 
+To post new time entries to tickets, use cwslack-time.php
+
 To search for ConnectWise configuration records, use cwslack-configs.php.
 
 To add, modify, and review ticket tasks, use cwslack-tasks.php
@@ -28,7 +30,7 @@ This script set and all modules require PHP version 5 and the cURL extension, an
 
 For non-MySQL installation instructions, please see README_NoMySQL.md
 
-## cwslack.php, activities, contacts, notes, configs, tasks, and dbmanage
+## cwslack.php, activities, contacts, notes, configs, tasks, time, and dbmanage
 
 1. Download the respective php file, functions.php, install.php, and config.php files.
 2. Place on a compatible web server
@@ -250,6 +252,15 @@ Commands:
 * close/complete/done/completed : Mark a task as done, requires [task number]. Can also add [note] for a resolution note.
 * update/change/note : Change the note on a task, requires [task number] and [note].
 * new/add : Add a new task to the end of the priority list, requires [note] but do not include [task number].
+
+## cwslack-time.php
+
+/times [ticket number]\* [type]\* [time]\* [note]\*
+
+* [ticket number] = A valid ticket number
+* [type] = Eitehr detailed, internal, or resolution. Also accepts d/i/r instead
+* [time] = Shorthand time, use digits then h or m to designate units. E.x. 1.5h, 35m, 80m. NOT 1.5 hours, 35 minutes, etc
+* [note] = Any sentence to be used as the ticket note.
 
 ## cwslack-dbmanage.php
 
