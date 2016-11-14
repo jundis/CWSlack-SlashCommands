@@ -191,7 +191,7 @@
                         $newdata[] = '$dbpassword = "' . $dbpassword . '"; //Your MySQL DB Password' . PHP_EOL;
                     } else if (stristr($data, '$dbdatabase')) {
                         $newdata[] = '$dbdatabase = "' . $dbdatabase . '"; //Change if you have an existing database you want to use, otherwise leave as default.' . PHP_EOL;
-                    } else if (stristr($data, '$usedatabase')) {
+                    } else if (stristr($data, '$usedatabase = ')) {
                         $newdata[] = '$usedatabase = 1; // Set to 0 by default, set to 1 if you want to enable MySQL.' . PHP_EOL;
                     } else {
                         $newdata[] = $data;
