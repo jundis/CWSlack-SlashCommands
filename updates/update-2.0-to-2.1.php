@@ -20,7 +20,7 @@
             if ($_GET["page"] == "Proceed" || $_GET["page"] == "Skip to Config.php Settings") {
                 echo "<p>Settings Configuration</p>";
                 echo "<h5>Any field left blank will not change the setting, however yes/no questions must be updated any time you save this.</h5>";
-                echo "<div class='row'><form action=\"install.php?page=Save Settings\" method='post'>
+                echo "<div class='row'><form action=\"update-2.0-to-2.1.php?page=Save Settings\" method='post'>
                     <div class=\"col-sm-12\"><h4>General</h4></div>
                     <div class=\"col-sm-12\"><h4>Tokens</h4></div>
                     <div class=\"col-sm-12\">Set each of these to the respective Slack Token that you've setup. Leave blank if you do not need them.</div>
@@ -40,11 +40,13 @@
             if ($_GET["page"] == "Save Settings") {
                 $filedata = file('config.php');
                 $newdata = array();
+                $line1 = false; //For later use
 
                 foreach ($filedata as $data) {
                     if (stristr($data, '$slacktimetoken =')) {
                         if (!empty($_POST["slacktimetoken"])) {
                             $newdata[] = '$slacktimetoken = "' . $_POST["slacktimetoken"] . '"; //Set your token for the time slash command' . PHP_EOL;
+                            $line1 = true;
                         } else {
                             $newdata[] = $data;
                         }
@@ -66,15 +68,24 @@
                         } else {
                             $newdata[] = $data;
                         }
+                    } else if (stristr($data, '//cwslack-incoming.php') && !$line1) {
+                        $newdata[] = '//cwslack-time.php' . PHP_EOL;
+                        $newdata[] = '$slacktimetoken = "' . $_POST["slacktimetoken"] . '"; //Set your token for the time slash command' . PHP_EOL;
+                        $newdata[] = '$timedetailworktype = "' . $_POST["timedetailworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to detailed.' . PHP_EOL;
+                        $newdata[] = '$timeinternalworktype = "' . $_POST["timeinternalworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to internal.' . PHP_EOL;
+                        $newdata[] = '$timeresolutionworktype = "' . $_POST["timeresolutionworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to resolution.' . PHP_EOL;
+                        $newdata[] = PHP_EOL . $data;
+
                     } else {
                         $newdata[] = $data;
                     }
                 }
 
+
                 file_put_contents('config.php', implode('', $newdata));
                 echo "<div class=\"alert alert-success\" role=\"alert\">";
                 echo "Successfully configured the config.php file! Please test out your commands in Slack and submit any issues you have to GitHub!";
-                echo "</div><div class=\"alert alert-info\" role=\"alert\">Please remove install.php to avoid people accessing it externally. You can re-add it anytime to configure database or settings again, or just manually edit config.php.</div></div>";
+                echo "</div><div class=\"alert alert-info\" role=\"alert\">Please remove update-2.0-to-2.1.php to avoid people accessing it externally. You can re-add it anytime to configure database or settings again, or just manually edit config.php.</div></div>";
                 echo "</div></body></html>";
                 die();
             }
@@ -126,7 +137,7 @@
 
                     if(empty($curl_error) && empty($mysql_error) && empty($php_error))
                     {
-                        echo "<form action=\"install.php\">
+                        echo "<form action=\"update-2.0-to-2.1.php\">
                                 <input type=\"submit\" name='page' class=\"btn btn-success\" value=\"Proceed\" />
                                 </form>";
                     }
