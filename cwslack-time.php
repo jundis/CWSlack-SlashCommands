@@ -140,14 +140,14 @@ if($usedatabase==1)
     {
         $row = mysqli_fetch_assoc($result); //Row association.
 
-        $postfieldspre["member"] = array("name"=>$row["cwname"]); //Return the connectwise name of the row found as the CW member name.
+        $postfieldspre["member"] = array("identifier"=>$row["cwname"]); //Return the connectwise name of the row found as the CW member name.
         $postfieldspre["enteredBy"] = $row["cwname"];
     }
     else //If no rows are found
     {
         if($usecwname==1) //If variable enabled
         {
-            $postfieldspre["member"] = array("name"=>$_GET['user_name']); //Return the slack username as the user for the ticket note. If the user does not exist in CW, it will use the API username.
+            $postfieldspre["member"] = array("identifier"=>$_GET['user_name']); //Return the slack username as the user for the ticket note. If the user does not exist in CW, it will use the API username.
             $postfieldspre["enteredBy"] = $_GET['user_name'];
         }
     }
@@ -156,7 +156,7 @@ else
 {
     if($usecwname==1)
     {
-        $postfieldspre["member"] = array("name"=>$_GET['user_name']);
+        $postfieldspre["member"] = array("identifier"=>$_GET['user_name']);
         $postfieldspre["enteredBy"] = $_GET['user_name'];
     }
 }
