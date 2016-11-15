@@ -56,9 +56,9 @@ $slacktaskstoken = "Slack Token Here"; //Set your token for the tasks slash comm
 
 //cwslack-time.php
 $slacktimetoken = "Slack Token Here"; //Set your token for the time slash command
-$timedetailworktype = "Remote Support"; //Set to the worktype name you want it to change tickets to when a note is posted to detailed.
-$timeinternalworktype = "Admin"; //Set to the worktype name you want it to change tickets to when a note is posted to internal.
-$timeresolutionworktype = "Remote Support"; //Set to the worktype name you want it to change tickets to when a note is posted to resolution.
+$timedetailworktype = "Remote Support"; //Set to the worktype name you want to use when a note is posted to detailed.
+$timeinternalworktype = "Admin"; //Set to the worktype name you want to use when a note is posted to internal.
+$timeresolutionworktype = "Remote Support"; //Set to the worktype name you want to use when a note is posted to resolution.
 
 //cwslack-incoming.php
 $webhookurl = "https://hooks.slack.com/services/tokens"; //Change this to the URL retrieved from incoming webhook setup for Slack.

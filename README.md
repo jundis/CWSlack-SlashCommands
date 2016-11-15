@@ -4,25 +4,19 @@ This script, when hosted on a PHP supported web server, will act as a bridge bet
 
 cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, and cwslack-contacts.php were designed to be independent, but all rely on the config.php and functions.php files. This allows you to pick and choose what you want and for different Slack commands instead of one universal /cw tickets 249123 and /cw contact john doe it can be /t 249123 and /c john doe.
 
-For requesting ticket information using /ticket #, use cwslack.php.
+####Usage
 
-For creating new activities, use cwslack-activities.php.
-
-To post new tickets or ticket updates to a Slack channel, use cwslack-incoming.php.
-
-To search for ConnectWise contact info, use cwslack-contacts.php.
-
-To post new notes to tickets, use cwslack-notes.php.
-
-To post new time entries to tickets, use cwslack-time.php
-
-To search for ConnectWise configuration records, use cwslack-configs.php.
-
-To add, modify, and review ticket tasks, use cwslack-tasks.php
-
-To follow tickets and get updates whenever they're updated, use cwslack-follow.php (requires cwslack-incoming.php).
-
-To modify the MySQL database in Slack, please configure and setup cwslack-dbmanage.php
+* cwslack.php: Pull ticket information, change status, and change priority.
+* cwslack-activities.php: Pull activity information
+* cwslack-contacts.php: Pull contact information
+* cwslack-configs.php: Pull configuration record information
+* cwslack-tasks.php: View and update tasks on tickets
+* cwslack-notes.php: Post notes to tickets
+* cwslack-time.php: Post time entries to tickets
+* cwslack-incoming.php: Receive ticket creation/update notices in Slack
+* cwslack-follow.php: Follow a ticket to be direct messaged when updated
+* cwslack-firmalerts.php: Receive notifications when firm appointments are coming up
+* cwslack-dbmanage.php: Manage the MySQL user database within Slack.
 
 # Installation Instructions
 
@@ -41,7 +35,7 @@ For non-MySQL installation instructions, please see README_NoMySQL.md
 7. Copy the token
 8. Set a name, icon, and auto complete text if wanted.
 9. Run install.php and proceed through database setup. This will also verify you have the required PHP and cURL versions.
-10. Modify the config.php file with your companies values and timezone. Full configuration info below.
+10. Complete the install.php configuration, or manually modify the config.php file with the necessary values. Full configuration info below.
 11. Test it in Slack!
 
 ## cwslack-incoming.php
@@ -116,16 +110,11 @@ To enable ConnectWise link to follow and unfollow a ticket:
 
 # Config.php configuration
 
-\* Asterisk denotes required.  
-\+ Plus denotes required for cwslack-activities.php  
-\- Minus denotes required for cwslack-incoming.php  
-\# Pound denotes required for cwslack-follow.php  
-\& Ampersand denotes required for cwslack-contacts.php  
+\* Asterisk denotes required by the specified module.  
+\# Pound denotes required for cwslack-follow.php    
 \^ Caret denotes required for cwslack-notes.php  
-\% Percent denotes required for cwslack-notes.php  
 \= Equals denotes required for cwslack-firmalerts.php    
 \@ At denotes required for cwslack-dbmanage.php
-
 
 ####All
 * $connectwise * : This value needs to be set to your main ConnectWise URL.
@@ -142,13 +131,13 @@ To enable ConnectWise link to follow and unfollow a ticket:
 * $dbdatabase #,^,=,@ : Automatically configured by install.php
 
 ####Activities
-* $slackactivitiestoken + : Set to the token you got when creating a new slash command integration in Slack for /activities.
+* $slackactivitiestoken * : Set to the token you got when creating a new slash command integration in Slack for /activities.
 
 ####Incoming
-* $webhookurl -/= : Set to the incoming web hook URL you got when creating a new incoming web hook in Slack.
-* $postadded - : Set to 1 if you want it to post new tickets to chat.
-* $postupdated - : Set to 1 if you want it to post new ticket updates to chat.
-* $allowzadmin - : Set to 1 if you want posts from zAdmin to go to chat. Set to 0 by default to avoid spam in high volume environments.
+* $webhookurl */= : Set to the incoming web hook URL you got when creating a new incoming web hook in Slack.
+* $postadded * : Set to 1 if you want it to post new tickets to chat.
+* $postupdated * : Set to 1 if you want it to post new ticket updates to chat.
+* $allowzadmin * : Set to 1 if you want posts from zAdmin to go to chat. Set to 0 by default to avoid spam in high volume environments.
 * $badboard : Set this if you have a specific board that spams a lot, set to Alerts by default to hide alerts board posts.
 * $badstatus : Set this if you have a status you want to ignore, set to Closed by default as tickets are rarely automatically closed.
 * $badcompany : Set this if you have a company you want to ignore, set to CatchAll by default to avoid spam from unknown incoming e-mails.
@@ -158,30 +147,38 @@ To enable ConnectWise link to follow and unfollow a ticket:
 * $timechan = : Set to a channel to post to for $timeenabled
 
 ####FirmAlerts
-* $posttousers = : When set, will post to the user whenever the appointment reminder is reached.
-* $posttochan = : When set, will post to $timechan whenever the firm appointment starts.
+* $posttousers * : When set, will post to the user whenever the appointment reminder is reached.
+* $posttochan * : When set, will post to $timechan whenever the firm appointment starts.
 
 ####Follow
-* $slackfollowtoken # : Set to the token you got when creating a new slash command integration in Slack for /follow.
-* $followenabled # : Defaults to 0, you need to change this to 1 if you want to enable follow.
-* $dir # : Directory on the server to store files. Please note that the user running php (www-data in Linux) needs write/read access to this folder.
+* $slackfollowtoken * : Set to the token you got when creating a new slash command integration in Slack for /follow.
+* $followenabled * : Defaults to 0, you need to change this to 1 if you want to enable follow.
 * $followtoken : Change to any value and use this in the ConnectWise link tables.
 * $unfollowtoken : Change to any value and use this in the ConnectWise link tables.
 
 ####Contacts
-* $slackcontactstoken & : Set to the token you got when creating a new slash command integration in Slack for /contact.
+* $slackcontactstoken * : Set to the token you got when creating a new slash command integration in Slack for /contact.
 
 ####Notes
-* $slacknotestoken ^ : Set to the token you got when creating a new slash command integration in Slack for /notes.
-* $usecwname ^ : If set to 0 which is default, notes are posted as user that is attached to API key. If set to 1, then it will post as the correct CW user but all names in Slack must be the same as in CW.
+* $slacknotestoken * : Set to the token you got when creating a new slash command integration in Slack for /notes.
+* $usecwname * : If set to 0 which is default, notes are posted as user that is attached to API key. If set to 1, then it will post as the correct CW user but all names in Slack must be the same as in CW.
 
 ####Configs
-* $slackconfigstoken % : Set to the token you got when creating a new slash command integration in Slack for /config.
+* $slackconfigstoken * : Set to the token you got when creating a new slash command integration in Slack for /config.
+
+####Tasks
+* $slacktaskstoken * : Set your token for the tasks slash command
+
+####Time
+* $slacktimetoken * : Set your token for the time slash command
+* $timedetailworktype * : Set to the worktype name you want to use when a note is posted to detailed.
+* $timeinternalworktype * : Set to the worktype name you want to use when a note is posted to internal.
+* $timeresolutionworktype * : Set to the worktype name you want to use when a note is posted to resolution.
 
 ####DBManage
 
-* $slackdbmantoken @ : Set your token for the database management slash command
-* $adminlist @ : Usernames that are allowed to use this command. Separate by pipe symbol as seen in example if you need multiple people to have access.
+* $slackdbmantoken * : Set your token for the database management slash command
+* $adminlist * : Usernames that are allowed to use this command. Separate by pipe symbol as seen in example if you need multiple people to have access.
 
 ####General
 * $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
