@@ -24,6 +24,10 @@ This script set and all modules require PHP version 5 and the cURL extension, an
 
 For non-MySQL installation instructions, please see README_NoMySQL.md
 
+####Update Instructions
+
+Use the scripts found in the updates folder to upgrade from an older version to current. This will automatically update the config.php file with necessary values and create any new MySQL tables as well. You can also manually update by comparing the config file from this repository to your active one.
+
 ## cwslack.php, activities, contacts, notes, configs, tasks, time, and dbmanage
 
 1. Download the respective php file, functions.php, install.php, and config.php files.
