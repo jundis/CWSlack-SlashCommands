@@ -44,7 +44,15 @@ if (in_array($info->StatusName,$badstatuses)) die;
 if (in_array($info->CompanyName,$badcompanies)) die;
 if (!empty($_GET['board']))
 {
-	if($_GET['board'] != $info->BoardName)
+	if(strpos($_GET['board'], "-") !== false)
+	{
+		$tempboards = explode("-", $_GET['board']);
+		if(!in_array($info->BoardName, $tempboards))
+		{
+			die("Incorrect board");
+		}
+	}
+	else if($_GET['board'] != $info->BoardName)
 	{
 		die("Incorrect board");
 	}

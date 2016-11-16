@@ -60,6 +60,16 @@ Use the scripts found in the updates folder to upgrade from an older version to 
 8. Change the $postupdated and $postadded to what you prefer. Enabling $postupdated can get spammy.
 9. Test it in Slack by creating a new ticket on the board you selected in step 6!
 
+####Different boards to different channels
+
+As of version 2.1, the cwslack-incoming.php script supports sending different support boards to different channels in Slack. This is accomplished by creating multiple integrator logins as specified in step 6 above but using the URL below for each callback.
+
+- https://domain.tld/cwslack-incoming.php?board=BoardName&channel=SlackChannel&id=
+
+You can specify multiple boards by separating them with a hyphen such as: ?board=BoardA-BoardB&channel=SlackAB
+
+By doing this, you can specify BoardA goes to ChannelA and BoardB goes to ChannelB. Note that in this usage, if you do not specify a callback for BoardC then it will not send tickets to Slack at all.
+
 ## cwslack-firmalerts.php
 
 **(Requires some variables from cwslack-incoming.php to function if you don't use that)**
