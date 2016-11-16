@@ -64,7 +64,7 @@ function cURL($url, $header)
     }
     if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
     {
-        $errors = $dataTData->errors; //Make array easier to access.
+        $errors = $jsonDecode->errors; //Make array easier to access.
 
         die("ConnectWise Error: " . $errors[0]->message); //Return CW error
     }
