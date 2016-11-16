@@ -115,7 +115,7 @@ if($command=="priority") { //Check if the second string in the text array from t
 
 	$return =array(
 		"parse" => "full", //Parse all text.
-		"response_type" => "in_channel", //Send the response in the channel
+		"response_type" => "ephemeral", //Send the response to the user only
 		"attachments"=>array(array(
 			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "Ticket Summary: " . $dataTData->summary, //Set bolded title text
@@ -159,7 +159,7 @@ if($command=="status") {
 
 	$return =array(
 		"parse" => "full",
-		"response_type" => "in_channel",
+		"response_type" => "ephemeral", //Send the response to the user only
 		"attachments"=>array(array(
 			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "Ticket Summary: " . $dataTData->summary,
