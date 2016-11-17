@@ -37,15 +37,19 @@
 <a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v2.1</h3>
 
 <ul>
-<li><strong>Incoming</strong>: Add identifier to notes to show internal vs external note for issue #50</li>
-<li><strong>Incoming</strong>: Add date/time to all notes for issue #51</li>
-<li><strong>All</strong>: Refactor numerous back end code, removed useless lines, creating a new functions.php file that is <strong>REQUIRED</strong> for all files to work properly. Per issue #53</li>
-<li><strong>All</strong>: Completely redo error codes to make them handle much better.</li>
-<li><strong>Notes and FirmAlerts</strong>: Implemented MySQL code to be able to map usernames by either modifying SQL manually or using /dbm</li>
-<li><strong>Follow and Incoming</strong>: Converted /follow to use MySQL for storing data. Can be completely cleared with /dbm clearfollow</li>
-<li><strong>DBManage</strong>: New module for controlling the MySQL database. See /dbm help for more info, Slack name must be in $adminlist to use.</li>
-<li><strong>Install Script</strong>: New install script to comfigure everything from scratch. Recommended everyone use for 2.0 release.</li>
+<li><strong>Tasks</strong>: New module for managing tasks in ConnectWise tickets. Allows for creating and updating tasks.</li>
+<li><strong>Time</strong>: New module for submitting closed loop time entries in ConnectWise tickets. Submitting a time entry for 5 minutes will substract 5 minutes from the current time and make that the start point.</li>
+<li><strong>Incoming</strong>: Now allows you to send specific ticket boards to specific channels. See readme.md for more information on setting this up.</li>
+<li><strong>Updater</strong>: New updater script to migrate from 2.0 to 2.1. Just updates the config.php with the new variables in 2.1.</li>
+<li><strong>Follow</strong>: Fixed CW links not using MySQL database per #60, thanks @adamhancock for the leg work!</li>
+<li><strong>Incoming</strong>: Added catch for just browsing to cwslack-incoming.php so it isn't just a flood of errors.</li>
+<li><strong>Installer</strong>: Fixed issue with the $usedatabase line, causing it to screw up the flatfile portion of config.php.</li>
+<li><strong>Tickets</strong>: Fixed error with /t on tickets that only had time entries for notes, per #61.</li>
+<li><strong>Tickets</strong>: Changed status and priority updates to use ephemeral notes, since the channel you're in doesn't need to know you changed something.</li>
+<li><strong>Functions</strong>: Fixed error in the error catcher! Accidentally was using $dataTData as a reference for errors, switched it to the proper $jsonDecode.</li>
 </ul>
+
+
 
 
 
