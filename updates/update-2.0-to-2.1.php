@@ -25,6 +25,7 @@
                     <div class=\"col-sm-12\"><h4>Tokens</h4></div>
                     <div class=\"col-sm-12\">Set each of these to the respective Slack Token that you've setup. Leave blank if you do not need them.</div>
                     <div class=\"col-sm-6\"><label for='slackTimetoken'>/times Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacktimetoken' id='slackTimetoken'><br></div>
+                    <div class=\"col-sm-6\"><label for='slackTaskstoken'>/times Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacktaskstoken' id='slackTaskstoken'><br></div>
                     <div class=\"col-sm-12\"><h4>Time Module</h4></div>
                     <div class=\"col-sm-6\"><label for='timeDetailworktype'>Detailed notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timedetailworktype' id='timeDetailworktype' placeholder='Remote Support'></div>
                     <div class=\"col-sm-6\"><label for='timeInternalworktype'>Internal notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timeinternalworktype' id='timeInternalworktype' placeholder='Admin'></div>
@@ -50,25 +51,33 @@
                         } else {
                             $newdata[] = $data;
                         }
-                    } else if (stristr($data, '$timedetailworktype =')) {
+                    } else if (stristr($data, '$slacktaskstoken =')) {
+                        if (!empty($_POST["slacktaskstoken"])) {
+                            $newdata[] = '$slacktaskstoken = "' . $_POST["slacktaskstoken"] . '"; //Set your token for the tasks slash command' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    }else if (stristr($data, '$timedetailworktype =')) {
                         if (!empty($_POST["timedetailworktype"])) {
-                            $newdata[] = '$timedetailworktype = "' . $_POST["timedetailworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to detailed.' . PHP_EOL;
+                            $newdata[] = '$timedetailworktype = "' . $_POST["timedetailworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to detailed' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }
                     } else if (stristr($data, '$timeinternalworktype =')) {
                         if (!empty($_POST["timeinternalworktype"])) {
-                            $newdata[] = '$timeinternalworktype = "' . $_POST["timeinternalworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to internal.' . PHP_EOL;
+                            $newdata[] = '$timeinternalworktype = "' . $_POST["timeinternalworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to internal' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }
                     } else if (stristr($data, '$timeresolutionworktype =')) {
                         if (!empty($_POST["timeresolutionworktype"])) {
-                            $newdata[] = '$timeresolutionworktype = "' . $_POST["timeresolutionworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to resolution.' . PHP_EOL;
+                            $newdata[] = '$timeresolutionworktype = "' . $_POST["timeresolutionworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to resolution' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }
                     } else if (stristr($data, '//cwslack-incoming.php') && !$line1) {
+                        $newdata[] = '//cwslack-tasks.php' . PHP_EOL;
+                        $newdata[] = '$slacktaskstoken = "'.$_POST["slacktaskstoken"].'"; //Set your token for the tasks slash command' . PHP_EOL;
                         $newdata[] = '//cwslack-time.php' . PHP_EOL;
                         $newdata[] = '$slacktimetoken = "' . $_POST["slacktimetoken"] . '"; //Set your token for the time slash command' . PHP_EOL;
                         $newdata[] = '$timedetailworktype = "' . $_POST["timedetailworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to detailed.' . PHP_EOL;
