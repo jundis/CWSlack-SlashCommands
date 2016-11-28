@@ -20,7 +20,8 @@
 
 ini_set('display_errors', 1); //Display errors in case something occurs
 header('Content-Type: application/json'); //Set the header to return JSON, required by Slack
-require_once 'config.php';
+require_once 'config.php'; //Require config
+require_once 'functions.php'; //Require functions
 
 if(empty($_GET['token']) || ($_GET['token'] != $slackconfigstoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
@@ -82,14 +83,29 @@ if($questions!=NULL)
 	{
 		if($q->answer!=NULL) //If the answer exists and is not just blank and useless.
 		{
-			if(strpos($q->question,":") != false) //If question contains a colon.
-			{
-				$answers = $answers . $q->question . " " . $q->answer . "\n"; //Return the question, answer, and new line.
-			}
-			else //Else, add a colon.
-			{
-				$answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
-			}
+		    if(strpos($q->question,"Password") !== false && $hidepasswords == 1) //If question contains "Password".
+            {
+
+                if (strpos($q->question, ":") !== false) //If question contains a colon.
+                {
+                    $answers = $answers . $q->question . " Hidden, please view in CW\n"; //Return the question, answer, and new line.
+                }
+                else //Else, add a colon.
+                {
+                    $answers = $answers . $q->question . ": Hidden, please view in CW\n"; //Return the question, answer, and new line.
+                }
+            }
+            else
+            {
+                if (strpos($q->question, ":") !== false) //If question contains a colon.
+                {
+                    $answers = $answers . $q->question . " " . $q->answer . "\n"; //Return the question, answer, and new line.
+                }
+                else //Else, add a colon.
+                {
+                    $answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
+                }
+            }
 		}
 	}
 }

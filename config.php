@@ -50,6 +50,7 @@ $usecwname = 1; //If set to 1, it will create tickets using the user's slack nam
 
 //cwslack-configs.php
 $slackconfigstoken = "Slack Token Here"; //Set your token for the configs slash command
+$hidepasswords = 0; //Set to 1 if you want to hide passwords.
 
 //cwslack-tasks.php
 $slacktaskstoken = "Slack Token Here"; //Set your token for the tasks slash command
