@@ -39,6 +39,10 @@ if(!is_numeric($exploded[0])) {
 	if ($exploded[0]=="help") {
 		die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true)));
 	}
+	if ($exploded[0]=="new")
+	{
+		// Do nothing
+	}
 	else //Else close the connection.
 	{
 		die("Unknown entry for ticket number.");
@@ -72,6 +76,58 @@ else
 $dataTNotes = array();
 $dataTData = array();
 $dataTCmd = array();
+
+if (strpos(strtolower($exploded[0]), "new") !== false)
+{
+	unset($exploded[0]);
+	$exploded = implode(" ", $exploded);
+	$ticketstuff = explode("|",$exploded);
+
+	if($useboards == 1)
+	{
+		if(!array_key_exists(2, $ticketstuff)) {
+			die("Not enough values specified. Please use /t new board|company|summary");
+		}
+		$companyurl = $connectwise . "/v4_6_release/apis/3.0/company/companies?conditions=name%20contains%20%27" . $ticketstuff[1] . "%27";
+		$companydata = cURL($companyurl, $header_data);
+
+		$boardurl = $connectwise . "/v4_6_release/apis/3.0/service/boards?conditions=name%20contains%20%27" .$ticketstuff[0]. "%27";
+		$boarddata = cURL($boardurl, $header_data);
+
+		$postarray = array(
+			"summary" => $ticketstuff[2],
+			"company" => array(
+				"id" => $companydata[0]->id
+			),
+			"board" => array(
+				"id" => $boarddata[0]->id
+			));
+	}
+	else
+	{
+		if(!array_key_exists(1, $ticketstuff)) {
+			die("Not enough values specified. Please use /t new company|summary");
+		}
+
+		$companyurl = $connectwise . "/v4_6_release/apis/3.0/company/companies?conditions=name%20contains%20%27" . $ticketstuff[1] . "%27";
+		$companydata = cURL($companyurl, $header_data);
+
+		$postarray = array(
+			"summary" => $ticketstuff[1],
+			"company" => array(
+				"name" => $ticketstuff[0]
+			));
+	}
+
+	$dataTCmd = cURLPost( //Function for POST requests in cURL
+		$connectwise . "/v4_6_release/apis/3.0/service/tickets", //URL
+		$header_data2, //Header
+		"POST", //Request type
+		$postarray
+	);
+
+	die("New ticket #<" . $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $dataTCmd->id . "|" . $dataTCmd->id . "> has been created.");
+}
 
 //-
 //Ticket data section

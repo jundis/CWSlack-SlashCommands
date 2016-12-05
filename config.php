@@ -37,6 +37,7 @@ $dbdatabase = "cwslack"; //Change if you have an existing database you want to u
 
 //cwslack.php
 $slacktoken = "Slack Token Here"; //Set token from the Slack slash command screen.
+$useboards = 1; //Use the board function in new tickets. /t new company|summary vs /t new board|company|summary
 
 //cwslack-activities.php
 $slackactivitiestoken = "Slack Token Here"; //Set your token for the activities slash command
