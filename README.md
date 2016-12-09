@@ -6,7 +6,7 @@ cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, 
 
 ####Usage
 
-* cwslack.php: Pull ticket information, change status, and change priority.
+* cwslack.php: Pull ticket information, create new tickets, change status, and change priority.
 * cwslack-activities.php: Pull activity information
 * cwslack-contacts.php: Pull contact information
 * cwslack-configs.php: Pull configuration record information
@@ -204,7 +204,7 @@ To enable ConnectWise link to follow and unfollow a ticket:
 
 ## cwslack.php
 
-/t [ticket number]* [command] [option3]
+/t [ticket number or new]* [command] [option3]
 
 ### status
 
@@ -221,6 +221,12 @@ If $posttext=1 in config.php, shows you the latest note and the initial note. Th
 ### initial (or) note (or) first
 
 If $posttext=1 in config.php, shows you the initial note of the ticket. This displays to you only to avoid spam.
+
+### new [board name]|[company name]|[ticket summary]
+
+Use new instead of a ticket number to create a new ticket. Pipe symbols are required between [board name], [company name], and [ticket summary], but brackets are not used in final command.
+
+Only include [board name] if you have $useboards set to 1 in config.php.
 
 ## cwslack-activities.php
 
