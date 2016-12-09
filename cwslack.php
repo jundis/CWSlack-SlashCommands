@@ -118,6 +118,45 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 				"name" => $ticketstuff[0]
 			));
 	}
+	//Username mapping code
+	if($usedatabase==1)
+	{
+		$mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
+
+		if (!$mysql) //Check for errors
+		{
+			die("Connection Error: " . mysqli_connect_error());
+		}
+
+		$sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $_GET["user_name"] . "\""; //SQL Query to select all ticket number entries
+
+		$result = mysqli_query($mysql, $sql); //Run result
+		$rowcount = mysqli_num_rows($result);
+		if($rowcount > 1) //If there were too many rows matching query
+		{
+			die("Error: too many users somehow?"); //This should NEVER happen.
+		}
+		else if ($rowcount == 1) //If exactly 1 row is found.
+		{
+			$row = mysqli_fetch_assoc($result); //Row association.
+
+			$postarray["owner"] = array("identifier"=>$row["cwname"]); //Return the connectwise name of the row found as the CW member name.
+		}
+		else //If no rows are found
+		{
+			if($usecwname==1) //If variable enabled
+			{
+				$postarray["owner"] = array("identifier"=>$_GET['user_name']); //Return the slack username as the user for the ticket note. If the user does not exist in CW, it will use the API username.
+			}
+		}
+	}
+	else
+	{
+		if($usecwname==1)
+		{
+			$postarray["owner"] = array("identifier"=>$_GET['user_name']);
+		}
+	}
 
 	$dataTCmd = cURLPost( //Function for POST requests in cURL
 		$connectwise . "/v4_6_release/apis/3.0/service/tickets", //URL
