@@ -57,8 +57,12 @@ if (array_key_exists(1,$exploded)) //If a second string exists in the slash comm
 }
 if (array_key_exists(2,$exploded)) //If a third string exists in the slash command array, make it the option for the command.
 {
-	$option3 = $exploded[2];
+	$temparray = $exploded;
+	unset($temparray[0], $temparray[1]);
+	$option3 = implode(" ", $temparray);
+	unset($temparray);
 }
+
 //Set URLs
 $urlticketdata = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
 $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Ticket URL for connectwise.
@@ -184,19 +188,17 @@ if($dataTData==NULL)
 if($command=="priority") { //Check if the second string in the text array from the slash command is priority
 
 	$priority = "0"; //Set priority = 0.
+	$priorityname = "";
+	$priorityurl = $connectwise . "/v4_6_release/apis/3.0/service/priorities?conditions=name%20like%20%27" . $option3 . "%27";
+	$dataTCmd = cURL($priorityurl, $header_data);
+	if(array_key_exists(0,$dataTCmd))
+	{
+		$priority = $dataTCmd[0]->id;
+		$priorityname = $dataTCmd[0]->name;
+	}
 
 	//Check what $option3 was set to, the third string in the text array from the slash command.
-	if ($option3 == "moderate") //If moderate
-	{
-		$priority = "4"; //Set to moderate ID
-	} else if ($option3=="critical")
-	{
-		$priority = "1";
-	} else if ($option3=="low")
-	{
-		$priority = "3";
-	}
-	else //If unknown
+	if ($priority==0)
 	{
 		die("Failed to get priority code: " . $option3); //Send error message. Anything not Slack JSON formatted will return just to the user who submitted the slash command. Don't need to spam errors.
 	}
@@ -214,7 +216,7 @@ if($command=="priority") { //Check if the second string in the text array from t
 		"attachments"=>array(array(
 			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "Ticket Summary: " . $dataTData->summary, //Set bolded title text
-			"pretext" => "Ticket #" . $dataTData->id . "'s priority has been set to " . $option3, //Set pretext
+			"pretext" => "Ticket #" . $dataTData->id . "'s priority has been set to " . $priorityname, //Set pretext
 			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.", //Set text to be returned
 			"mrkdwn_in" => array( //Set markdown values
 				"text",
@@ -231,20 +233,20 @@ if($command=="priority") { //Check if the second string in the text array from t
 //-
 if($command=="status") {
 	$status = "0";
-	if ($option3 == "scheduled" || $option3=="schedule")
+	$statusname = "";
+	$statusurl = $dataTData->board->_info->board_href . "/statuses?conditions=name%20like%20%27" . $option3 . "%27";
+	$dataTCmd = cURL($statusurl, $header_data);
+
+	if(array_key_exists(0,$dataTCmd))
 	{
-		$status = "124";
-	} else if ($option3=="completed")
-	{
-		$status = "31";
-	} else if ($option3=="n2s" || $option3=="needtoschedule" || $option3=="ns")
-	{
-		$status = "121";
+		$status = $dataTCmd[0]->id;
+		$statusname = $dataTCmd[0]->name;
 	}
-	else
+	if ($status == 0)
 	{
-		die("Failed to get status code: " . $option3);
+		die("Failed to get status code: " . $status);
 	}
+
 	$dataTCmd = cURLPost(
 		$urlticketdata,
 		$header_data2,
@@ -258,7 +260,7 @@ if($command=="status") {
 		"attachments"=>array(array(
 			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "Ticket Summary: " . $dataTData->summary,
-			"pretext" => "Ticket #" . $dataTData->id . "'s status has been set to " . $option3,
+			"pretext" => "Ticket #" . $dataTData->id . "'s status has been set to " . $statusname,
 			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.",
 			"mrkdwn_in" => array(
 				"text",
