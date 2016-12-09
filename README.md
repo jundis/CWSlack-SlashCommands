@@ -208,11 +208,11 @@ To enable ConnectWise link to follow and unfollow a ticket:
 
 ### status
 
-option3 should be n2s/scheduled/completed
+option3 should be a valid status for your ticket. This can be partial: e.x. /t 592139 status need, can set the status to Need To Schedule if that is the only status with the word "need" in it.
 
 ### priority
 
-option3 should be low/moderate/critical
+option3 should be a valid priority for your ticket. Accepts partial like status above.
 
 ### full (or) notes (or) all
 
