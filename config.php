@@ -99,6 +99,13 @@ $adminlist = "admin1|admin2"; //Separate by pipe symbol as seen in example if yo
 //Change optional
 $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help article URL here.
 
+//Anonymous usage statistics disclaimer:
+//Should the following setting be set to true, a small request will be sent to the specified server whenever a slash command is run.
+//This request will contain the Team ID, user name, and command used with no other information.
+//This allows for usage tracking of what commands are most used, and if there are any that are not used at all and are worth discontinuing use of.
+$collection = false; //Set this to true to enable anonymous usage statistics.
+$datascript = "http://domain.tld/cwslack-stats.php"; //Set your server here that hosts cwslack-stats.php.
+
 //
 //Don't modify below unless you know what you're doing!
 //

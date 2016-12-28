@@ -33,6 +33,12 @@ if(empty($_GET['token']) || ($_GET['token'] != $slacktoken)) die("Slack token in
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 $exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+if ($collection==true)
+{
+	$dataurl = $datascript . "?team_id=" . $_GET["team_id"] . "&user_name=" . $_GET["user_name"] . "&command=" . preg_replace('/[^A-Za-z0-9\-]/', '', $_GET["command"]);
+	$collectionreturn = cURL($datascript, "");
+}
+
 //This section checks if the ticket number is not equal to 6 digits (our tickets are in the hundreds of thousands but not near a million yet) and kills the connection if it's not.
 if(!is_numeric($exploded[0])) {
 	//Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
