@@ -39,7 +39,7 @@ Use the scripts found in the updates folder to upgrade from an older version to 
 7. Copy the token
 8. Set a name, icon, and auto complete text if wanted.
 9. Run install.php and proceed through database setup. This will also verify you have the required PHP and cURL versions.
-10. Complete the install.php configuration, or manually modify the config.php file with the necessary values. Full configuration info below.
+10. Complete the install.php configuration, or manually modify the config.php file with the necessary values. Full configuration info found in config.php comments.
 11. Test it in Slack!
 
 ## cwslack-incoming.php
@@ -95,7 +95,7 @@ By doing this, you can specify BoardA goes to ChannelA and BoardB goes to Channe
 7. Copy the token
 8. Set a name, icon, and auto complete text if wanted.
 9. Run install.php and proceed through database setup. This will also verify you have the required PHP and cURL versions.
-10. Modify the config.php file with your companies values and timezone. Full configuration info below.
+10. Modify the config.php file with your companies values and timezone. Full configuration info found in config.php comments.
 11. Test it in Slack!
 
 To enable ConnectWise link to follow and unfollow a ticket:
@@ -121,82 +121,6 @@ To enable ConnectWise link to follow and unfollow a ticket:
 5. Click the Plus icon to create a new key
 6. Provide a description and click the Save icon.
 7. Save this information, you cannot retrieve the private key ever again so if lost you will need to create new ones.
-
-# Config.php configuration
-
-\* Asterisk denotes required by the specified module.  
-\# Pound denotes required for cwslack-follow.php    
-\^ Caret denotes required for cwslack-notes.php  
-\= Equals denotes required for cwslack-firmalerts.php    
-\@ At denotes required for cwslack-dbmanage.php
-
-####All
-* $connectwise * : This value needs to be set to your main ConnectWise URL.
-  * Users of Hosted ConnectWise will need to use https://api-na.myconnectwise.net, https://api-eu.myconnectwise.net or https://api-au.myconnectwise.net
-* $companyname * : This value needs to be set to whatever your company name is that you use to login to ConnectWise.
-* $apipublickey * : Set to your Public Key from API setup
-* $apiprivatekey * : Set to your Private Key from API setup
-* $slacktoken * : Set to the token you got when creating a new slash command integration in Slack.
-* $timezone * : Set to your timezone according to http://php.net/manual/en/timezones.america.php .
-* $usedatabase #,^,=,@ : Automatically configured by install.php
-* $dbhost #,^,=,@ : Automatically configured by install.php
-* $dbusername #,^,=,@ : Automatically configured by install.php
-* $dbpassword #,^,=,@ : Automatically configured by install.php
-* $dbdatabase #,^,=,@ : Automatically configured by install.php
-
-####Activities
-* $slackactivitiestoken * : Set to the token you got when creating a new slash command integration in Slack for /activities.
-
-####Incoming
-* $webhookurl */= : Set to the incoming web hook URL you got when creating a new incoming web hook in Slack.
-* $postadded * : Set to 1 if you want it to post new tickets to chat.
-* $postupdated * : Set to 1 if you want it to post new ticket updates to chat.
-* $allowzadmin * : Set to 1 if you want posts from zAdmin to go to chat. Set to 0 by default to avoid spam in high volume environments.
-* $badboard : Set this if you have a specific board that spams a lot, set to Alerts by default to hide alerts board posts.
-* $badstatus : Set this if you have a status you want to ignore, set to Closed by default as tickets are rarely automatically closed.
-* $badcompany : Set this if you have a company you want to ignore, set to CatchAll by default to avoid spam from unknown incoming e-mails.
-* $posttext : Set this to 1 if you want to include the latest note with the Slack message. Set to 1 by default now.
-* $timeenabled : Set to 1 if you want to post all tickets past $timepast to a specific channel, $timechan
-* $timepast : Set to a time in hours where once reached all updates will post to #dispatch.
-* $timechan = : Set to a channel to post to for $timeenabled
-
-####FirmAlerts
-* $posttousers * : When set, will post to the user whenever the appointment reminder is reached.
-* $posttochan * : When set, will post to $timechan whenever the firm appointment starts.
-
-####Follow
-* $slackfollowtoken * : Set to the token you got when creating a new slash command integration in Slack for /follow.
-* $followenabled * : Defaults to 0, you need to change this to 1 if you want to enable follow.
-* $followtoken : Change to any value and use this in the ConnectWise link tables.
-* $unfollowtoken : Change to any value and use this in the ConnectWise link tables.
-
-####Contacts
-* $slackcontactstoken * : Set to the token you got when creating a new slash command integration in Slack for /contact.
-
-####Notes
-* $slacknotestoken * : Set to the token you got when creating a new slash command integration in Slack for /notes.
-* $usecwname * : If set to 0 which is default, notes are posted as user that is attached to API key. If set to 1, then it will post as the correct CW user but all names in Slack must be the same as in CW.
-
-####Configs
-* $slackconfigstoken * : Set to the token you got when creating a new slash command integration in Slack for /config.
-
-####Tasks
-* $slacktaskstoken * : Set your token for the tasks slash command
-
-####Time
-* $slacktimetoken * : Set your token for the time slash command
-* $timedetailworktype * : Set to the worktype name you want to use when a note is posted to detailed.
-* $timeinternalworktype * : Set to the worktype name you want to use when a note is posted to internal.
-* $timeresolutionworktype * : Set to the worktype name you want to use when a note is posted to resolution.
-
-####DBManage
-
-* $slackdbmantoken * : Set your token for the database management slash command
-* $adminlist * : Usernames that are allowed to use this command. Separate by pipe symbol as seen in example if you need multiple people to have access.
-
-####General
-* $helpurl : Set to a help document explaining the slash command usage. Feel free to point to this GitHub repo, but ideally you would make it look pretty on your own internal site.
-
 
 # Command Usage
 
