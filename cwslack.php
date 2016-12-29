@@ -294,12 +294,19 @@ if($posttext==1) //Block for curl to get latest note
 	}
 	if(!array_key_exists(0, $dataTNotes))
 	{
-		$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
-		$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
-		$notedate = $dataTimeData[0]->dateEntered;
+		if(array_key_exists(0, $dataTimeData))
+		{
+			$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
+			$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
+			$notedate = $dataTimeData[0]->dateEntered;
 
-		$date2 = strtotime($notedate);
-		$date2format = date('m-d-Y g:i:sa', $date2);
+			$date2 = strtotime($notedate);
+			$date2format = date('m-d-Y g:i:sa', $date2);
+		}
+		else
+		{
+			$posttext=0;
+		}
 	}
 	else if($dataTNotes[0]->text != NULL || $dataTimeData[0]->text != NULL) //Makes sure that if both text values == null, then there is no text to post.
 	{
