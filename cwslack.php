@@ -324,8 +324,27 @@ if($command=="scheduleme")
 	unset($exploded[0]);
 	unset($exploded[1]);
 	$removal = implode(" ", $exploded);
-	$datestart = gmdate("Y-m-d\TH:i:s\Z", strtotime($removal));
-	$dateend = gmdate("Y-m-d\TH:i:s\Z", strtotime($removal. " +30 minutes"));
+	if($removal==NULL)
+	{
+		$datestart = gmdate("Y-m-d\TH:i:s\Z", strtotime("12:00AM"));
+		$timingdate = explode("T", $datestart);
+		$datestart = $timingdate[0] . "T00:00:00Z";
+	}
+	else
+	{
+		$datestart = gmdate("Y-m-d\TH:i:s\Z", strtotime($removal));
+		$dateend = gmdate("Y-m-d\TH:i:s\Z", strtotime($removal. " +30 minutes"));
+	}
+	if(strpos($datestart, 'T06:00:00Z') !== false)
+	{
+		$timingdate = explode("T", $datestart);
+		$datestart = $timingdate[0] . "T00:00:00Z";
+	}
+	if(strpos($datestart, 'T00:00:00Z') !== false)
+	{
+		$dateend = $datestart;
+	}
+
 	$postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
 
 	$dataTCmd = cURLPost(
@@ -335,7 +354,15 @@ if($command=="scheduleme")
 		$postarray
 	);
 
-	die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal);
+	if($removal==NULL)
+	{
+		$timingdate = explode("T", $datestart);
+		die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]");
+	}
+	else
+	{
+		die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal);
+	}
 }
 
 if($posttext==1) //Block for curl to get latest note
