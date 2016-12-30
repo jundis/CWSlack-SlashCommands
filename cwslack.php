@@ -274,6 +274,70 @@ if($command=="status") {
 	die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
 }
 
+if($command=="scheduleme")
+{
+
+	$cwuser = NULL;
+	//Username mapping code
+	if($usedatabase==1)
+	{
+		$mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
+
+		if (!$mysql) //Check for errors
+		{
+			die("Connection Error: " . mysqli_connect_error());
+		}
+
+		$sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $_GET["user_name"] . "\""; //SQL Query to select all ticket number entries
+
+		$result = mysqli_query($mysql, $sql); //Run result
+		$rowcount = mysqli_num_rows($result);
+		if($rowcount > 1) //If there were too many rows matching query
+		{
+			die("Error: too many users somehow?"); //This should NEVER happen.
+		}
+		else if ($rowcount == 1) //If exactly 1 row is found.
+		{
+			$row = mysqli_fetch_assoc($result); //Row association.
+
+			$cwuser = $row["cwname"]; //Return the connectwise name of the row found as the CW member name.
+		}
+		else //If no rows are found
+		{
+			if($usecwname==1) //If variable enabled
+			{
+				$cwuser = $_GET['user_name'];
+			}
+		}
+	}
+	else
+	{
+		if($usecwname==1)
+		{
+			$cwuser = $_GET['user_name'];
+		}
+		else
+		{
+			die("Error: Name " .  $_GET['user_name'] . " not found");
+		}
+	}
+	unset($exploded[0]);
+	unset($exploded[1]);
+	$removal = implode(" ", $exploded);
+	$datestart = gmdate("Y-m-d\TH:i:s\Z", strtotime($removal));
+	$dateend = gmdate("Y-m-d\TH:i:s\Z", strtotime($removal. " +30 minutes"));
+	$postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
+
+	$dataTCmd = cURLPost(
+		$connectwise . "/v4_6_release/apis/3.0/schedule/entries",
+		$header_data2,
+		"POST",
+		$postarray
+	);
+
+	die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal);
+}
+
 if($posttext==1) //Block for curl to get latest note
 {
 	$createdby = "Error"; //Create with error just in case.
