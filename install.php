@@ -77,6 +77,8 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     <div class=\"col-sm-6\"><label for='slackTimetoken'>/times Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacktimetoken' id='slackTimetoken'><br></div>
                     <div class=\"col-sm-12\">The one below is for the use of the DBManage module, not needed if you plan to do all MySQL work in a different way.</div>
                     <div class=\"col-sm-6\"><label for='slackDbmantoken'>/dbm Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackdbmantoken' id='slackDbmantoken'><br></div>
+                    <div class=\"col-sm-12\"><h4>Tickets Module</h4></div>
+                    <div class=\"col-sm-7\"><label for='useBoards'>Use boards in new ticket creation: </label></div><div class=\"col-sm-5\"><input type='radio' name='useboards' value='yes' id='useBoards' checked> Yes <input type='radio' name='useboards' value='no' > No </div>
                     <div class=\"col-sm-12\"><h4>Incoming Module</h4></div>
                     <div class=\"col-sm-6\"><label for='webHookurl'>Web Hook URL: </label></div><div class=\"col-sm-6\"><input type='text' name='webhookurl' id='webHookurl' placeholder='https://hooks.slack.com/services/...'></div>
                     <div class=\"col-sm-7\"><label for='postAdded'>Post new tickets to Slack: </label></div><div class=\"col-sm-5\"><input type='radio' name='postadded' value='yes' id='postAdded' checked> Yes <input type='radio' name='postadded' value='no'> No</div>
@@ -104,6 +106,8 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     <div class=\"col-sm-7\"><label for='followEnabled'>Enable follow module: </label></div><div class=\"col-sm-5\"><input type='radio' name='followenabled' value='yes' id='followEnabled' checked> Yes <input type='radio' name='followenabled' value='no' > No </div>
                     <div class=\"col-sm-6\"><label for='followToken'>Follow token for CW Link: </label></div><div class=\"col-sm-6\"><input type='text' name='followtoken' id='followToken' placeholder='follow'></div>
                     <div class=\"col-sm-6\"><label for='unfollowToken'>Unfollow token for CW Link: </label></div><div class=\"col-sm-6\"><input type='text' name='unfollowtoken' id='unfollowToken' placeholder='unfollow'></div>
+                    <div class=\"col-sm-12\"><h4>Configs Module</h4></div>
+                    <div class=\"col-sm-7\"><label for='hidePasswords'>Hide password fields: </label></div><div class=\"col-sm-5\"><input type='radio' name='hidepasswords' value='yes' id='hidePasswords'> Yes <input type='radio' name='hidepasswords' value='no' checked> No </div>
                     <div class=\"col-sm-12\"><h4>DBManage Module</h4></div>
                     <div class=\"col-sm-12\">List of Slack usernames that can access the /dbm commands. Seperate them by a pipe symbol, |</div>
                     <div class=\"col-sm-6\"><label for='adminList'>Admin List: </label></div><div class=\"col-sm-6\"><input type='text' name='adminlist' id='adminList'></div>
@@ -418,6 +422,18 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                             $newdata[] = '$followenabled = 1; //When set to 1, follow commands and the follow scripts will be enabled.' . PHP_EOL;
                         } else {
                             $newdata[] = '$followenabled = 0; //When set to 1, follow commands and the follow scripts will be enabled.' . PHP_EOL;
+                        }
+                    } else if (stristr($data, '$hidepasswords =')) {
+                            if ($_POST["hidepasswords"] == "yes") {
+                                $newdata[] = '$hidepasswords = 1; //Set to 1 if you want to hide passwords.' . PHP_EOL;
+                            } else {
+                                $newdata[] = '$hidepasswords = 0; //Set to 1 if you want to hide passwords.' . PHP_EOL;
+                            }
+                    } else if (stristr($data, '$useboards =')) {
+                        if ($_POST["useboards"] == "yes") {
+                            $newdata[] = '$useboards = 1; //Use the board function in new tickets. /t new company|summary vs /t new board|company|summary' . PHP_EOL;
+                        } else {
+                            $newdata[] = '$useboards = 0; //Use the board function in new tickets. /t new company|summary vs /t new board|company|summary' . PHP_EOL;
                         }
                     } else if (stristr($data, '$followtoken =')) {
                         if (!empty($_POST["followtoken"])) {
