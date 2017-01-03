@@ -34,19 +34,16 @@
 <p>The goal of this project is to fully integrate the ConnectWise software into Slack slash commands and incoming webhooks to make life as an MSP much easier. The ConnectWise main interface can be slow and bogged down through many pages, whereas the API has quick responses as long as you know what you're searching for.</p>
 
 <h3>
-<a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v2.1</h3>
+<a id="latest-version-v17" class="anchor" href="#latest-version-v17" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Latest Version: v2.2</h3>
 
 <ul>
-<li><strong>Tasks</strong>: New module for managing tasks in ConnectWise tickets. Allows for creating and updating tasks.</li>
-<li><strong>Time</strong>: New module for submitting closed loop time entries in ConnectWise tickets. Submitting a time entry for 5 minutes will substract 5 minutes from the current time and make that the start point.</li>
-<li><strong>Incoming</strong>: Now allows you to send specific ticket boards to specific channels. See readme.md for more information on setting this up.</li>
-<li><strong>Updater</strong>: New updater script to migrate from 2.0 to 2.1. Just updates the config.php with the new variables in 2.1.</li>
-<li><strong>Follow</strong>: Fixed CW links not using MySQL database per #60, thanks @adamhancock for the leg work!</li>
-<li><strong>Incoming</strong>: Added catch for just browsing to cwslack-incoming.php so it isn't just a flood of errors.</li>
-<li><strong>Installer</strong>: Fixed issue with the $usedatabase line, causing it to screw up the flatfile portion of config.php.</li>
-<li><strong>Tickets</strong>: Fixed error with /t on tickets that only had time entries for notes, per #61.</li>
-<li><strong>Tickets</strong>: Changed status and priority updates to use ephemeral notes, since the channel you're in doesn't need to know you changed something.</li>
-<li><strong>Functions</strong>: Fixed error in the error catcher! Accidentally was using $dataTData as a reference for errors, switched it to the proper $jsonDecode.</li>
+<li><strong>Tickets</strong>: New ticket creation using /t new</li>
+<li><strong>Tickets</strong>: Ticket scheduling using /t ### scheduleme and /t ### schedule</li>
+<li><strong>Tickets</strong>: Fixed /t ### priority and /t ### status to use word value instead of ID</li>
+<li><strong>Tickets</strong>: Fixed issue #78 which caused some tickets without notes to generate errors in Slack output.</li>
+<li><strong>Configs</strong>: New variable $hidepasswords will hide any fields named Password from being sent to Slack.</li>
+<li><strong>Configs</strong>: Fixed issue with required functions being missing.</li>
+<li><strong>License</strong>: Updated license statement for install.php and update scripts.</li>
 </ul>
 
 
