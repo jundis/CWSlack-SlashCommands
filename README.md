@@ -152,6 +152,14 @@ Use new instead of a ticket number to create a new ticket. Pipe symbols are requ
 
 Only include [board name] if you have $useboards set to 1 in config.php.
 
+### scheduleme [time]
+
+Schedules you for the specified ticket at the specified time. Accepts most reasonable forms of time (e.x. 4:00PM, Tomorrow 4:00PM, 1/4/2017 4:00PM, Wednesday 4:00PM)
+
+### schedule [user] [time]
+
+Schedules the specified user for the ticket at specified time. Accepts most reasonable forms of time like above.
+
 ## cwslack-activities.php
 
 /act new\*|[activity title]\*|[assigned to]*
