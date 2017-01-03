@@ -424,11 +424,11 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                             $newdata[] = '$followenabled = 0; //When set to 1, follow commands and the follow scripts will be enabled.' . PHP_EOL;
                         }
                     } else if (stristr($data, '$hidepasswords =')) {
-                            if ($_POST["hidepasswords"] == "yes") {
-                                $newdata[] = '$hidepasswords = 1; //Set to 1 if you want to hide passwords.' . PHP_EOL;
-                            } else {
-                                $newdata[] = '$hidepasswords = 0; //Set to 1 if you want to hide passwords.' . PHP_EOL;
-                            }
+                        if ($_POST["hidepasswords"] == "yes") {
+                            $newdata[] = '$hidepasswords = 1; //Set to 1 if you want to hide passwords.' . PHP_EOL;
+                        } else {
+                            $newdata[] = '$hidepasswords = 0; //Set to 1 if you want to hide passwords.' . PHP_EOL;
+                        }
                     } else if (stristr($data, '$useboards =')) {
                         if ($_POST["useboards"] == "yes") {
                             $newdata[] = '$useboards = 1; //Use the board function in new tickets. /t new company|summary vs /t new board|company|summary' . PHP_EOL;
