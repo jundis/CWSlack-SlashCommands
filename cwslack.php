@@ -485,6 +485,7 @@ if($posttext==1) //Block for curl to get latest note
 
 			$date2 = strtotime($notedate);
 			$date2format = date('m-d-Y g:i:sa', $date2);
+			$internalflag = $dataTimeData[0]->internalAnalysisFlag;
 		}
 		else
 		{
@@ -498,6 +499,7 @@ if($posttext==1) //Block for curl to get latest note
 			$createdby = $dataTNotes[0]->createdBy; //Set $createdby to the ticket note creator.
 			$notetime = new DateTime($dataTNotes[0]->dateCreated); //Create new datetime object based on ticketnote note.
 			$notedate = $dataTNotes[0]->dateCreated;
+			$internalflag = $dataTNotes[0]->internalAnalysisFlag;
 
 			$text = $dataTNotes[0]->text; //Set $text to the ticket text.
 			if (array_key_exists(0, $dataTNotes) && array_key_exists(0, $dataTimeData) && $command != "initial" && $command != "first" && $command != "note") //Check if arrays exist properly.
@@ -510,6 +512,7 @@ if($posttext==1) //Block for curl to get latest note
 					$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
 					$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
 					$notedate = $dataTimeData[0]->dateEntered;
+					$internalflag = $dataTimeData[0]->internalAnalysisFlag;
 				}
 			}
 
@@ -524,6 +527,7 @@ if($posttext==1) //Block for curl to get latest note
 
 			$date2 = strtotime($notedate);
 			$date2format = date('m-d-Y g:i:sa', $date2);
+			$internalflag = $dataTimeData[0]->internalAnalysisFlag;
 		}
 	}
 	else
@@ -592,7 +596,7 @@ if($command == "initial" || $command == "first" || $command == "note")
 					)
 				),
 				array(
-					"pretext" => "Initial ticket note (" . $date2format  . ") from: " . $createdby,
+					"pretext" => "Initial " . ($internalflag == "true" ? "Internal" : "External") . " ticket note (" . $date2format  . ") from: " . $createdby,
 					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
@@ -629,6 +633,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 	{
 		$date3=strtotime($dataTNotes2[0]->dateCreated);
 		$date3format=date('m-d-Y g:i:sa',$date3);
+		$internalflag2 = $dataTNotes2[0]->internalAnalysisFlag;
 		$return =array(
 			"parse" => "full",
 			"response_type" => "ephemeral",
@@ -645,7 +650,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 					)
 				),
 				array(
-					"pretext" => "Latest Note (" . $date2format  . ") from: " . $createdby,
+					"pretext" => "Latest " . ($internalflag == "true" ? "Internal" : "External") . " Note (" . $date2format  . ") from: " . $createdby,
 					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
@@ -654,7 +659,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 						)
 				),
 				array(
-					"pretext" => "Initial ticket note (" . $date3format  . ") from: " . $dataTNotes2[0]->createdBy,
+					"pretext" => "Initial " . ($internalflag == "true" ? "Internal" : "External") . " ticket note (" . $date3format  . ") from: " . $dataTNotes2[0]->createdBy,
 					"text" =>  $dataTNotes2[0]->text,
 					"mrkdwn_in" => array(
 						"text",
@@ -705,7 +710,7 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 					)
 				),
 				array(
-					"pretext" => "Latest Note (" . $date2format  . ") from: " . $createdby,
+					"pretext" => "Latest " . ($internalflag == "true" ? "Internal" : "External") . " Note (" . $date2format  . ") from: " . $createdby,
 					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
