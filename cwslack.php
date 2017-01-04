@@ -485,7 +485,7 @@ if($posttext==1) //Block for curl to get latest note
 
 			$date2 = strtotime($notedate);
 			$date2format = date('m-d-Y g:i:sa', $date2);
-			$internalflag = $dataTimeData[0]->internalAnalysisFlag;
+			$internalflag = $dataTimeData[0]->addToInternalAnalysisFlag;
 		}
 		else
 		{
@@ -512,7 +512,7 @@ if($posttext==1) //Block for curl to get latest note
 					$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
 					$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
 					$notedate = $dataTimeData[0]->dateEntered;
-					$internalflag = $dataTimeData[0]->internalAnalysisFlag;
+					$internalflag = $dataTimeData[0]->addToInternalAnalysisFlag;
 				}
 			}
 
@@ -527,7 +527,7 @@ if($posttext==1) //Block for curl to get latest note
 
 			$date2 = strtotime($notedate);
 			$date2format = date('m-d-Y g:i:sa', $date2);
-			$internalflag = $dataTimeData[0]->internalAnalysisFlag;
+			$internalflag = $dataTimeData[0]->addToInternalAnalysisFlag;
 		}
 	}
 	else
@@ -633,7 +633,14 @@ else if($command == "full" || $command == "notes" || $command == "all")
 	{
 		$date3=strtotime($dataTNotes2[0]->dateCreated);
 		$date3format=date('m-d-Y g:i:sa',$date3);
-		$internalflag2 = $dataTNotes2[0]->internalAnalysisFlag;
+		if(array_key_exists("internalAnalysisFlag", $dataTNotes2))
+		{
+			$internalflag2 = $dataTNotes2[0]->internalAnalysisFlag;
+		}
+		else
+		{
+			$internalflag2 = $dataTNotes2[0]->addToInternalAnalysisFlag;
+		}
 		$return =array(
 			"parse" => "full",
 			"response_type" => "ephemeral",
