@@ -194,6 +194,18 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     die();
                 }
 
+                $filedata = file('config.php');
+                if($filedata === FALSE)
+                {
+                    echo "<div class=\"alert alert-danger\" role=\"alert\">";
+                    echo "Could not open config.php file. Please ensure that PHP has read and write access to this file. If this is a new installation, please ensure you renamed config-default.php to config.php and uploaded install.php to the same directory.";
+                    echo "</div>";
+                    echo "<form action=\"install.php\">
+                                <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Retry MySQL\" />
+                                </form>";
+                    die();
+                }
+
                 echo "<div class=\"alert alert-success\" role=\"alert\">";
                 echo "Successfully connected and setup MySQL Database!<br><br>You can now finish configuring the options in config.php and then test it out! You can also click the button below to configure the config.php file with this script.";
                 echo "</div><div class=\"alert alert-info\" role=\"alert\">Please remove install.php to avoid people accessing it externally if you manually configure settings.</div></div>";
@@ -203,7 +215,7 @@ ini_set('display_errors', 1); //Display errors in case something occurs
 
                 mysqli_close($mysql);
 
-                $filedata = file('config.php');
+
                 $newdata = array();
 
                 foreach ($filedata as $data) {
@@ -228,6 +240,16 @@ ini_set('display_errors', 1); //Display errors in case something occurs
             }
             if ($_GET["page"] == "Save Settings") {
                 $filedata = file('config.php');
+                if($filedata === FALSE)
+                {
+                    echo "<div class=\"alert alert-danger\" role=\"alert\">";
+                    echo "Could not open config.php file. Please ensure that PHP has read and write access to this file. If this is a new installation, please ensure you renamed config-default.php to config.php and uploaded install.php to the same directory.";
+                    echo "</div>";
+                    echo "<form action=\"install.php\">
+                                <input type=\"submit\" name='page' class=\"btn btn-primary\" value=\"Setup Settings\" />
+                                </form>";
+                    die();
+                }
                 $newdata = array();
 
                 foreach ($filedata as $data) {
