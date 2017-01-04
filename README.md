@@ -30,8 +30,9 @@ Use the scripts found in the updates folder to upgrade from an older version to 
 
 ## cwslack.php, activities, contacts, notes, configs, tasks, time, and dbmanage
 
-1. Download the respective php file, functions.php, install.php, and config.php files.
+1. Download the respective php file, functions.php, install.php, and config-default.php files.
 2. Place on a compatible web server
+3. **Rename config-default.php to config.php**
 3. Create a new slack slash command integration at https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
 4. Set command to reflect the task necessary. E.x. /t for tickets, /act for activities, /note for notes.
 5. Set the URL to https://domain.tld/cwslack.php (or other php file)
@@ -44,8 +45,9 @@ Use the scripts found in the updates folder to upgrade from an older version to 
 
 ## cwslack-incoming.php
 
-1. Download the cwslack-incoming.php, functions.php, install.php, and config.php files.
+1. Download the cwslack-incoming.php, functions.php, install.php, and config-default.php files.
 2. Place on a compatible web server
+3. **Rename config-default.php to config.php**
 3. Create a new slack incoming web hook integration at https://my.slack.com/services/new/incoming-webhook/
 4. Set a name, icon, and if wanted.
 5. Set channel that you want to post to and copy the Web hook URL
@@ -74,8 +76,9 @@ By doing this, you can specify BoardA goes to ChannelA and BoardB goes to Channe
 
 **(Requires some variables from cwslack-incoming.php to function if you don't use that)**
 
-1. Download the cwslack-firmalerts.php, functions.php, install.php, and config.php files.
+1. Download the cwslack-firmalerts.php, functions.php, install.php, and config-default.php files.
 2. Place on a compatible web server.
+3. **Rename config-default.php to config.php**
 3. Run install.php and proceed through database setup. This will also verify you have the required PHP and cURL versions.
 4. Change $posttousers or $posttochan to 0 in config.php if you don't want it posting to one or the other.
 5. Setup a cron job or scheduled task on your server to run this PHP file **every minute.**  
@@ -86,8 +89,9 @@ By doing this, you can specify BoardA goes to ChannelA and BoardB goes to Channe
 
 **(Also requires cwslack-incoming.php to function)**
 
-1. Download the cwslack-follow.php, functions.php, install.php, and config.php files.
+1. Download the cwslack-follow.php, functions.php, install.php, and config-default.php files.
 2. Place on a compatible web server
+3. **Rename config-default.php to config.php**
 3. Create a new slack slash command integration at  https://SLACK TEAM.slack.com/apps/A0F82E8CA-slash-commands
 4. Set command to /follow (or other if you prefer)
 5. Set the URL to https://domain.tld/cwslack-follow.php
