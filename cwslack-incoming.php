@@ -269,27 +269,7 @@ if($followenabled==1)
 	}
 	else
 	{
-		if(file_exists($dir."storage.txt")) //Check if storage file exists.
-		{
-			$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //If so, open it.
-		}
-		else
-		{
-			$f = fopen($dir."storage.txt", 'w') or die("can't open file"); //If not, create it.
-			fclose($f); //Close newly created file.
-			$file = file_get_contents($dir."/storage.txt",FILE_SKIP_EMPTY_LINES); //Open it again for reading.
-		}
-		$lines = explode("\n",$file); //Create array with each line being it's own part of the array.
-
-		foreach($lines as $line) //Read through each line in the file.
-		{
-			$tempex = explode("^",$line); //Explode line based on seperator from cwslack-follow.php
-
-			if($tempex[0]==$ticket) //If the first part of the line is the ticket number..
-			{
-				$alerts[]=$tempex[1]; //Then add the username to the alerts array.
-			}
-		}
+		die();
 	}
 
 	if(!empty($alerts)) {
