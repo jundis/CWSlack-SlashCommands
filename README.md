@@ -22,7 +22,7 @@ cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, 
 
 This script set and all modules require PHP version 5 and the cURL extension, and many require a MySQL or MariaDB server.
 
-For non-MySQL installation instructions, please see README_NoMySQL.md
+For unsupported non-MySQL installation instructions, please see README_NoMySQL.md
 
 ####Update Instructions
 

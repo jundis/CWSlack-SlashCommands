@@ -2,7 +2,9 @@
 
 See README.md for full configuration details and other information. 
 
-This file should only be used if you cannot use a MySQL or Maria DB server for this script. Note that future updates past 2.0 may not fully update old modules and may require MySQL for new modules.
+This file should only be used if you cannot use a MySQL or Maria DB server for this script. Note that any new updates are not supported without MySQL and the Follow functionality will not work without MySQL past version 2.2.
+
+Please use this release if intending on working without MySQL: https://github.com/jundis/CWSlack-SlashCommands/releases/tag/2.2
 
 
 # Installation Instructions
