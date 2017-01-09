@@ -637,9 +637,17 @@ else if($command == "full" || $command == "notes" || $command == "all")
 		{
 			$internalflag2 = $dataTNotes2[0]->internalAnalysisFlag;
 		}
-		else
+		else if(array_key_exists("addToInternalAnalysisFlag", $dataTNotes2))
 		{
 			$internalflag2 = $dataTNotes2[0]->addToInternalAnalysisFlag;
+		}
+		else if(array_key_exists("internalFlag", $dataTNotes2))
+		{
+			$internalflag2 = $dataTNotes2[0]->internalFlag;
+		}
+		else
+		{
+			$internalflag2 = "";
 		}
 		$return =array(
 			"parse" => "full",
@@ -666,7 +674,7 @@ else if($command == "full" || $command == "notes" || $command == "all")
 						)
 				),
 				array(
-					"pretext" => "Initial " . ($internalflag == "true" ? "Internal" : "External") . " ticket note (" . $date3format  . ") from: " . $dataTNotes2[0]->createdBy,
+					"pretext" => "Initial " . ($internalflag2 == "true" ? "Internal" : "External") . " ticket note (" . $date3format  . ") from: " . $dataTNotes2[0]->createdBy,
 					"text" =>  $dataTNotes2[0]->text,
 					"mrkdwn_in" => array(
 						"text",
