@@ -34,6 +34,197 @@ if(!is_numeric($exploded[0])) {
     if ($exploded[0]=="help") {
         die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true))); //Encode a JSON response with a help URL.
     }
+    if ($exploded[0]=="report")
+    {
+        //Username mapping code
+        if(array_key_exists(1,$exploded))
+        {
+            if($usedatabase==1)
+            {
+                $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
+
+                if (!$mysql) //Check for errors
+                {
+                    die("Connection Error: " . mysqli_connect_error());
+                }
+
+                $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $exploded[1] . "\""; //SQL Query to select all ticket number entries
+
+                $result = mysqli_query($mysql, $sql); //Run result
+                $rowcount = mysqli_num_rows($result);
+                if($rowcount > 1) //If there were too many rows matching query
+                {
+                    die("Error: too many users somehow?"); //This should NEVER happen.
+                }
+                else if ($rowcount == 1) //If exactly 1 row is found.
+                {
+                    $row = mysqli_fetch_assoc($result); //Row association.
+
+                    $cwuser = $row["cwname"];
+                }
+                else //If no rows are found
+                {
+                    if($usecwname==1) //If variable enabled
+                    {
+                        $cwuser = $exploded[1];
+                    }
+                }
+            }
+            else
+            {
+                if($usecwname==1)
+                {
+                    $cwuser = $exploded[1];
+                }
+            }
+        }
+        else
+        {
+            if($usedatabase==1)
+            {
+                $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
+
+                if (!$mysql) //Check for errors
+                {
+                    die("Connection Error: " . mysqli_connect_error());
+                }
+
+                $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $_GET["user_name"] . "\""; //SQL Query to select all ticket number entries
+
+                $result = mysqli_query($mysql, $sql); //Run result
+                $rowcount = mysqli_num_rows($result);
+                if($rowcount > 1) //If there were too many rows matching query
+                {
+                    die("Error: too many users somehow?"); //This should NEVER happen.
+                }
+                else if ($rowcount == 1) //If exactly 1 row is found.
+                {
+                    $row = mysqli_fetch_assoc($result); //Row association.
+
+                    $cwuser = $row["cwname"];
+                }
+                else //If no rows are found
+                {
+                    if($usecwname==1) //If variable enabled
+                    {
+                        $cwuser = $_GET['user_name'];
+                    }
+                }
+            }
+            else
+            {
+                if($usecwname==1)
+                {
+                    $cwuser = $_GET['user_name'];
+                }
+            }
+        }
+
+        $datetoday = date("Y-m-d");
+        $timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries";
+        $filterurl = $timeurl . "?conditions=enteredBy=%27" . $cwuser . "%27%20and%20timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=dateEntered%20desc&pagesize=200";
+
+        // Authorization header
+        $header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
+
+        $data = cURL($filterurl, $header_data);
+
+        $totaltime = 0;
+        $highesttime = 0;
+        $highestticket = "";
+        $billabletime = 0;
+
+        foreach($data as $entry)
+        {
+            $totaltime = $totaltime + $entry->actualHours;
+            if($highesttime < $entry->actualHours && $entry->chargeToType=="ServiceTicket")
+            {
+                $highesttime = $entry->actualHours;
+                $highestticket = $entry->chargeToId;
+            }
+            if($entry->billableOption == "Billable")
+            {
+                $billabletime = $billabletime + $entry->actualHours;
+            }
+            $cwfullname = $entry->member->name;
+        }
+
+        $billablepercent = round($billabletime / $totaltime * 100,2) . "%";
+
+        $expected = round((strtotime("now") - strtotime("8:00AM")) / 3600,2);
+        $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $highestticket . "&companyName=" . $companyname;
+
+        $return = array(
+                    "parse" => "full", //Parse all text.
+                    "response_type" => "in_channel", //Send the response in the channel
+                    "attachments"=>array(array(
+                        "fallback" => "Time info for " . $cwuser, //Fallback for notifications
+                        "title" => "Total hours today: " . $totaltime, //Set bolded title text
+                        "pretext" => "Time info for " . $cwfullname, //Set pretext
+                        "text" => "Expected Hours: " . $expected . "\nBillable Time: " . $billablepercent . "\nHighest Ticket time: <" . $ticketurl . "|#" . $highestticket . "> (" . $highesttime . " hours)", //Set text to be returned
+                        "mrkdwn_in" => array( //Set markdown values
+                            "text",
+                            "pretext"
+                        )
+                    ))
+                );
+        die(json_encode($return, JSON_PRETTY_PRINT));
+
+    }
+    else if($exploded[0] == "reportall")
+    {
+        $datetoday = date("Y-m-d");
+        $timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries";
+        $filterurl = $timeurl . "?conditions=timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=dateEntered%20desc&pagesize=1000";
+
+        // Authorization header
+        $header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
+
+        $data = cURL($filterurl, $header_data);
+
+
+
+        $timeset = array();
+
+        foreach($data as $entry)
+        {
+            $name = $entry->enteredBy;
+            if(array_key_exists($name,$timeset))
+            {
+                $timeset[$entry->enteredBy]["totaltime"] = $timeset[$entry->enteredBy]["totaltime"] + $entry->actualHours;
+            }
+            else
+            {
+                $timeset[$entry->enteredBy] = null;
+                $timeset[$entry->enteredBy]["totaltime"] = $entry->actualHours;
+            }
+        }
+
+        $text = "";
+
+        foreach($timeset as $user => $val)
+        {
+            $text = $text . $user . " | " . $val["totaltime"] . " hours\n";
+        }
+
+        $expected = round((strtotime("now") - strtotime("8:00AM")) / 3600,2);
+
+        $return = array(
+            "parse" => "full", //Parse all text.
+            "response_type" => "in_channel", //Send the response in the channel
+            "attachments"=>array(array(
+                "fallback" => "Time info for all users", //Fallback for notifications
+                "title" => "Expected hours for today: " . $expected, //Set bolded title text
+                "pretext" => "Time info for all users", //Set pretext
+                "text" => $text, //Set text to be returned
+                "mrkdwn_in" => array( //Set markdown values
+                    "text",
+                    "pretext"
+                )
+            ))
+        );
+        die(json_encode($return, JSON_PRETTY_PRINT));
+    }
     else //Else close the connection.
     {
         echo "Unknown entry for ticket number.";
