@@ -12,7 +12,7 @@ cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, 
 * cwslack-configs.php: Pull configuration record information
 * cwslack-tasks.php: View and update tasks on tickets
 * cwslack-notes.php: Post notes to tickets
-* cwslack-time.php: Post time entries to tickets
+* cwslack-time.php: Post time entries to tickets and report on time sheets.
 * cwslack-incoming.php: Receive ticket creation/update notices in Slack
 * cwslack-follow.php: Follow a ticket to be direct messaged when updated
 * cwslack-firmalerts.php: Receive notifications when firm appointments are coming up
@@ -214,6 +214,15 @@ Commands:
 * [type] = Eitehr detailed, internal, or resolution. Also accepts d/i/r instead
 * [time] = Shorthand time, use digits then h or m to designate units. E.x. 1.5h, 35m, 80m. NOT 1.5 hours, 35 minutes, etc
 * [note] = Any sentence to be used as the ticket note.
+
+/times report [user]
+
+* Accepts a username (direct CW or Slack mapped) and outputs their daily time information
+* If no user name is specified, it uses your Slack username as the target
+
+/times reportall
+
+* No input, just outputs a list of users who have entered time and their time information.
 
 ## cwslack-dbmanage.php
 
