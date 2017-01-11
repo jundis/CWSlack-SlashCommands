@@ -180,20 +180,20 @@ if(!is_numeric($exploded[0])) {
         }
 
         $return = array(
-                    "parse" => "full", //Parse all text.
-                    "response_type" => "in_channel", //Send the response in the channel
-                    "attachments"=>array(array(
-                        "fallback" => "Time info for " . $cwuser, //Fallback for notifications
-                        "title" => "Total hours today: " . $totaltime, //Set bolded title text
-                        "pretext" => "Time info for " . $cwfullname, //Set pretext
-                        "color" => $timecolor,
-                        "text" => "Expected Hours: " . $expected . "\nBillable Time: " . $billablepercent . "\nHighest Ticket time: <" . $ticketurl . "|#" . $highestticket . "> (" . $highesttime . " hours)", //Set text to be returned
-                        "mrkdwn_in" => array( //Set markdown values
-                            "text",
-                            "pretext"
-                        )
-                    ))
-                );
+            "parse" => "full", //Parse all text.
+            "response_type" => "in_channel", //Send the response in the channel
+            "attachments"=>array(array(
+                "fallback" => "Time info for " . $cwuser, //Fallback for notifications
+                "title" => "Total hours today: " . $totaltime, //Set bolded title text
+                "pretext" => "Time info for " . $cwfullname, //Set pretext
+                "color" => $timecolor,
+                "text" => "Expected Hours: " . $expected . "\nBillable Time: " . $billablepercent . "\nHighest Ticket time: <" . $ticketurl . "|#" . $highestticket . "> (" . $highesttime . " hours)", //Set text to be returned
+                "mrkdwn_in" => array( //Set markdown values
+                    "text",
+                    "pretext"
+                )
+            ))
+        );
         die(json_encode($return, JSON_PRETTY_PRINT));
 
     }
