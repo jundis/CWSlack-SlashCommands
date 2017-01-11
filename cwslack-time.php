@@ -129,6 +129,11 @@ if(!is_numeric($exploded[0])) {
 
         $data = cURL($filterurl, $header_data);
 
+        if($data == NULL)
+        {
+            die("User has not yet recorded time or the username $cwuser does not exist.");
+        }
+
         $totaltime = 0;
         $highesttime = 0;
         $highestticket = "";
@@ -147,6 +152,11 @@ if(!is_numeric($exploded[0])) {
                 $billabletime = $billabletime + $entry->actualHours;
             }
             $cwfullname = $entry->member->name;
+        }
+
+        if($totaltime == 0)
+        {
+            die("User has not yet recorded time today.");
         }
 
         $billablepercent = round($billabletime / $totaltime * 100,2) . "%";
