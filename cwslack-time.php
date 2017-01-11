@@ -208,7 +208,10 @@ if(!is_numeric($exploded[0])) {
 
         $data = cURL($filterurl, $header_data);
 
-
+        if ($data == NULL)
+        {
+            die("No users have recorded time information for today.");
+        }
 
         $timeset = array();
 
