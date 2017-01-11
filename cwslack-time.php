@@ -164,6 +164,21 @@ if(!is_numeric($exploded[0])) {
         $expected = round((strtotime("now") - strtotime("8:00AM")) / 3600,2);
         $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $highestticket . "&companyName=" . $companyname;
 
+        $timediff = $expected - $totaltime;
+
+        if ($timediff >= 2)
+        {
+            $timecolor = "danger";
+        }
+        else if ($timediff < 2 && $timediff >= 1)
+        {
+            $timecolor = "warning";
+        }
+        else
+        {
+            $timecolor = "good";
+        }
+
         $return = array(
                     "parse" => "full", //Parse all text.
                     "response_type" => "in_channel", //Send the response in the channel
@@ -171,6 +186,7 @@ if(!is_numeric($exploded[0])) {
                         "fallback" => "Time info for " . $cwuser, //Fallback for notifications
                         "title" => "Total hours today: " . $totaltime, //Set bolded title text
                         "pretext" => "Time info for " . $cwfullname, //Set pretext
+                        "color" => $timecolor,
                         "text" => "Expected Hours: " . $expected . "\nBillable Time: " . $billablepercent . "\nHighest Ticket time: <" . $ticketurl . "|#" . $highestticket . "> (" . $highesttime . " hours)", //Set text to be returned
                         "mrkdwn_in" => array( //Set markdown values
                             "text",
