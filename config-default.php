@@ -27,6 +27,7 @@ $companyname = "MyCompany"; //Set your company name from Connectwise. This is th
 $apipublickey = "Key"; //Public API key
 $apiprivatekey = "Key"; //Private API key
 $timezone = "America/Chicago"; //Set your timezone here.
+$timeoutfix = false; //Enable to fix any 3000ms response from Slack.
 
 // Database Configuration, required for if you want to use MySQL/Maria DB features.
 $usedatabase = 0; // Set to 0 by default, set to 1 if you want to enable MySQL.
