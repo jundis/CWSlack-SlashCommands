@@ -33,6 +33,19 @@ if(empty($_GET['token']) || ($_GET['token'] != $slacktoken)) die("Slack token in
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 $exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+if($timeoutfix == true)
+{
+	ob_end_clean();
+	header("Connection: close");
+	ignore_user_abort(); // optional
+	ob_start();
+	echo ('{"response_type": "in_channel"}');
+	$size = ob_get_length();
+	header("Content-Length: $size");
+	ob_end_flush(); // Strange behaviour, will not work
+	flush();            // Unless both are called !
+	session_write_close(); // Added a line suggested in the comment
+}
 
 //This section checks if the ticket number is not equal to 6 digits (our tickets are in the hundreds of thousands but not near a million yet) and kills the connection if it's not.
 if(!is_numeric($exploded[0])) {
@@ -169,7 +182,15 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 		$postarray
 	);
 
-	die("New ticket #<" . $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $dataTCmd->id . "|" . $dataTCmd->id . "> has been created.");
+	if($timeoutfix == true)
+	{
+		cURLPost($_GET["response_url"],array("Content-Type: application/json"),"POST",array("parse" => "full", "response_type" => "ephemeral","text" => "New ticket #<" . $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $dataTCmd->id . "|" . $dataTCmd->id . "> has been created.","mrkdwn"=>true));
+	}
+	else
+	{
+		die("New ticket #<" . $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $dataTCmd->id . "|" . $dataTCmd->id . "> has been created.");
+	}
+	die();
 }
 
 //-
@@ -227,7 +248,12 @@ if($command=="priority") { //Check if the second string in the text array from t
 		))
 	);
 
-	die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+	if ($timeoutfix == true) {
+		cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+	} else {
+		die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+	}
+	die();
 }
 
 //-
@@ -235,18 +261,13 @@ if($command=="priority") { //Check if the second string in the text array from t
 //-
 if($command=="status") {
 	$status = "0";
-	if ($option3 == "scheduled" || $option3=="schedule")
-	{
+	if ($option3 == "scheduled" || $option3 == "schedule") {
 		$status = "124";
-	} else if ($option3=="completed")
-	{
+	} else if ($option3 == "completed") {
 		$status = "31";
-	} else if ($option3=="n2s" || $option3=="needtoschedule" || $option3=="ns")
-	{
+	} else if ($option3 == "n2s" || $option3 == "needtoschedule" || $option3 == "ns") {
 		$status = "121";
-	}
-	else
-	{
+	} else {
 		die("Failed to get status code: " . $option3);
 	}
 	$dataTCmd = cURLPost(
@@ -256,22 +277,26 @@ if($command=="status") {
 		array(array("op" => "replace", "path" => "/status/id", "value" => $status))
 	);
 
-	$return =array(
+	$return = array(
 		"parse" => "full",
 		"response_type" => "ephemeral", //Send the response to the user only
-		"attachments"=>array(array(
+		"attachments" => array(array(
 			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "Ticket Summary: " . $dataTData->summary,
 			"pretext" => "Ticket #" . $dataTData->id . "'s status has been set to " . $option3,
-			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.",
+			"text" => "Click <" . $ticketurl . $dataTData->id . "&companyName" . $companyname . "|here> to open the ticket.",
 			"mrkdwn_in" => array(
 				"text",
 				"pretext"
 			)
 		))
 	);
-
-	die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+	if ($timeoutfix == true) {
+		cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+	} else {
+		die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+	}
+	die();
 }
 
 if($command=="scheduleme")
@@ -357,11 +382,20 @@ if($command=="scheduleme")
 	if($removal==NULL)
 	{
 		$timingdate = explode("T", $datestart);
-		die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]");
+		if ($timeoutfix == true) {
+			cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "You have been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]","mrkdwn"=>true));
+		} else {
+			die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]"); //Return properly encoded arrays in JSON for Slack parsing.
+		}
 	}
 	else
 	{
-		die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal);
+		if ($timeoutfix == true) {
+			cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "You have been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal,"mrkdwn"=>true));
+		} else {
+			die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal); //Return properly encoded arrays in JSON for Slack parsing.
+		}
+		die();
 	}
 }
 
@@ -454,11 +488,21 @@ if($command=="schedule")
 	if($removal==NULL)
 	{
 		$timingdate = explode("T", $datestart);
-		die("$username has been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]");
+		if ($timeoutfix == true) {
+			cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "$username has been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]","mrkdwn"=>true));
+		} else {
+			die("$username has been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]"); //Return properly encoded arrays in JSON for Slack parsing.
+		}
+		die();
 	}
 	else
 	{
-		die("$username has been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal);
+		if ($timeoutfix == true) {
+			cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "$username has been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal,"mrkdwn"=>true));
+		} else {
+			die("$username has been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal); //Return properly encoded arrays in JSON for Slack parsing.
+		}
+		die();
 	}
 }
 
@@ -771,5 +815,11 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 	}
 }
 
-echo json_encode($return, JSON_PRETTY_PRINT); //Return properly encoded arrays in JSON for Slack parsing.
+if ($timeoutfix == true) {
+	cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+} else {
+	die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+}
+die();
+
 ?>
