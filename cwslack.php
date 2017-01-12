@@ -89,7 +89,7 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 		if(!array_key_exists(2, $ticketstuff)) {
 			die("Not enough values specified. Please use /t new board|company|summary");
 		}
-		$companyurl = $connectwise . "/v4_6_release/apis/3.0/company/companies?conditions=name%20contains%20%27" . $ticketstuff[1] . "%27";
+		$companyurl = $connectwise . "/v4_6_release/apis/3.0/company/companies?conditions=name%20contains%20%27" . urlencode($ticketstuff[1]) . "%27";
 		$companydata = cURL($companyurl, $header_data);
 
 		$boardurl = $connectwise . "/v4_6_release/apis/3.0/service/boards?conditions=name%20contains%20%27" .$ticketstuff[0]. "%27";
