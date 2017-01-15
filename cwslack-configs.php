@@ -28,6 +28,21 @@ if(empty($_GET['text'])) die("No text provided."); //If there is no text added, 
 
 $exploded = explode("|",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+//Timeout Fix Block
+if($timeoutfix == true)
+{
+    ob_end_clean();
+    header("Connection: close");
+    ob_start();
+    echo ('{"response_type": "in_channel"}');
+    $size = ob_get_length();
+    header("Content-Length: $size");
+    ob_end_flush();
+    flush();
+    session_write_close();
+}
+//End timeout fix block
+
 //Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 if ($exploded[0]=="help") {
     die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true))); //Encode a JSON response with a help URL.
@@ -67,7 +82,12 @@ $dataTData = cURL($url, $header_data); // Get the JSON returned by the CW API.
 //Error handling
 if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 {
-    die("No configuration found."); //Return error.
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No configuration found."));
+    } else {
+        die("No configuration found."); //Return properly encoded arrays in JSON for Slack parsing.
+    }
+    die();
 }
 
 $return="Nothing!"; //Create return value and set to a basic message just in case.
@@ -138,7 +158,10 @@ $return =array(
     ))
 );
 
-
-echo json_encode($return, JSON_PRETTY_PRINT); //Return properly encoded arrays in JSON for Slack parsing.
+if ($timeoutfix == true) {
+    cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+} else {
+    die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+}
 
 ?>
