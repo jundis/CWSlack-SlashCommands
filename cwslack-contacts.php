@@ -33,6 +33,21 @@ if ($exploded[0]=="help") {
     die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true))); //Encode a JSON response with a help URL.
 }
 
+//Timeout Fix Block
+if($timeoutfix == true)
+{
+    ob_end_clean();
+    header("Connection: close");
+    ob_start();
+    echo ('{"response_type": "in_channel"}');
+    $size = ob_get_length();
+    header("Content-Length: $size");
+    ob_end_flush();
+    flush();
+    session_write_close();
+}
+//End timeout fix block
+
 $firstname=NULL; //Create a first name variable and set it to Null
 $lastname=NULL; //Create a last name variable and set it to Null
 $url=NULL; //Create a URL variable and set it to Null.
@@ -65,7 +80,12 @@ $dataTData = cURL($url, $header_data);
 
 if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 {
-	die("No contact found or your API URL is incorrect."); //Kill the connection.
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No contact found or your API URL is incorrect."));
+    } else {
+        die("No contact found or your API URL is incorrect."); //Post to slack
+    }
+    die();
 }
 
 $return="Nothing!"; //Create return value and set to a basic message just in case.
@@ -154,7 +174,9 @@ $return =array(
 		))
 	);
 
-
-echo json_encode($return, JSON_PRETTY_PRINT); //Return properly encoded arrays in JSON for Slack parsing.
-
+if ($timeoutfix == true) {
+    cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+} else {
+    die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+}
 ?>
