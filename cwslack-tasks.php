@@ -40,6 +40,21 @@ if(!is_numeric($exploded[0])) {
     }
 }
 
+//Timeout Fix Block
+if($timeoutfix == true)
+{
+    ob_end_clean();
+    header("Connection: close");
+    ob_start();
+    echo ('{"response_type": "in_channel"}');
+    $size = ob_get_length();
+    header("Content-Length: $size");
+    ob_end_flush();
+    flush();
+    session_write_close();
+}
+//End timeout fix block
+
 //Set NULL Variables
 $ticketnumber = $exploded[0];
 $command = NULL;
@@ -83,7 +98,12 @@ if (array_key_exists(1, $exploded)) //If a second string exists in the slash com
 }
 else
 {
-    die("Please use [ticket number] [list/update/complete/open/new] [task number]");
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Please use [ticket number] [list/update/complete/open/new] [task number]"));
+    } else {
+        die("Please use [ticket number] [list/update/complete/open/new] [task number]"); //Post to slack
+    }
+    die();
 }
 
 if($command=="list")
@@ -92,7 +112,12 @@ if($command=="list")
     $taskdata = cURL($taskurl, $header_data); // Get the JSON returned by the CW API for $taskurl.
     if(empty($taskdata))
     {
-        die("No tasks found on ticket #".$ticketnumber);
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No tasks found on ticket #".$ticketnumber));
+        } else {
+            die("No tasks found on ticket #".$ticketnumber); //Post to slack
+        }
+        die();
     }
     foreach($taskdata as $t)
     {
@@ -114,7 +139,11 @@ if($command=="list")
         ))
     );
 
-    echo json_encode($return, JSON_PRETTY_PRINT); //Return properly encoded arrays in JSON for Slack parsing.
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+    } else {
+        die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+    }
 }
 else if ($command=="open"||$command=="reopen")
 {
@@ -123,7 +152,12 @@ else if ($command=="open"||$command=="reopen")
     $taskdata = cURL($taskurl, $header_data); // Get the JSON returned by the CW API for $taskurl.
     if(empty($taskdata))
     {
-        die("No tasks found on ticket #".$ticketnumber);
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No tasks found on ticket #".$ticketnumber));
+        } else {
+            die("No tasks found on ticket #".$ticketnumber); //Post to slack
+        }
+        die();
     }
     foreach($taskdata as $t)
     {
@@ -132,13 +166,23 @@ else if ($command=="open"||$command=="reopen")
             $taskid = $t->id;
             if($t->closedFlag==false)
             {
-                die("Task #" .$task . " is already open.");
+                if ($timeoutfix == true) {
+                    cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" .$task . " is already open."));
+                } else {
+                    die("Task #" .$task . " is already open."); //Post to slack
+                }
+                die();
             }
         }
     }
     if($taskid==NULL)
     {
-        die("Task #" . $task . " not found on Ticket #" . $ticketnumber . ".");
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" . $task . " not found on Ticket #" . $ticketnumber . "."));
+        } else {
+            die("Task #" . $task . " not found on Ticket #" . $ticketnumber . "."); //Post to slack
+        }
+        die();
     }
 
     $taskpatch = $taskurl . "/" . $taskid;
@@ -150,7 +194,12 @@ else if ($command=="open"||$command=="reopen")
         array(array("op" => "replace", "path" => "/closedFlag", "value" => false))
     );
 
-    echo "Task #" . $task . " has been marked open.";
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" . $task . " has been marked open."));
+    } else {
+        die("Task #" . $task . " has been marked open."); //Post to slack
+    }
+    die();
 }
 else if ($command=="close"||$command=="complete"||$command=="done"||$command=="completed")
 {
@@ -159,7 +208,12 @@ else if ($command=="close"||$command=="complete"||$command=="done"||$command=="c
     $taskdata = cURL($taskurl, $header_data); // Get the JSON returned by the CW API for $taskurl.
     if(empty($taskdata))
     {
-        die("No tasks found on ticket #".$ticketnumber);
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No tasks found on ticket #".$ticketnumber));
+        } else {
+            die("No tasks found on ticket #".$ticketnumber); //Post to slack
+        }
+        die();
     }
     foreach($taskdata as $t)
     {
@@ -168,13 +222,23 @@ else if ($command=="close"||$command=="complete"||$command=="done"||$command=="c
             $taskid = $t->id;
             if($t->closedFlag==true)
             {
-                die("Task #" .$task . " is already marked done.");
+                if ($timeoutfix == true) {
+                    cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" .$task . " is already marked done."));
+                } else {
+                    die("Task #" .$task . " is already marked done."); //Post to slack
+                }
+                die();
             }
         }
     }
     if($taskid==NULL)
     {
-        die("Task #" . $task . " not found on Ticket #" . $ticketnumber . ".");
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" . $task . " not found on Ticket #" . $ticketnumber . "."));
+        } else {
+            die("Task #" . $task . " not found on Ticket #" . $ticketnumber . "."); //Post to slack
+        }
+        die();
     }
 
     $taskpatch = $taskurl . "/" . $taskid;
@@ -193,11 +257,21 @@ else if ($command=="close"||$command=="complete"||$command=="done"||$command=="c
             array(array("op" => "replace", "path" => "/resolution", "value" => $sentence))
         );
 
-        echo "Task #" . $task . " has been marked completed with resolution note: " . $sentence;
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" . $task . " has been marked completed with resolution note: " . $sentence));
+        } else {
+            die("Task #" . $task . " has been marked completed with resolution note: " . $sentence); //Post to slack
+        }
+        die();
     }
     else
     {
-        echo "Task #" . $task . " has been marked completed.";
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" . $task . " has been marked completed."));
+        } else {
+            die("Task #" . $task . " has been marked completed."); //Post to slack
+        }
+        die();
     }
 }
 else if ($command=="update"||$command=="change"||$command=="note")
@@ -207,7 +281,12 @@ else if ($command=="update"||$command=="change"||$command=="note")
     $taskdata = cURL($taskurl, $header_data); // Get the JSON returned by the CW API for $taskurl.
     if(empty($taskdata))
     {
-        die("No tasks found on ticket #".$ticketnumber);
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No tasks found on ticket #".$ticketnumber));
+        } else {
+            die("No tasks found on ticket #".$ticketnumber); //Post to slack
+        }
+        die();
     }
     foreach($taskdata as $t)
     {
@@ -216,13 +295,23 @@ else if ($command=="update"||$command=="change"||$command=="note")
             $taskid = $t->id;
             if($t->closedFlag==true)
             {
-                die("Task #" .$task . " is already marked done.");
+                if ($timeoutfix == true) {
+                    cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" .$task . " is already marked done."));
+                } else {
+                    die("Task #" .$task . " is already marked done."); //Post to slack
+                }
+                die();
             }
         }
     }
     if($taskid==NULL)
     {
-        die("Task #" . $task . " not found on Ticket #" . $ticketnumber . ".");
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" . $task . " not found on Ticket #" . $ticketnumber . "."));
+        } else {
+            die("Task #" . $task . " not found on Ticket #" . $ticketnumber . "."); //Post to slack
+        }
+        die();
     }
 
     $taskpatch = $taskurl . "/" . $taskid;
@@ -235,11 +324,21 @@ else if ($command=="update"||$command=="change"||$command=="note")
             array(array("op" => "replace", "path" => "/notes", "value" => $sentence))
         );
 
-        echo "Task #" . $task . " has been updated with note: " . $sentence;
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Task #" . $task . " has been updated with note: " . $sentence));
+        } else {
+            die("Task #" . $task . " has been updated with note: " . $sentence); //Post to slack
+        }
+        die();
     }
     else
     {
-        echo "No note provided for update.";
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No note provided for update."));
+        } else {
+            die("No note provided for update."); //Post to slack
+        }
+        die();
     }
 }
 else if ($command=="new"||$command=="add")
@@ -262,16 +361,31 @@ else if ($command=="new"||$command=="add")
             array("notes"=>$sentence,"priority"=>$priority)
         );
 
-        echo "A new task has been created with note: " . $sentence;
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "A new task has been created with note: " . $sentence));
+        } else {
+            die("A new task has been created with note: " . $sentence); //Post to slack
+        }
+        die();
     }
     else
     {
-        echo "No note provided for new task.";
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No note provided for new task."));
+        } else {
+            die("No note provided for new task."); //Post to slack
+        }
+        die();
     }
 }
 else
 {
-    die("Unknown command. Please use [ticket number] [list/update/complete/open/new] [task number]");
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Unknown command. Please use [ticket number] [list/update/complete/open/new] [task number]"));
+    } else {
+        die("Unknown command. Please use [ticket number] [list/update/complete/open/new] [task number]"); //Post to slack
+    }
+    die();
 }
 
 
