@@ -94,7 +94,7 @@ else
     if ($timeoutfix == true) {
         cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => $return));
     } else {
-        die("$username has been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]"); //Return properly encoded arrays in JSON for Slack parsing.
+        die($return); //Post to slack
     }
 	die();
 }
