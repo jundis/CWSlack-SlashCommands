@@ -30,6 +30,20 @@ if(empty($_GET['token']) || ($_GET['token'] != $slackactivitiestoken)) die("Slac
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 $exploded = explode("|",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+if($timeoutfix == true)
+{
+    ob_end_clean();
+    header("Connection: close");
+    ignore_user_abort(); // optional
+    ob_start();
+    echo ('{"response_type": "in_channel"}');
+    $size = ob_get_length();
+    header("Content-Length: $size");
+    ob_end_flush(); // Strange behaviour, will not work
+    flush();            // Unless both are called !
+    session_write_close(); // Added a line suggested in the comment
+}
+
 //Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 if ($exploded[0]=="help") {
     die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true))); //Encode a JSON response with a help URL.
@@ -76,8 +90,16 @@ if($command == "new") //If command is new.
 }
 else
 {
-	echo $return;
-	return;
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => $return));
+    } else {
+        die("$username has been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]"); //Return properly encoded arrays in JSON for Slack parsing.
+    }
+	die();
 }
-echo json_encode($return);
+if ($timeoutfix == true) {
+    cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+} else {
+    die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+}
 ?>
