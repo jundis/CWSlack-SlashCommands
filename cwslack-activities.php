@@ -30,19 +30,20 @@ if(empty($_GET['token']) || ($_GET['token'] != $slackactivitiestoken)) die("Slac
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 $exploded = explode("|",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+//Timeout Fix Block
 if($timeoutfix == true)
 {
     ob_end_clean();
     header("Connection: close");
-    ignore_user_abort(); // optional
     ob_start();
     echo ('{"response_type": "in_channel"}');
     $size = ob_get_length();
     header("Content-Length: $size");
-    ob_end_flush(); // Strange behaviour, will not work
-    flush();            // Unless both are called !
-    session_write_close(); // Added a line suggested in the comment
+    ob_end_flush();
+    flush();
+    session_write_close();
 }
+//End timeout fix block
 
 //Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 if ($exploded[0]=="help") {

@@ -33,19 +33,20 @@ if(empty($_GET['token']) || ($_GET['token'] != $slacktoken)) die("Slack token in
 if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
 $exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+//Timeout Fix Block
 if($timeoutfix == true)
 {
 	ob_end_clean();
 	header("Connection: close");
-	ignore_user_abort(); // optional
 	ob_start();
 	echo ('{"response_type": "in_channel"}');
 	$size = ob_get_length();
 	header("Content-Length: $size");
-	ob_end_flush(); // Strange behaviour, will not work
-	flush();            // Unless both are called !
-	session_write_close(); // Added a line suggested in the comment
+	ob_end_flush();
+	flush();
+	session_write_close();
 }
+//End timeout fix block
 
 //This section checks if the ticket number is not equal to 6 digits (our tickets are in the hundreds of thousands but not near a million yet) and kills the connection if it's not.
 if(!is_numeric($exploded[0])) {
