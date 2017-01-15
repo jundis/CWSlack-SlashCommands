@@ -28,11 +28,31 @@ if(empty($_GET['text'])) die("No text provided."); //If there is no text added, 
 
 $exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+//Timeout Fix Block, has to be before massive numeric check block.
+if($timeoutfix == true)
+{
+    ob_end_clean();
+    header("Connection: close");
+    ob_start();
+    echo ('{"response_type": "in_channel"}');
+    $size = ob_get_length();
+    header("Content-Length: $size");
+    ob_end_flush();
+    flush();
+    session_write_close();
+}
+//End timeout fix block
+
 //This section checks if the ticket number is not equal to 6 digits (our tickets are in the hundreds of thousands but not near a million yet) and kills the connection if it's not.
 if(!is_numeric($exploded[0])) {
     //Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
     if ($exploded[0]=="help") {
-        die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true))); //Encode a JSON response with a help URL.
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Please visit " . $helpurl . " for more help information"));
+        } else {
+            die("Please visit " . $helpurl . " for more help information"); //Post to slack
+        }
+        die();
     }
     if ($exploded[0]=="report")
     {
@@ -45,16 +65,26 @@ if(!is_numeric($exploded[0])) {
 
                 if (!$mysql) //Check for errors
                 {
-                    die("Connection Error: " . mysqli_connect_error());
+                    if ($timeoutfix == true) {
+                        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Connection Error: " . mysqli_connect_error()));
+                    } else {
+                        die("Connection Error: " . mysqli_connect_error()); //Post to slack
+                    }
+                    die();
                 }
 
                 $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $exploded[1] . "\""; //SQL Query to select all ticket number entries
 
                 $result = mysqli_query($mysql, $sql); //Run result
                 $rowcount = mysqli_num_rows($result);
-                if($rowcount > 1) //If there were too many rows matching query
+                if($rowcount > 1) //This should NEVER happen.
                 {
-                    die("Error: too many users somehow?"); //This should NEVER happen.
+                    if ($timeoutfix == true) {
+                        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Error: too many users somehow?"));
+                    } else {
+                        die("Error: too many users somehow?"); //Post to slack
+                    }
+                    die();
                 }
                 else if ($rowcount == 1) //If exactly 1 row is found.
                 {
@@ -86,16 +116,26 @@ if(!is_numeric($exploded[0])) {
 
                 if (!$mysql) //Check for errors
                 {
-                    die("Connection Error: " . mysqli_connect_error());
+                    if ($timeoutfix == true) {
+                        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Connection Error: " . mysqli_connect_error()));
+                    } else {
+                        die("Connection Error: " . mysqli_connect_error()); //Post to slack
+                    }
+                    die();
                 }
 
                 $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $_GET["user_name"] . "\""; //SQL Query to select all ticket number entries
 
                 $result = mysqli_query($mysql, $sql); //Run result
                 $rowcount = mysqli_num_rows($result);
-                if($rowcount > 1) //If there were too many rows matching query
+                if($rowcount > 1) //This should NEVER happen.
                 {
-                    die("Error: too many users somehow?"); //This should NEVER happen.
+                    if ($timeoutfix == true) {
+                        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Error: too many users somehow?"));
+                    } else {
+                        die("Error: too many users somehow?"); //Post to slack
+                    }
+                    die();
                 }
                 else if ($rowcount == 1) //If exactly 1 row is found.
                 {
@@ -131,7 +171,12 @@ if(!is_numeric($exploded[0])) {
 
         if($data == NULL)
         {
-            die("User has not yet recorded time or the username $cwuser does not exist.");
+            if ($timeoutfix == true) {
+                cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "User has not yet recorded time or the username $cwuser does not exist."));
+            } else {
+                die("User has not yet recorded time or the username $cwuser does not exist."); //Post to slack
+            }
+            die();
         }
 
         $totaltime = 0;
@@ -156,7 +201,12 @@ if(!is_numeric($exploded[0])) {
 
         if($totaltime == 0)
         {
-            die("User has not yet recorded time today.");
+            if ($timeoutfix == true) {
+                cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "User has not yet recorded time today."));
+            } else {
+                die("User has not yet recorded time today."); //Post to slack
+            }
+            die();
         }
 
         $billablepercent = round($billabletime / $totaltime * 100,2) . "%";
@@ -194,7 +244,12 @@ if(!is_numeric($exploded[0])) {
                 )
             ))
         );
-        die(json_encode($return, JSON_PRETTY_PRINT));
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+        } else {
+            die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+        }
+        die();
 
     }
     else if($exploded[0] == "reportall")
@@ -210,7 +265,12 @@ if(!is_numeric($exploded[0])) {
 
         if ($data == NULL)
         {
-            die("No users have recorded time information for today.");
+            if ($timeoutfix == true) {
+                cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No users have recorded time information for today."));
+            } else {
+                die("No users have recorded time information for today."); //Post to slack
+            }
+            die();
         }
 
         $timeset = array();
@@ -252,12 +312,21 @@ if(!is_numeric($exploded[0])) {
                 )
             ))
         );
-        die(json_encode($return, JSON_PRETTY_PRINT));
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+        } else {
+            die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
+        }
+        die();
     }
     else //Else close the connection.
     {
-        echo "Unknown entry for ticket number.";
-        return;
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Unknown entry for ticket number."));
+        } else {
+            die("Unknown entry for ticket number."); //Post to slack
+        }
+        die();
     }
 }
 $ticketnumber = $exploded[0]; //Set the ticket number to the first string
@@ -289,12 +358,22 @@ if (array_key_exists(1, $exploded)) //If a second string exists in the slash com
         }
         else
         {
-            die("Time entry does not work. Please only use a number then h or m to indicate hours or minutes. E.x. 5m or 1.5h are valid, 1hour5minutes is not");
+            if ($timeoutfix == true) {
+                cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Time entry does not work. Please only use a number then h or m to indicate hours or minutes. E.x. 5m or 1.5h are valid, 1hour5minutes is not"));
+            } else {
+                die("Time entry does not work. Please only use a number then h or m to indicate hours or minutes. E.x. 5m or 1.5h are valid, 1hour5minutes is not"); //Post to slack
+            }
+            die();
         }
     }
     else
     {
-        die("No time given.");
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No time given."));
+        } else {
+            die("No time given."); //Post to slack
+        }
+        die();
     }
     if (array_key_exists(3, $exploded)) //If a third string exists in the slash command array, make it the option for the command.
     {
@@ -305,12 +384,22 @@ if (array_key_exists(1, $exploded)) //If a second string exists in the slash com
     }
     else
     {
-        die("No sentence given for note.");
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No sentence given for note."));
+        } else {
+            die("No sentence given for note."); //Post to slack
+        }
+        die();
     }
 }
 else
 {
-    die("No command given.");
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No command given."));
+    } else {
+        die("No command given."); //Post to slack
+    }
+    die();
 }
 
 // Authorization array, with extra json content-type used in patch commands to change tickets.
@@ -335,7 +424,12 @@ else if ($command == "resolution" || $command == "resolved" || $command == "r")/
 }
 else //If second part of text is neither external or internal
 {
-    die("Second part of text must be either internal, detail, or resolution (d/i/r also accepted)."); //Return error text.
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Second part of text must be either internal, detail, or resolution (d/i/r also accepted)."));
+    } else {
+        die("Second part of text must be either internal, detail, or resolution (d/i/r also accepted)."); //Post to slack
+    }
+    die(); //Return error text.
 }
 
 //Username mapping code
@@ -345,16 +439,26 @@ if($usedatabase==1)
 
     if (!$mysql) //Check for errors
     {
-        die("Connection Error: " . mysqli_connect_error());
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Connection Error: " . mysqli_connect_error()));
+        } else {
+            die("Connection Error: " . mysqli_connect_error()); //Post to slack
+        }
+        die();
     }
 
     $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $_GET["user_name"] . "\""; //SQL Query to select all ticket number entries
 
     $result = mysqli_query($mysql, $sql); //Run result
     $rowcount = mysqli_num_rows($result);
-    if($rowcount > 1) //If there were too many rows matching query
+    if($rowcount > 1) //This should NEVER happen.
     {
-        die("Error: too many users somehow?"); //This should NEVER happen.
+        if ($timeoutfix == true) {
+            cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Error: too many users somehow?"));
+        } else {
+            die("Error: too many users somehow?"); //Post to slack
+        }
+        die();
     }
     else if ($rowcount == 1) //If exactly 1 row is found.
     {
@@ -387,11 +491,21 @@ if(array_key_exists("errors",$dataTNotes)) //If connectwise returned an error.
 {
     $errors = $dataTNotes->errors; //Make array easier to access.
 
-    die("ConnectWise Error: " . $errors[0]->message); //Return CW error
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "ConnectWise Error: " . $errors[0]->message));
+    } else {
+        die("ConnectWise Error: " . $errors[0]->message); //Post to slack
+    }
+    die(); //Return CW error
 }
 else //No error
 {
-    echo "New " . $command . " time entry created on #" . $ticketnumber . ": " . $sentence; //Return new ticket posted message.
+    if ($timeoutfix == true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "New " . $command . " time entry created on #" . $ticketnumber . ": " . $sentence));
+    } else {
+        die("New " . $command . " time entry created on #" . $ticketnumber . ": " . $sentence); //Return new ticket posted message.
+    }
+    die();
 }
 
 ?>
