@@ -28,6 +28,11 @@ if(empty($_GET['text'])) die("No text provided."); //If there is no text added, 
 
 $exploded = explode("|",$_GET['text']); //Explode the string attached to the slash command for use in variables.
 
+//Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
+if ($exploded[0]=="help") {
+    die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true))); //Encode a JSON response with a help URL.
+}
+
 //Timeout Fix Block
 if($timeoutfix == true)
 {
@@ -42,11 +47,6 @@ if($timeoutfix == true)
     session_write_close();
 }
 //End timeout fix block
-
-//Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
-if ($exploded[0]=="help") {
-    die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true))); //Encode a JSON response with a help URL.
-}
 
 $company=NULL; //Just in case
 $config=NULL; //Just in case
