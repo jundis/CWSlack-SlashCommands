@@ -725,42 +725,78 @@ else if($command == "full" || $command == "notes" || $command == "all")
 		{
 			$internalflag2 = "";
 		}
-		$return =array(
-			"parse" => "full",
-			"response_type" => "ephemeral",
-			"attachments"=>array(array(
+
+		$initialinfoarray = array(
+			array(
 				"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 				"title" => "<" . $ticketurl . $dataTData -> id . "&companyName=" . $companyname . "|#" . $dataTData->id . ">: " . $dataTData->summary, //Return clickable link to ticket with ticket summary.
 				"pretext" => "Info on Ticket #" . $dataTData->id, //Return info string with ticket number.
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
-				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
-				"\n" . $resources . " | " . $hours . //Return assigned resources
-				(!$resourceline ? "" : $resourceline), //Return next resource
+					"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
+					"\n" . $resources . " | " . $hours . //Return assigned resources
+					(!$resourceline ? "" : $resourceline), //Return next resource
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
-					)
-				),
-				array(
-					"pretext" => "Latest " . ($internalflag == "true" ? "Internal" : "External") . " Note (" . $date2format  . ") from: " . $createdby,
+				)
+			));
+
+		$temparray = array();
+
+		if(array_key_exists(0, $dataTNotes)) {
+			foreach ($dataTNotes as $singlenote) {
+				$createdby = $singlenote->createdBy; //Set $createdby to the ticket note creator.
+				$notetime = new DateTime($singlenote->dateCreated); //Create new datetime object based on ticketnote note.
+				$notedate = $singlenote->dateCreated;
+				$internalflag = $singlenote->internalAnalysisFlag;
+
+				$text = $singlenote->text; //Set $text to the ticket text.
+
+				$date2 = strtotime($notedate);
+				$date2format = date('m-d-Y g:i:sa', $date2);
+
+				$temparray[$date2] = array(
+					"pretext" => ($internalflag == "true" ? "Internal" : "External") . " Note (" . $date2format  . ") from: " . $createdby,
 					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
 						"pretext",
 						"title"
-						)
-				),
-				array(
-					"pretext" => "Initial " . ($internalflag2 == "true" ? "Internal" : "External") . " ticket note (" . $date3format  . ") from: " . $dataTNotes2[0]->createdBy,
-					"text" =>  $dataTNotes2[0]->text,
+					));
+			}
+		}
+
+		if(array_key_exists(0, $dataTimeData))
+		{
+			foreach($dataTimeData as $singletime)
+			{
+				$createdby = $singletime->enteredBy; //Set $createdby to the time entry creator.
+				$notedate = $singletime->dateEntered;
+				$internalflag = $singletime->addToInternalAnalysisFlag;
+				$text = $singletime->notes; //Set $text to the time entry text.
+
+				$date2 = strtotime($notedate);
+				$date2format = date('m-d-Y g:i:sa', $date2);
+
+				$temparray[$date2] = array(
+					"pretext" => ($internalflag == "true" ? "Internal" : "External") . " Time Entry (" . $date2format  . ") from: " . $createdby,
+					"text" =>  $text,
 					"mrkdwn_in" => array(
 						"text",
 						"pretext",
 						"title"
-						)
-				))
-			);
+					));
+			}
+		}
+		ksort($temparray);
 
+		$notesandtimes = array_merge($initialinfoarray, $temparray);
+
+		$return =array(
+			"parse" => "full",
+			"response_type" => "ephemeral",
+			"attachments"=>$notesandtimes
+			);
 	}
 }
 else //If no command is set, or if it's just random gibberish after ticket number.
