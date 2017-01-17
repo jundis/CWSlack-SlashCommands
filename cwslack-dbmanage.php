@@ -69,7 +69,10 @@ else if ($exploded[0]=="addmap")
     {
         die("Error: Please ensure you're entering the following: addmap (slack name) (connectwise username)");
     }
-    $sql = "INSERT INTO `usermap` (`slackuser`, `cwname`) VALUES ('" . $exploded[1] . "', '" . $exploded[2] . "');"; //SQL Query to insert new map
+
+    $val1 = mysqli_real_escape_string($mysql,$exploded[1]);
+    $val2 = mysqli_real_escape_string($mysql,$exploded[2]);
+    $sql = "INSERT INTO `usermap` (`slackuser`, `cwname`) VALUES ('" . $val1 . "', '" . $val2 . "');"; //SQL Query to insert new map
 
     if(mysqli_query($mysql,$sql))
     {
@@ -86,7 +89,9 @@ else if ($exploded[0]=="removemap")
     {
         die("Error: Please ensure you're entering the following: removemap (slack name)");
     }
-    $sql = "DELETE FROM .`usermap` WHERE `usermap`.`slackuser` = '" . $exploded[1] . "';"; //SQL Query to remove map
+
+    $val1 = mysqli_real_escape_string($mysql,$exploded[1]);
+    $sql = "DELETE FROM .`usermap` WHERE `usermap`.`slackuser` = '" . $val1 . "';"; //SQL Query to remove map
 
     if(mysqli_query($mysql,$sql))
     {
