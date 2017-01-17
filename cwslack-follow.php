@@ -68,7 +68,10 @@ else
 	{
 		die("Connection Error: " . mysqli_connect_error());
 	}
-	$sql = "SELECT slackuser FROM usermap where cwname = '".$_GET['memberid']."'";
+
+	$val1 = mysqli_real_escape_string($mysql,$_GET['memberid']);
+	$sql = "SELECT slackuser FROM usermap where cwname = '".$val1."'";
+
 	$result = mysqli_query($mysql, $sql); //Run result
 	// Check for mapping, otherwise use Connectwise
 	if(mysqli_num_rows($result) > 0)
@@ -106,7 +109,9 @@ if($usedatabase==1)
 
 	if ($command == "unfollow")
 	{
-		$sql = "DELETE FROM `follow` WHERE `ticketnumber`=\"" . $ticketnumber . "\" AND `slackuser`=\"" . $username . "\"";
+		$val1 = mysqli_real_escape_string($mysql,$ticketnumber);
+		$val2 = mysqli_real_escape_string($mysql,$username);
+		$sql = "DELETE FROM `follow` WHERE `ticketnumber`=\"" . $val1 . "\" AND `slackuser`=\"" . $val2 . "\"";
 
 		if(mysqli_query($mysql,$sql))
 		{
@@ -119,7 +124,9 @@ if($usedatabase==1)
 	}
 	else
 	{
-		$sql = "INSERT INTO `follow` (`id`, `ticketnumber`, `slackuser`) VALUES (NULL, '" . $ticketnumber . "', '" . $username . "');";
+		$val1 = mysqli_real_escape_string($mysql,$ticketnumber);
+		$val2 = mysqli_real_escape_string($mysql,$username);
+		$sql = "INSERT INTO `follow` (`id`, `ticketnumber`, `slackuser`) VALUES (NULL, '" . $val1 . "', '" . $val2 . "');";
 		if(mysqli_query($mysql,$sql))
 		{
 			die("Successfully followed ticket #".$ticketnumber);

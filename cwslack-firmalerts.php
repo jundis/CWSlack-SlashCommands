@@ -62,7 +62,8 @@ foreach($dataTData as $entry) //For each schedule entry returned
             die("Connection Error: " . mysqli_connect_error()); //Return error
         }
 
-        $sql = "SELECT * FROM `usermap` WHERE `cwname`=\"" . $user . "\""; //SQL Query to select all ticket number entries
+        $val1 = mysqli_real_escape_string($mysql,$user);
+        $sql = "SELECT * FROM `usermap` WHERE `cwname`=\"" . $val1 . "\""; //SQL Query to select all ticket number entries
 
         $result = mysqli_query($mysql, $sql); //Run result
         $rowcount = mysqli_num_rows($result);

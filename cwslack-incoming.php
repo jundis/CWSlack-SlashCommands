@@ -255,7 +255,8 @@ if($followenabled==1)
 			die("Connection Error: " . mysqli_connect_error()); //Die with error if error found
 		}
 
-		$sql = "SELECT * FROM `follow` WHERE `ticketnumber`=\"" . $ticket . "\""; //SQL Query to select all ticket number entries
+		$val1 = mysqli_real_escape_string($mysql,$ticket);
+		$sql = "SELECT * FROM `follow` WHERE `ticketnumber`=\"" . $val1 . "\""; //SQL Query to select all ticket number entries
 
 		$result = mysqli_query($mysql, $sql); //Run result
 

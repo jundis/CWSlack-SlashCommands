@@ -73,7 +73,8 @@ if(!is_numeric($exploded[0])) {
                     die();
                 }
 
-                $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $exploded[1] . "\""; //SQL Query to select all ticket number entries
+                $val1 = mysqli_real_escape_string($mysql,$exploded[1]);
+                $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $val1 . "\""; //SQL Query to select all ticket number entries
 
                 $result = mysqli_query($mysql, $sql); //Run result
                 $rowcount = mysqli_num_rows($result);
@@ -124,7 +125,8 @@ if(!is_numeric($exploded[0])) {
                     die();
                 }
 
-                $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $_GET["user_name"] . "\""; //SQL Query to select all ticket number entries
+                $val1 = mysqli_real_escape_string($mysql,$_GET["user_name"]);
+                $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $val1 . "\""; //SQL Query to select all ticket number entries
 
                 $result = mysqli_query($mysql, $sql); //Run result
                 $rowcount = mysqli_num_rows($result);
@@ -447,7 +449,8 @@ if($usedatabase==1)
         die();
     }
 
-    $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $_GET["user_name"] . "\""; //SQL Query to select all ticket number entries
+    $val1 = mysqli_real_escape_string($mysql,$_GET["user_name"]);
+    $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $val1 . "\""; //SQL Query to select all ticket number entries
 
     $result = mysqli_query($mysql, $sql); //Run result
     $rowcount = mysqli_num_rows($result);
