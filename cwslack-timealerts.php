@@ -105,13 +105,13 @@ foreach($timeset as $user => $val)
             }
             //If no rows are found here, then it just uses whatever if found as $user previously from the ticket.
         }
-        $users[] = $username;
+        $users[$username] = $user;
     }
 }
 
-foreach($users as $user)
+foreach($users as $user => $val)
 {
-    $missingtime = $expected - $timeset[$user]["totaltime"];
+    $missingtime = $expected - $timeset[$val]["totaltime"];
 
     if($posttousers==1)
     {
@@ -119,7 +119,7 @@ foreach($users as $user)
             "channel"=>"@".$user,
             "attachments"=>array(array(
                 "fallback" => "Time is too far behind!.",
-                "title" => "Current hours: " . $timeset[$user]["totaltime"],
+                "title" => "Current hours: " . $timeset[$val]["totaltime"],
                 "pretext" => "Your time is over 2 hours behind at this point",
                 "text" =>  "Please update your time immediately as you have " . $missingtime . " hours to make up.",
                 "mrkdwn_in" => array(
@@ -140,7 +140,7 @@ foreach($users as $user)
                 "channel"=>$timechan, //Post to channel set in config.php
                 "attachments"=>array(array(
                     "fallback" => "Time is too far behind! for .",
-                    "title" => "Current hours for " . $user . ": " . $timeset[$user]["totaltime"],
+                    "title" => "Current hours for " . $val . ": " . $timeset[$val]["totaltime"],
                     "pretext" => "Their time is over 2 hours behind at this point",
                     "text" =>  "Please have technician update their time immediately as they have " . $missingtime . " hours to make up.",
                     "mrkdwn_in" => array(
@@ -156,7 +156,7 @@ foreach($users as $user)
                 "channel"=>$firmalertchan,
                 "attachments"=>array(array(
                     "fallback" => "Time is too far behind! for .",
-                    "title" => "Current hours for " . $user . ": " . $timeset[$user]["totaltime"],
+                    "title" => "Current hours for " . $val . ": " . $timeset[$val]["totaltime"],
                     "pretext" => "Their time is over 2 hours behind at this point",
                     "text" =>  "Please have technician update their time immeidately as they have " . $missingtime . " hours to make up.",
                     "mrkdwn_in" => array(
