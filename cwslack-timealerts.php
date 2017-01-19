@@ -71,11 +71,11 @@ foreach($data as $entry)
     }
 }
 
-$badcompanies = explode("|",$notimeusers);
+$blockedtime = explode("|",$notimeusers);
 
 foreach($timeset as $user => $val)
 {
-    if($expected - $val["totaltime"] >= 2 && !in_array($user,$notimeusers))
+    if($expected - $val["totaltime"] >= 2 && !in_array($user,$blockedtime))
     {
         $username = $user;
         //Username mapping code
