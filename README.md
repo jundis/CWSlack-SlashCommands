@@ -85,6 +85,19 @@ By doing this, you can specify BoardA goes to ChannelA and BoardB goes to Channe
    ```Cron: * * * * * /usr/bin/php /var/www/cwslack-firmalerts.php >/dev/null 2>&1```
 6. Set a firm appointment and test
 
+## cwslack-timealerts.php
+
+**(Requires some variables from cwslack-firmalerts.php and cwslack-time.php to function if you don't use those)**
+
+1. Download the cwslack-timealerts.php, functions.php, install.php, and config-default.php files.
+2. Place on a compatible web server.
+3. **Rename config-default.php to config.php**
+3. Run install.php and proceed through database setup. This will also verify you have the required PHP and cURL versions.
+4. Change $posttousers or $posttochan to 0 in config.php if you don't want it posting to one or the other.
+5. Setup a cron job or scheduled task on your server to run this PHP file **every 30 minutes.**  
+   ```Cron: */30 * * * 1-5 /usr/bin/php /var/www/cwslack-timealerts.php >/dev/null 2>&1```
+6. Fail to enter time and test! It will alert after 2 hours of time is lacking.
+
 ## cwslack-follow.php
 
 **(Also requires cwslack-incoming.php to function)**
