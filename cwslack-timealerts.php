@@ -77,11 +77,37 @@ foreach($timeset as $user => $val)
 {
     if($expected - $val["totaltime"] >= 2 && !in_array($user,$notimeusers))
     {
-        $users[] = $user;
+        $username = $user;
+        //Username mapping code
+        if($usedatabase==1)
+        {
+            $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
+
+            if (!$mysql) //Check for errors
+            {
+                die("Connection Error: " . mysqli_connect_error()); //Return error
+            }
+
+            $val1 = mysqli_real_escape_string($mysql,$username);
+            $sql = "SELECT * FROM `usermap` WHERE `cwname`=\"" . $val1 . "\""; //SQL Query to select all ticket number entries
+
+            $result = mysqli_query($mysql, $sql); //Run result
+            $rowcount = mysqli_num_rows($result);
+            if($rowcount > 1) //If there were too many rows matching query
+            {
+                die("Error: too many users somehow?"); //This should NEVER happen.
+            }
+            else if ($rowcount == 1) //If exactly 1 row was found.
+            {
+                $row = mysqli_fetch_assoc($result); //Row association.
+
+                $username = $row["slackuser"]; //Return the slack username portion of the found row as the $user variable to be used as part of the notification.
+            }
+            //If no rows are found here, then it just uses whatever if found as $user previously from the ticket.
+        }
+        $users[] = $username;
     }
 }
-
-$users[] = "jundis";
 
 foreach($users as $user)
 {
