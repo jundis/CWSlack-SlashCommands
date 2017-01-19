@@ -212,21 +212,23 @@ if($dataTData==NULL)
 if($command=="priority") { //Check if the second string in the text array from the slash command is priority
 
 	$priority = "0"; //Set priority = 0.
-
-	//Check what $option3 was set to, the third string in the text array from the slash command.
-	if ($option3 == "moderate") //If moderate
+	$priorityname = "";
+	$priorityurl = $connectwise . "/v4_6_release/apis/3.0/service/priorities?conditions=name%20like%20%27" . $option3 . "%27";
+	$dataTCmd = cURL($priorityurl, $header_data);
+	if(array_key_exists(0,$dataTCmd))
 	{
-		$priority = "4"; //Set to moderate ID
-	} else if ($option3=="critical")
-	{
-		$priority = "1";
-	} else if ($option3=="low")
-	{
-		$priority = "3";
+		$priority = $dataTCmd[0]->id;
+		$priorityname = $dataTCmd[0]->name;
 	}
-	else //If unknown
+	//Check what $option3 was set to, the third string in the text array from the slash command.
+	if ($priority==0)
 	{
-		die("Failed to get priority code: " . $option3); //Send error message. Anything not Slack JSON formatted will return just to the user who submitted the slash command. Don't need to spam errors.
+		if ($timeoutfix == true) {
+			cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Failed to get priority code: " . $option3));
+		} else {
+			die("Failed to get priority code: " . $option3); //Return properly encoded arrays in JSON for Slack parsing.
+		}
+		die();
 	}
 
 	$dataTCmd = cURLPost( //Function for POST requests in cURL
@@ -242,7 +244,7 @@ if($command=="priority") { //Check if the second string in the text array from t
 		"attachments"=>array(array(
 			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "Ticket Summary: " . $dataTData->summary, //Set bolded title text
-			"pretext" => "Ticket #" . $dataTData->id . "'s priority has been set to " . $option3, //Set pretext
+			"pretext" => "Ticket #" . $dataTData->id . "'s priority has been set to " . $priorityname, //Set pretext
 			"text" => "Click <" . $ticketurl . $dataTData -> id . "&companyName" . $companyname . "|here> to open the ticket.", //Set text to be returned
 			"mrkdwn_in" => array( //Set markdown values
 				"text",
@@ -264,15 +266,24 @@ if($command=="priority") { //Check if the second string in the text array from t
 //-
 if($command=="status") {
 	$status = "0";
-	if ($option3 == "scheduled" || $option3 == "schedule") {
-		$status = "124";
-	} else if ($option3 == "completed") {
-		$status = "31";
-	} else if ($option3 == "n2s" || $option3 == "needtoschedule" || $option3 == "ns") {
-		$status = "121";
-	} else {
-		die("Failed to get status code: " . $option3);
+	$statusname = "";
+	$statusurl = $dataTData->board->_info->board_href . "/statuses?conditions=name%20like%20%27" . $option3 . "%27";
+	$dataTCmd = cURL($statusurl, $header_data);
+	if(array_key_exists(0,$dataTCmd))
+	{
+		$status = $dataTCmd[0]->id;
+		$statusname = $dataTCmd[0]->name;
 	}
+	if ($status == 0)
+	{
+		if ($timeoutfix == true) {
+			cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Failed to get status code: " . $status));
+		} else {
+			die("Failed to get status code: " . $status); //Return properly encoded arrays in JSON for Slack parsing.
+		}
+		die();
+	}
+
 	$dataTCmd = cURLPost(
 		$urlticketdata,
 		$header_data2,
@@ -286,7 +297,7 @@ if($command=="status") {
 		"attachments" => array(array(
 			"fallback" => "Info on Ticket #" . $dataTData->id, //Fallback for notifications
 			"title" => "Ticket Summary: " . $dataTData->summary,
-			"pretext" => "Ticket #" . $dataTData->id . "'s status has been set to " . $option3,
+			"pretext" => "Ticket #" . $dataTData->id . "'s status has been set to " . $statusname,
 			"text" => "Click <" . $ticketurl . $dataTData->id . "&companyName" . $companyname . "|here> to open the ticket.",
 			"mrkdwn_in" => array(
 				"text",
