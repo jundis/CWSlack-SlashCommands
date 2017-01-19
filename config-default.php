@@ -62,6 +62,8 @@ $slacktimetoken = "Slack Token Here"; //Set your token for the time slash comman
 $timedetailworktype = "Remote Support"; //Set to the worktype name you want to use when a note is posted to detailed
 $timeinternalworktype = "Admin"; //Set to the worktype name you want to use when a note is posted to internal
 $timeresolutionworktype = "Remote Support"; //Set to the worktype name you want to use when a note is posted to resolution
+$timebusinessstart = "8:00AM"; //Set to when your business opens in your timezone
+$timebusinessclose = "5:00PM"; //Set to when your business closes in your timezone
 
 //cwslack-incoming.php
 $webhookurl = "https://hooks.slack.com/services/tokens"; //Change this to the URL retrieved from incoming webhook setup for Slack.
@@ -84,6 +86,10 @@ $posttousers = 1; //When set, will post to the user whenever the appointment rem
 $posttochan = 1; //When set, will post to $timechan whenever the firm appointment starts.
 $usetimechan = 1; //When set, this will use the $timechan variable instead of the one below.
 $firmalertchan = "#dispatch"; //When you want to split time alerts and firm alerts into their own channels.
+
+//cwslack-timealerts.php
+//This uses all four variables above
+$notimeusers = "user1|user2"; //Usernames of users who should not be alerted on. Useful if you have techs who occasionally enter time and you don't want it pinging them every day. Separate with pipe |
 
 //cwslack-follow.php
 //Requires cwslack-incoming.php to function.

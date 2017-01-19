@@ -214,6 +214,12 @@ if(!is_numeric($exploded[0])) {
         $billablepercent = round($billabletime / $totaltime * 100,2) . "%";
 
         $expected = round((strtotime("now") - strtotime("8:00AM")) / 3600,2);
+
+        if ($expected > (round((strtotime($timebusinessclose) - strtotime($timebusinessstart)) / 3600,2)))
+        {
+            $expected = round((strtotime($timebusinessclose) - strtotime($timebusinessstart)) / 3600,2);
+        }
+
         $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $highestticket . "&companyName=" . $companyname;
 
         $timediff = $expected - $totaltime;
@@ -298,7 +304,12 @@ if(!is_numeric($exploded[0])) {
             $text = $text . $user . " | " . $val["totaltime"] . " hours\n";
         }
 
-        $expected = round((strtotime("now") - strtotime("8:00AM")) / 3600,2);
+        $expected = round((strtotime("now") - strtotime($timebusinessstart)) / 3600,2);
+
+        if ($expected > (round((strtotime($timebusinessclose) - strtotime($timebusinessstart)) / 3600,2)))
+        {
+            $expected = round((strtotime($timebusinessclose) - strtotime($timebusinessstart)) / 3600,2);
+        }
 
         $return = array(
             "parse" => "full", //Parse all text.
