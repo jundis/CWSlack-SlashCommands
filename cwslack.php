@@ -102,7 +102,12 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 	if($useboards == 1)
 	{
 		if(!array_key_exists(2, $ticketstuff)) {
-			die("Not enough values specified. Please use /t new board|company|summary");
+			if ($timeoutfix == true) {
+				cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Not enough values specified. Please use /t new board|company|summary"));
+			} else {
+				die("Not enough values specified. Please use /t new board|company|summary"); //Return properly encoded arrays in JSON for Slack parsing.
+			}
+			die();
 		}
 		$companyurl = $connectwise . "/v4_6_release/apis/3.0/company/companies?conditions=name%20contains%20%27" . urlencode($ticketstuff[1]) . "%27";
 		$companydata = cURL($companyurl, $header_data);
@@ -122,7 +127,13 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 	else
 	{
 		if(!array_key_exists(1, $ticketstuff)) {
-			die("Not enough values specified. Please use /t new company|summary");
+			if ($timeoutfix == true) {
+				cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Not enough values specified. Please use /t new company|summary"));
+			} else {
+				die("Not enough values specified. Please use /t new company|summary"); //Return properly encoded arrays in JSON for Slack parsing.
+			}
+			die();
+
 		}
 
 		$companyurl = $connectwise . "/v4_6_release/apis/3.0/company/companies?conditions=name%20contains%20%27" . $ticketstuff[1] . "%27";
@@ -141,7 +152,12 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 
 		if (!$mysql) //Check for errors
 		{
-			die("Connection Error: " . mysqli_connect_error());
+			if ($timeoutfix == true) {
+				cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Connection Error: " . mysqli_connect_error()));
+			} else {
+				die("Connection Error: " . mysqli_connect_error()); //Return properly encoded arrays in JSON for Slack parsing.
+			}
+			die();
 		}
 
 		$val1 = mysqli_real_escape_string($mysql,$_GET["user_name"]);
@@ -203,7 +219,12 @@ $dataTData = cURL($urlticketdata, $header_data); //Decode the JSON returned by t
 
 if($dataTData==NULL) 
 {
-	die("Array not returned in line 195. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata);
+	if ($timeoutfix == true) {
+		cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Array not returned in line 195. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata));
+	} else {
+		die("Array not returned in line 195. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata); //Return properly encoded arrays in JSON for Slack parsing.
+	}
+	die();
 }
 
 //-
@@ -324,7 +345,12 @@ if($command=="scheduleme")
 
 		if (!$mysql) //Check for errors
 		{
-			die("Connection Error: " . mysqli_connect_error());
+			if ($timeoutfix == true) {
+				cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Connection Error: " . mysqli_connect_error()));
+			} else {
+				die("Connection Error: " . mysqli_connect_error()); //Return properly encoded arrays in JSON for Slack parsing.
+			}
+			die();
 		}
 
 		$val1 = mysqli_real_escape_string($mysql,$_GET["user_name"]);
@@ -358,7 +384,12 @@ if($command=="scheduleme")
 		}
 		else
 		{
-			die("Error: Name " .  $_GET['user_name'] . " not found");
+			if ($timeoutfix == true) {
+				cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Error: Name " .  $_GET['user_name'] . " not found"));
+			} else {
+				die("Error: Name " .  $_GET['user_name'] . " not found"); //Return properly encoded arrays in JSON for Slack parsing.
+			}
+			die();
 		}
 	}
 	unset($exploded[0]);
@@ -402,6 +433,7 @@ if($command=="scheduleme")
 		} else {
 			die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]"); //Return properly encoded arrays in JSON for Slack parsing.
 		}
+		die();
 	}
 	else
 	{
@@ -420,7 +452,12 @@ if($command=="schedule")
 	$cwuser = NULL;
 	if($option3 == NULL)
 	{
-		die("No user specified.");
+		if ($timeoutfix == true) {
+			cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No user specified."));
+		} else {
+			die("No user specified."); //Return properly encoded arrays in JSON for Slack parsing.
+		}
+		die();
 	}
 	$username = $option3;
 	//Username mapping code
@@ -430,7 +467,12 @@ if($command=="schedule")
 
 		if (!$mysql) //Check for errors
 		{
-			die("Connection Error: " . mysqli_connect_error());
+			if ($timeoutfix == true) {
+				cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Connection Error: " . mysqli_connect_error()));
+			} else {
+				die("Connection Error: " . mysqli_connect_error()); //Return properly encoded arrays in JSON for Slack parsing.
+			}
+			die();
 		}
 
 		$val1 = mysqli_real_escape_string($mysql,$username);
@@ -464,7 +506,12 @@ if($command=="schedule")
 		}
 		else
 		{
-			die("Error: Name " .  $username . " not found");
+			if ($timeoutfix == true) {
+				cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Error: Name " .  $username . " not found"));
+			} else {
+				die("Error: Name " .  $username . " not found"); //Return properly encoded arrays in JSON for Slack parsing.
+			}
+			die();
 		}
 	}
 	unset($exploded[0]);
