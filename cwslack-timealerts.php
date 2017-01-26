@@ -75,7 +75,7 @@ $blockedtime = explode("|",$notimeusers);
 
 foreach($timeset as $user => $val)
 {
-    if($expected - $val["totaltime"] >= 2 && !in_array($user,$blockedtime))
+    if($expected - $val["totaltime"] >= 2 && !in_array(strtolower($user),array_map("strtolower",$blockedtime)))
     {
         $username = $user;
         //Username mapping code
@@ -118,7 +118,7 @@ foreach($users as $user => $val)
         $postfieldspre = array(
             "channel"=>"@".$user,
             "attachments"=>array(array(
-                "fallback" => "Time is too far behind!.",
+                "fallback" => "Time is too far behind!",
                 "title" => "Current hours: " . $timeset[$val]["totaltime"],
                 "pretext" => "Your time is over 2 hours behind at this point",
                 "text" =>  "Please update your time immediately as you have " . $missingtime . " hours to make up.",
@@ -139,7 +139,7 @@ foreach($users as $user => $val)
             $postfieldspre = array(
                 "channel"=>$timechan, //Post to channel set in config.php
                 "attachments"=>array(array(
-                    "fallback" => "Time is too far behind! for .",
+                    "fallback" => "Time is too far behind for " . $user,
                     "title" => "Current hours for " . $val . ": " . $timeset[$val]["totaltime"],
                     "pretext" => "Their time is over 2 hours behind at this point",
                     "text" =>  "Please have technician update their time immediately as they have " . $missingtime . " hours to make up.",
@@ -155,7 +155,7 @@ foreach($users as $user => $val)
             $postfieldspre = array(
                 "channel"=>$firmalertchan,
                 "attachments"=>array(array(
-                    "fallback" => "Time is too far behind! for .",
+                    "fallback" => "Time is too far behind for " . $user,
                     "title" => "Current hours for " . $val . ": " . $timeset[$val]["totaltime"],
                     "pretext" => "Their time is over 2 hours behind at this point",
                     "text" =>  "Please have technician update their time immeidately as they have " . $missingtime . " hours to make up.",
