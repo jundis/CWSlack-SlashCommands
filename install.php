@@ -64,6 +64,8 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     <div class=\"col-sm-12\">Set time zone to PHP supported format such as America/Chicago. Full list <a href='http://php.net/manual/en/timezones.php'>here.</a></div>
                     <div class=\"col-sm-6\"><label for='timeZone'>Time Zone: </label></div><div class=\"col-sm-6\"><input type='text' name='timezone' id='timeZone' placeholder='America/Chicago'><br></div>
                     <div class=\"col-sm-6\"><label for='helpUrl'>Help URL for /command help: </label></div><div class=\"col-sm-6\"><input type='text' name='helpurl' id='helpUrl' placeholder='https://github.com/jundis/CWSlack-SlashCommands'><br></div>
+                    <div class=\"col-sm-12\">Set below variable to True if you know your ConnectWise is slow. This will slow down the Slack integration a bit but prevent the 3000ms slack error.</div>
+                    <div class=\"col-sm-7\"><label for='timeoutFix'>Enable timeout fix: </label></div><div class=\"col-sm-5\"><input type='radio' name='timeoutfix' value='yes' id='timeoutFix' > Yes <input type='radio' name='timeoutfix' value='no' checked> No </div>
                     <br>
                     <div class=\"col-sm-12\"><h4>Tokens</h4></div>
                     <div class=\"col-sm-12\">Set each of these to the respective Slack Token that you've setup. Leave blank if you do not need them.</div>
@@ -97,11 +99,15 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     <div class=\"col-sm-6\"><label for='timeDetailworktype'>Detailed notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timedetailworktype' id='timeDetailworktype' placeholder='Remote Support'></div>
                     <div class=\"col-sm-6\"><label for='timeInternalworktype'>Internal notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timeinternalworktype' id='timeInternalworktype' placeholder='Admin'></div>
                     <div class=\"col-sm-6\"><label for='timeResolutionworktype'>Resolution notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timeresolutionworktype' id='timeResolutionworktype' placeholder='Remote Support'></div>
+                    <div class=\"col-sm-6\"><label for='timeBusinessStart'>Business open time: </label></div><div class=\"col-sm-6\"><input type='text' name='timebusinessstart' id='timeBusinessStart' placeholder='8:00AM'></div>
+                    <div class=\"col-sm-6\"><label for='timeBusinessClose'>Business close time: </label></div><div class=\"col-sm-6\"><input type='text' name='timebusinessclose' id='timeBusinessClose' placeholder='5:00PM'></div>
                     <div class=\"col-sm-12\"><h4>FirmAlerts Module</h4></div>
                     <div class=\"col-sm-7\"><label for='postTousers'>Send message to user for their firm appointments: </label></div><div class=\"col-sm-5\"><input type='radio' name='posttousers' value='yes' id='postTousers' checked> Yes <input type='radio' name='posttousers' value='no' > No </div>
                     <div class=\"col-sm-7\"><label for='postTochan'>Send message to a specific channel for all firm appointments: </label></div><div class=\"col-sm-5\"><input type='radio' name='posttochan' value='yes' id='postTochan' checked> Yes <input type='radio' name='posttochan' value='no' > No </div>
                     <div class=\"col-sm-7\"><label for='useTimechan'>Use the same channel as time alerts set above: </label></div><div class=\"col-sm-5\"><input type='radio' name='usetimechan' value='yes' id='useTimechan' checked> Yes <input type='radio' name='usetimechan' value='no' > No </div>
                     <div class=\"col-sm-6\"><label for='firmAlertchan'>Channel to post firm alerts to if above is no: </label></div><div class=\"col-sm-6\"><input type='text' name='firmalertchan' id='firmAlertchan' placeholder='#dispatch'></div>
+                    <div class=\"col-sm-12\"><h4>TimeAlerts Module</h4></div>
+                    <div class=\"col-sm-6\"><label for='noTimeUsers'>Users who should not receive time alerts if they are behind: </label></div><div class=\"col-sm-6\"><input type='text' name='notimeusers' id='noTimeUsers' placeholder='user1|user2 (Pipe separates)'></div>
                     <div class=\"col-sm-12\"><h4>Follow Module</h4></div>
                     <div class=\"col-sm-7\"><label for='followEnabled'>Enable follow module: </label></div><div class=\"col-sm-5\"><input type='radio' name='followenabled' value='yes' id='followEnabled' checked> Yes <input type='radio' name='followenabled' value='no' > No </div>
                     <div class=\"col-sm-6\"><label for='followToken'>Follow token for CW Link: </label></div><div class=\"col-sm-6\"><input type='text' name='followtoken' id='followToken' placeholder='follow'></div>
@@ -457,6 +463,12 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                         } else {
                             $newdata[] = '$useboards = 0; //Use the board function in new tickets. /t new company|summary vs /t new board|company|summary' . PHP_EOL;
                         }
+                    } else if (stristr($data, '$timeoutfix =')) {
+                        if ($_POST["timeoutfix"] == "yes") {
+                            $newdata[] = '$timeoutfix = true; //Enable to fix any 3000ms response from Slack.' . PHP_EOL;
+                        } else {
+                            $newdata[] = '$timeoutfix = false; //Enable to fix any 3000ms response from Slack.' . PHP_EOL;
+                        }
                     } else if (stristr($data, '$followtoken =')) {
                         if (!empty($_POST["followtoken"])) {
                             $newdata[] = '$followtoken = "' . $_POST["followtoken"] . '"; //Change to random text to be used in your CW follow link if you use it. Defaults to follow which is fine for testing.' . PHP_EOL;
@@ -490,6 +502,18 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     } else if (stristr($data, '$timeresolutionworktype =')) {
                         if (!empty($_POST["timeresolutionworktype"])) {
                             $newdata[] = '$timeresolutionworktype = "' . $_POST["timeresolutionworktype"] . '"; //Set to the worktype name you want it to change tickets to when a note is posted to resolution.' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$timebusinessstart =')) {
+                        if (!empty($_POST["timebusinessstart"])) {
+                            $newdata[] = '$timebusinessstart = ' . $_POST["timebusinessstart"] . '; //Set to when your business opens in your timezone' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$timebusinessclose =')) {
+                        if (!empty($_POST["timebusinessclose"])) {
+                            $newdata[] = '$timebusinessclose = ' . $_POST["timebusinessclose"] . '; //Set to when your business closes in your timezone' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }
