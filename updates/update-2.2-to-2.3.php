@@ -81,6 +81,12 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                         } else {
                             $newdata[] = $data;
                         }
+                    } else if (stristr($data, '$notimeusers =')) {
+                        if (!empty($_POST["notimeusers"])) {
+                            $newdata[] = '$notimeusers = ' . $_POST["notimeusers"] . ';  //Usernames of users who should not be alerted on. Useful if you have techs who occasionally enter time and you don\'t want it pinging them every day. Separate with pipe |' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
                     } else if (stristr($data, '//cwslack-incoming.php') && !$line1) {
                         array_pop($newdata);
                         if (!empty($_POST["timebusinessstart"])) {
@@ -100,6 +106,16 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                             $newdata[] = '$timeoutfix = true; //Enable to fix any 3000ms response from Slack.' . PHP_EOL;
                         } else {
                             $newdata[] = '$timeoutfix = false; //Enable to fix any 3000ms response from Slack.' . PHP_EOL;
+                        }
+                        $newdata[] = PHP_EOL . $data;
+                    } else if (stristr($data, '//cwslack-follow.php') && !$line1) {
+                        array_pop($newdata);
+                        if (!empty($_POST["notimeusers"])) {
+                            $newdata[] = '//cwslack-timealerts.php';
+                            $newdata[] = '//This uses all four variables above';
+                            $newdata[] = '$notimeusers = ' . $_POST["notimeusers"] . ';  //Usernames of users who should not be alerted on. Useful if you have techs who occasionally enter time and you don\'t want it pinging them every day. Separate with pipe |' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
                         }
                         $newdata[] = PHP_EOL . $data;
                     } else {

@@ -517,6 +517,12 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                         } else {
                             $newdata[] = $data;
                         }
+                    } else if (stristr($data, '$notimeusers =')) {
+                        if (!empty($_POST["notimeusers"])) {
+                            $newdata[] = '$notimeusers = ' . $_POST["notimeusers"] . ';  //Usernames of users who should not be alerted on. Useful if you have techs who occasionally enter time and you don\'t want it pinging them every day. Separate with pipe |' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
                     } else {
                         $newdata[] = $data;
                     }
