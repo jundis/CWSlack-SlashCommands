@@ -158,7 +158,7 @@ foreach($users as $user => $val)
                     "fallback" => "Time is too far behind for " . $user,
                     "title" => "Current hours for " . $val . ": " . $timeset[$val]["totaltime"],
                     "pretext" => "Their time is over 2 hours behind at this point",
-                    "text" =>  "Please have technician update their time immeidately as they have " . $missingtime . " hours to make up.",
+                    "text" =>  "Please have technician update their time immediately as they have " . $missingtime . " hours to make up.",
                     "mrkdwn_in" => array(
                         "text",
                         "pretext"
