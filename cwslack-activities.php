@@ -50,8 +50,8 @@ if($timeoutfix == true)
 }
 //End timeout fix block
 
-$urlactivities = $connectwise . "/v4_6_release/apis/3.0/sales/activities/";
-$activityurl = $connectwise . '/v4_6_release/ConnectWise.aspx?fullscreen=false&locale=en_US#startscreen=activity_detail&state={"p":"activity_detail", "s":{"p":{"pid":3, "rd":';
+$urlactivities = $connectwise . "/$connectwisebranch/apis/3.0/sales/activities/";
+$activityurl = $connectwise . '/$connectwisebranch/ConnectWise.aspx?fullscreen=false&locale=en_US#startscreen=activity_detail&state={"p":"activity_detail", "s":{"p":{"pid":3, "rd":';
 $activityurl2 = ' ,"compId":0, "contId":0, "oppid":0}}}';
 
 $command=NULL; //Create a command variable and set it to Null

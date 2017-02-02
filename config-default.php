@@ -23,6 +23,7 @@
 
 //General configuration, Required for all PHP scripts to function!!
 $connectwise = "https://cw.domain.com"; //Set your Connectwise URL
+$connectwisebranch = "v4_6_release"; //Set to the portion of your CW URL shown here: https://cw.domain.com/**v4_6_release**/ConnectWise.aspx
 $companyname = "MyCompany"; //Set your company name from Connectwise. This is the company name field from login.
 $apipublickey = "Key"; //Public API key
 $apiprivatekey = "Key"; //Private API key

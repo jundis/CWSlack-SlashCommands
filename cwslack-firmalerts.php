@@ -27,8 +27,8 @@ require_once 'functions.php';
 $datenow = gmdate("Y-m-d\TH:i", strtotime("-10 minutes")); //Date set to 10 minutes prior to now, to catch for tickets happening right now.
 $date2hours = gmdate("Y-m-d\TH:i", strtotime("+2 hours")); //Date set to 2 hours out so reminders up to 2 hours function.
 
-$url = $connectwise. "/v4_6_release/apis/3.0/schedule/entries?conditions=status/Name=%27Firm%27%20and%20dateStart%20%3E%20[" . $datenow . "]%20and%20dateStart%20%3C%20[". $date2hours . "]&orderBy=dateStart%20desc"; //URL to access the schedule API
-$ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
+$url = $connectwise. "/$connectwisebranch/apis/3.0/schedule/entries?conditions=status/Name=%27Firm%27%20and%20dateStart%20%3E%20[" . $datenow . "]%20and%20dateStart%20%3C%20[". $date2hours . "]&orderBy=dateStart%20desc"; //URL to access the schedule API
+$ticketurl = $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
 
 
 //Set headers for cURL requests. $header_data covers API authentication while $header_data2 covers the Slack output.

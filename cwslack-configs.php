@@ -56,13 +56,13 @@ if (array_key_exists(1,$exploded)) //If two parts of the array exists
     $company = $exploded[0]; //Set the first portion to company name
     $config = $exploded[1]; //Set the second portion to config name
 
-    $url = $connectwise . "/v4_6_release/apis/3.0/company/configurations?conditions=status/name=%27active%27%20and%20company/name%20contains%20%27" . $company . "%27%20and%20name%20contains%20%27" . $config . "%27&pagesize=1";
+    $url = $connectwise . "/$connectwisebranch/apis/3.0/company/configurations?conditions=status/name=%27active%27%20and%20company/name%20contains%20%27" . $company . "%27%20and%20name%20contains%20%27" . $config . "%27&pagesize=1";
 }
 else //If 2 parts don't exist
 {
     $config=$exploded[0];
 
-    $url = $connectwise . "/v4_6_release/apis/3.0/company/configurations?conditions=status/name=%27active%27%20and%20name%20contains%20%27" . $config . "%27&pagesize=1";
+    $url = $connectwise . "/$connectwisebranch/apis/3.0/company/configurations?conditions=status/name=%27active%27%20and%20name%20contains%20%27" . $config . "%27&pagesize=1";
 }
 
 
@@ -148,7 +148,7 @@ $return =array(
     "response_type" => "in_channel", //Send the response in the channel
     "attachments"=>array(array(
         "fallback" => "Configuration Info for " . $conf->company->identifier . "\\" . $conf->name, //Fallback for notifications
-        "title" => "Configuration: <". $connectwise . "/v4_6_release/services/system_io/router/openrecord.rails?locale=en_US&recordType=ConfigFv&recid=" . $conf->id . "|" . $conf->name . ">", //Set bolded title text
+        "title" => "Configuration: <". $connectwise . "/$connectwisebranch/services/system_io/router/openrecord.rails?locale=en_US&recordType=ConfigFv&recid=" . $conf->id . "|" . $conf->name . ">", //Set bolded title text
         "pretext" => "Configuration for:  " . $conf->company->identifier, //Set pretext
         "text" => "*_Notes_*:\n" . $notes . "\n*_Vendor Notes_*:\n" . $vendornotes . "\n*_Questions_*:\n" . $answers,//Set text to be returned
         "mrkdwn_in" => array( //Set markdown values

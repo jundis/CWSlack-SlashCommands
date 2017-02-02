@@ -67,7 +67,7 @@ $header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
 $header_data2 = postHeader($companyname, $apipublickey, $apiprivatekey);
 
 //Set URL
-$taskurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/tasks";
+$taskurl = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber . "/tasks";
 
 if (array_key_exists(1, $exploded)) //If a second string exists in the slash command array, make it the command.
 {

@@ -55,14 +55,14 @@ $url=NULL; //Create a URL variable and set it to Null.
 if (array_key_exists(0,$exploded)) //If the first part of the array exists (always will)
 {
 	$lastname = $exploded[0];
-	$url = $connectwise . "/v4_6_release/apis/3.0/company/contacts?conditions=lastName%20like%20%27" . $lastname . "%27"; //Set contact API url
+	$url = $connectwise . "/$connectwisebranch/apis/3.0/company/contacts?conditions=lastName%20like%20%27" . $lastname . "%27"; //Set contact API url
 }
 if (array_key_exists(1,$exploded)) //If two parts of the array exists
 {
 	$lastname = $exploded[1]; //Set the second portion to last name
 	$firstname = $exploded[0]; //Set the first portion to first name
 	
-	$url = $connectwise . "/v4_6_release/apis/3.0/company/contacts?conditions=lastName%20like%20%27" . $lastname . "%27%20and%20firstName%20like%20%27" . $firstname . "%27"; //Set contact API url to include first and last name.
+	$url = $connectwise . "/$connectwisebranch/apis/3.0/company/contacts?conditions=lastName%20like%20%27" . $lastname . "%27%20and%20firstName%20like%20%27" . $firstname . "%27"; //Set contact API url to include first and last name.
 }
 
 $utc = time(); //Get the time.

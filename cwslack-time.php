@@ -163,7 +163,7 @@ if(!is_numeric($exploded[0])) {
         }
 
         $datetoday = date("Y-m-d");
-        $timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries";
+        $timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries";
         $filterurl = $timeurl . "?conditions=enteredBy=%27" . $cwuser . "%27%20and%20timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=dateEntered%20desc&pagesize=200";
 
         // Authorization header
@@ -220,7 +220,7 @@ if(!is_numeric($exploded[0])) {
             $expected = round((strtotime($timebusinessclose) - strtotime($timebusinessstart)) / 3600,2);
         }
 
-        $ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $highestticket . "&companyName=" . $companyname;
+        $ticketurl = $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $highestticket . "&companyName=" . $companyname;
 
         $timediff = $expected - $totaltime;
 
@@ -263,7 +263,7 @@ if(!is_numeric($exploded[0])) {
     else if($exploded[0] == "reportall")
     {
         $datetoday = date("Y-m-d");
-        $timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries";
+        $timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries";
         $filterurl = $timeurl . "?conditions=timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=dateEntered%20desc&pagesize=1000";
 
         // Authorization header
@@ -349,8 +349,8 @@ $sentence=NULL; //Create a option variable and set it to Null
 
 
 //Set URL
-$timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries";
-$urlticketdata = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
+$timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries";
+$urlticketdata = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
 
 //Dates
 $datenow = gmdate("Y-m-d\TH:i:s\Z"); //Date as GMT based time.

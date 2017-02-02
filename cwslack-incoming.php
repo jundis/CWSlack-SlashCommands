@@ -65,9 +65,9 @@ if(!empty($_GET['channel']))  //If using channels in URL is set, and channel is 
 }
 
 //URL creation
-$ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
-$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $_GET['id'] . "/notes?orderBy=id%20desc"; //Set the URL required for cURL requests to ticket note API.
-$timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries?conditions=chargeToId=" . $_GET['id'] . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
+$ticketurl = $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
+$noteurl = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $_GET['id'] . "/notes?orderBy=id%20desc"; //Set the URL required for cURL requests to ticket note API.
+$timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries?conditions=chargeToId=" . $_GET['id'] . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
 
 $dataTData = array(); //Blank array.
 $dataTimeData = array(); //Blank array.

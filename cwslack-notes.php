@@ -62,7 +62,7 @@ $sentence=NULL; //Create a option variable and set it to Null
 
 
 //Set URL
-$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes";
+$noteurl = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber . "/notes";
 
 
 if (array_key_exists(1, $exploded)) //If a second string exists in the slash command array, make it the command.

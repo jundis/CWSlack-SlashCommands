@@ -76,16 +76,16 @@ if (array_key_exists(2,$exploded)) //If a third string exists in the slash comma
 	$option3 = $exploded[2];
 }
 //Set URLs
-$urlticketdata = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
-$ticketurl = $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Ticket URL for connectwise.
-$timeurl = $connectwise . "/v4_6_release/apis/3.0/time/entries?conditions=chargeToId=" . $ticketnumber . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
+$urlticketdata = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
+$ticketurl = $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Ticket URL for connectwise.
+$timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries?conditions=chargeToId=" . $ticketnumber . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
 if($command == "initial" || $command == "first" || $command == "note") //Set noteurl to use ascending if an initial note command is passed, else use descending.
 {
-	$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc";
+	$noteurl = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc";
 }
 else
 {
-	$noteurl = $connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20desc";
+	$noteurl = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20desc";
 }
 
 //Need to create 3 arrays before hand to ensure no errors occur.
@@ -109,10 +109,10 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 			}
 			die();
 		}
-		$companyurl = $connectwise . "/v4_6_release/apis/3.0/company/companies?conditions=name%20contains%20%27" . urlencode($ticketstuff[1]) . "%27";
+		$companyurl = $connectwise . "/$connectwisebranch/apis/3.0/company/companies?conditions=name%20contains%20%27" . urlencode($ticketstuff[1]) . "%27";
 		$companydata = cURL($companyurl, $header_data);
 
-		$boardurl = $connectwise . "/v4_6_release/apis/3.0/service/boards?conditions=name%20contains%20%27" .$ticketstuff[0]. "%27";
+		$boardurl = $connectwise . "/$connectwisebranch/apis/3.0/service/boards?conditions=name%20contains%20%27" .$ticketstuff[0]. "%27";
 		$boarddata = cURL($boardurl, $header_data);
 
 		$postarray = array(
@@ -136,7 +136,7 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 
 		}
 
-		$companyurl = $connectwise . "/v4_6_release/apis/3.0/company/companies?conditions=name%20contains%20%27" . $ticketstuff[1] . "%27";
+		$companyurl = $connectwise . "/$connectwisebranch/apis/3.0/company/companies?conditions=name%20contains%20%27" . $ticketstuff[1] . "%27";
 		$companydata = cURL($companyurl, $header_data);
 
 		$postarray = array(
@@ -195,7 +195,7 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 	}
 
 	$dataTCmd = cURLPost( //Function for POST requests in cURL
-		$connectwise . "/v4_6_release/apis/3.0/service/tickets", //URL
+		$connectwise . "/$connectwisebranch/apis/3.0/service/tickets", //URL
 		$header_data2, //Header
 		"POST", //Request type
 		$postarray
@@ -203,11 +203,11 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 
 	if($timeoutfix == true)
 	{
-		cURLPost($_GET["response_url"],array("Content-Type: application/json"),"POST",array("parse" => "full", "response_type" => "ephemeral","text" => "New ticket #<" . $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $dataTCmd->id . "|" . $dataTCmd->id . "> has been created.","mrkdwn"=>true));
+		cURLPost($_GET["response_url"],array("Content-Type: application/json"),"POST",array("parse" => "full", "response_type" => "ephemeral","text" => "New ticket #<" . $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $dataTCmd->id . "|" . $dataTCmd->id . "> has been created.","mrkdwn"=>true));
 	}
 	else
 	{
-		die("New ticket #<" . $connectwise . "/v4_6_release/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $dataTCmd->id . "|" . $dataTCmd->id . "> has been created.");
+		die("New ticket #<" . $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid=" . $dataTCmd->id . "|" . $dataTCmd->id . "> has been created.");
 	}
 	die();
 }
@@ -234,7 +234,7 @@ if($command=="priority") { //Check if the second string in the text array from t
 
 	$priority = "0"; //Set priority = 0.
 	$priorityname = "";
-	$priorityurl = $connectwise . "/v4_6_release/apis/3.0/service/priorities?conditions=name%20like%20%27" . $option3 . "%27";
+	$priorityurl = $connectwise . "/$connectwisebranch/apis/3.0/service/priorities?conditions=name%20like%20%27" . $option3 . "%27";
 	$dataTCmd = cURL($priorityurl, $header_data);
 	if(array_key_exists(0,$dataTCmd))
 	{
@@ -419,7 +419,7 @@ if($command=="scheduleme")
 	$postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
 
 	$dataTCmd = cURLPost(
-		$connectwise . "/v4_6_release/apis/3.0/schedule/entries",
+		$connectwise . "/$connectwisebranch/apis/3.0/schedule/entries",
 		$header_data2,
 		"POST",
 		$postarray
@@ -542,7 +542,7 @@ if($command=="schedule")
 	$postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
 
 	$dataTCmd = cURLPost(
-		$connectwise . "/v4_6_release/apis/3.0/schedule/entries",
+		$connectwise . "/$connectwisebranch/apis/3.0/schedule/entries",
 		$header_data2,
 		"POST",
 		$postarray
@@ -580,7 +580,7 @@ if($posttext==1) //Block for curl to get latest note
 
 	if($command == "full" || $command == "notes" || $command == "all")
 	{
-		$dataTNotes2 = cURL($connectwise . "/v4_6_release/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc", $header_data); // Get the JSON returned by the CW API for ticket notes.
+		$dataTNotes2 = cURL($connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc", $header_data); // Get the JSON returned by the CW API for ticket notes.
 	}
 	if(!array_key_exists(0, $dataTNotes))
 	{
