@@ -59,7 +59,7 @@ function cURL($url, $header)
             die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
         }
         else {
-            die("Unknown Error Occurred, check API key and other API settings. Error: " . $jsonDecode->code); //Fail case.
+            die("Unknown Error Occurred, check API key and other API settings. Error " . $jsonDecode->code . ": " . $jsonDecode->message); //Fail case.
         }
     }
     if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
@@ -123,7 +123,7 @@ function cURLPost($url, $header, $request, $postfieldspre)
             //do nothing.
         }
         else {
-            die("Unknown Error Occurred, check API key and other API settings. Error: " . $jsonDecode->code); //Fail case.
+            die("Unknown Error Occurred, check API key and other API settings. Error " . $jsonDecode->code . ": " . $jsonDecode->message); //Fail case.
         }
     }
     if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
