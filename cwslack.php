@@ -142,7 +142,7 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 		$postarray = array(
 			"summary" => $ticketstuff[1],
 			"company" => array(
-				"name" => $ticketstuff[0]
+				"id" => $companydata[0]->id
 			));
 	}
 	//Username mapping code
