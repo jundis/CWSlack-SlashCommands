@@ -39,18 +39,15 @@ if($timeoutfix == true)
     ob_end_clean();
     header("Connection: close");
     ob_start();
-    if($sendtimeoutwait==0) {
-        echo ('{"response_type": "in_channel"}');
-    } elseif ($sendtimeoutwait==1) {
-        echo ('{"response_type": "in_channel", "text": "Please wait..."}');
-    } else {
-        echo ('{"response_type": "ephemeral", "text": "Please wait..."}');
-    }
+    echo ('{"response_type": "in_channel"}');
     $size = ob_get_length();
     header("Content-Length: $size");
     ob_end_flush();
     flush();
     session_write_close();
+    if($sendtimeoutwait==true) {
+        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral", "text" => "Please wait..."));
+    }
 }
 //End timeout fix block
 
