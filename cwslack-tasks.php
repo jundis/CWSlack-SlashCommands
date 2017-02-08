@@ -46,7 +46,13 @@ if($timeoutfix == true)
     ob_end_clean();
     header("Connection: close");
     ob_start();
-    echo ('{"response_type": "in_channel"}');
+    if($sendtimeoutwait==0) {
+        echo ('{"response_type": "in_channel"}');
+    } elseif ($sendtimeoutwait==1) {
+        echo ('{"response_type": "in_channel", "text": "Please wait..."}');
+    } else {
+        echo ('{"response_type": "ephemeral", "text": "Please wait..."}');
+    }
     $size = ob_get_length();
     header("Content-Length: $size");
     ob_end_flush();

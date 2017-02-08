@@ -29,6 +29,7 @@ $apipublickey = "Key"; //Public API key
 $apiprivatekey = "Key"; //Private API key
 $timezone = "America/Chicago"; //Set your timezone here.
 $timeoutfix = false; //Enable to fix any 3000ms response from Slack.
+$sendtimeoutwait = 0; //Set to 0 to disable. Set to 1 to send a "Please wait..." message to the channel, and show all commands used. Set to 2 to send a "Please wait..." message to the user who used the command, and hide all commands used.
 
 // Database Configuration, required for if you want to use MySQL/Maria DB features.
 $usedatabase = 0; // Set to 0 by default, set to 1 if you want to enable MySQL.
