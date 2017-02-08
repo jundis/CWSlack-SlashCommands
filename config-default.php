@@ -107,12 +107,21 @@ $adminlist = "admin1|admin2"; //Separate by pipe symbol as seen in example if yo
 //Change optional
 $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help article URL here.
 
+// Variable below used for advanced diagnostics. $timeoutfix will be set to false automatically when this is turned on.
+$debugmode = false;
+
 //
 //Don't modify below unless you know what you're doing!
 //
 
 //Timezone Setting to be used for all files.
 date_default_timezone_set($timezone);
+
+//Debug mode
+if($debugmode==true)
+{
+    $timeoutfix = false;
+}
 
 
 ?>

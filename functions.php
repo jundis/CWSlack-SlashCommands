@@ -27,6 +27,7 @@
  */
 function cURL($url, $header)
 {
+    global $debugmode;
     $ch = curl_init(); //Initiate a curl session
 
     //Create curl array to set the API url, headers, and necessary flags.
@@ -42,7 +43,10 @@ function cURL($url, $header)
     $answerTData = curl_exec($ch); //Set $answerTData to the curl response to the API.
     $headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
     $curlBodyTData = substr($answerTData, $headerLen); //Remove header data from the curl string.
-
+    if($debugmode)
+    {
+        var_dump($answerTData);
+    }
     // If there was an error, show it
     if (curl_error($ch)) {
         die(curl_error($ch));
@@ -80,6 +84,7 @@ function cURL($url, $header)
  */
 function cURLPost($url, $header, $request, $postfieldspre)
 {
+    global $debugmode;
     $ch = curl_init(); //Initiate a curl session
 
     $postfields = json_encode($postfieldspre); //Format the array as JSON
@@ -100,6 +105,12 @@ function cURLPost($url, $header, $request, $postfieldspre)
     $answerTCmd = curl_exec($ch);
     $headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
     $curlBodyTCmd = substr($answerTCmd, $headerLen);
+
+    if($debugmode)
+    {
+        var_dump($answerTCmd);
+    }
+
     // If there was an error, show it
     if (curl_error($ch)) {
         die(curl_error($ch));
