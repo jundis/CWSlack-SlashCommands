@@ -47,6 +47,7 @@ $slackactivitiestoken = "Slack Token Here"; //Set your token for the activities 
 
 //cwslack-contacts.php
 $slackcontactstoken = "Slack Token Here"; //Set your token for the contacts slash command
+$inactivecontacts = false; //Set to true to return inactive contacts
 
 //cwlsack-notes.php
 $slacknotestoken = "Slack Token Here"; //Set your token for the notes slash command
