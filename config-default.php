@@ -118,9 +118,9 @@ $debugmode = false;
 date_default_timezone_set($timezone);
 
 //Debug mode
-if($debugmode==true)
+if($debugmode) //If debug mode is on..
 {
-    $timeoutfix = false;
+    $timeoutfix = false; //Set timeoutfix to false so that all data is returned properly as ephemeral messages.
 }
 
 

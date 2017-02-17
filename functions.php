@@ -27,31 +27,31 @@
  */
 function cURL($url, $header)
 {
-    global $debugmode;
+    global $debugmode; //Require global variable $debugmode from config.php.
     $ch = curl_init(); //Initiate a curl session
 
     //Create curl array to set the API url, headers, and necessary flags.
     $curlOpts = array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => $header,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HEADER => 1,
+        CURLOPT_URL => $url, //URL to send the curl request to
+        CURLOPT_RETURNTRANSFER => true, //Request data returned instead of output
+        CURLOPT_HTTPHEADER => $header, //Header to include, mainly for authorization purposes
+        CURLOPT_FOLLOWLOCATION => true, //Follow 301/302 redirects
+        CURLOPT_HEADER => 1, //Use header
     );
     curl_setopt_array($ch, $curlOpts); //Set the curl array to $curlOpts
 
     $answerTData = curl_exec($ch); //Set $answerTData to the curl response to the API.
     $headerLen = curl_getinfo($ch, CURLINFO_HEADER_SIZE);  //Get the header length of the curl response
     $curlBodyTData = substr($answerTData, $headerLen); //Remove header data from the curl string.
-    if($debugmode)
+    if($debugmode) //If the global $debugmode variable is set to true
     {
-        var_dump($answerTData);
+        var_dump($answerTData); //Dump the raw data.
     }
     // If there was an error, show it
     if (curl_error($ch)) {
         die(curl_error($ch));
     }
-    curl_close($ch);
+    curl_close($ch); //Close the curl connection for cleanup.
 
     $jsonDecode = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
 
@@ -62,8 +62,8 @@ function cURL($url, $header)
         if($jsonDecode->code == "Unauthorized") { //If error code is an authorization error
             die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
         }
-        else {
-            die("Unknown Error Occurred, check API key and other API settings. Error " . $jsonDecode->code . ": " . $jsonDecode->message); //Fail case.
+        else { //Else other error
+            die("Unknown Error Occurred, check API key and other API settings. Error " . $jsonDecode->code . ": " . $jsonDecode->message); //Fail case, including the message and code output from connectwise.
         }
     }
     if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
@@ -73,7 +73,7 @@ function cURL($url, $header)
         die("ConnectWise Error: " . $errors[0]->message); //Return CW error
     }
 
-    return $jsonDecode;
+    return $jsonDecode; //Return the decoded output.
 }
 
 /**
@@ -84,7 +84,7 @@ function cURL($url, $header)
  */
 function cURLPost($url, $header, $request, $postfieldspre)
 {
-    global $debugmode;
+    global $debugmode; //Require global variable $debugmode from config.php
     $ch = curl_init(); //Initiate a curl session
 
     $postfields = json_encode($postfieldspre); //Format the array as JSON
