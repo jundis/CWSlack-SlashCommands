@@ -85,7 +85,6 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     <div class=\"col-sm-6\"><label for='webHookurl'>Web Hook URL: </label></div><div class=\"col-sm-6\"><input type='text' name='webhookurl' id='webHookurl' placeholder='https://hooks.slack.com/services/...'></div>
                     <div class=\"col-sm-7\"><label for='postAdded'>Post new tickets to Slack: </label></div><div class=\"col-sm-5\"><input type='radio' name='postadded' value='yes' id='postAdded' checked> Yes <input type='radio' name='postadded' value='no'> No</div>
                     <div class=\"col-sm-7\"><label for='postUpdated'>Post updated tickets to Slack: </label></div><div class=\"col-sm-5\"><input type='radio' name='postupdated' id='postUpdated' value='yes'> Yes <input type='radio' name='postupdated' value='no' checked> No</div>
-                    <div class=\"col-sm-7\"><label for='allowZadmin'>Post zAdmin updates? Required for customer created tickets to post: </label></div><div class=\"col-sm-5\"><input type='radio' name='allowzadmin' value='yes' id='allowZadmin'> Yes <input type='radio' name='allowzadmin' value='no' checked> No </div>
                     <div class=\"col-sm-7\"><label for='postText'>Post ticket notes with /t and incoming: </label></div><div class=\"col-sm-5\"><input type='radio' name='posttext' value='yes' id='postText' checked> Yes <input type='radio' name='posttext' value='no' > No </div>
                     <div class=\"col-sm-7\"><label for='postCompany'>Add company name to notifications: </label></div><div class=\"col-sm-5\"><input type='radio' name='postcompany' value='yes' id='postCompany' checked> Yes <input type='radio' name='postcompany' value='no' > No </div>
                     <div class=\"col-sm-7\"><label for='timeEnabled'>Post all tickets past a set actual hours to a channel: </label></div><div class=\"col-sm-5\"><input type='radio' name='timeenabled' value='yes' id='timeEnabled'> Yes <input type='radio' name='timeenabled' value='no' checked> No </div>
@@ -366,12 +365,6 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                             $newdata[] = '$postupdated = 1; //Set this to post updated tickets to slack. Defaults to off to avoid spam' . PHP_EOL;
                         } else {
                             $newdata[] = '$postupdated = 0; //Set this to post updated tickets to slack. Defaults to off to avoid spam' . PHP_EOL;
-                        }
-                    } else if (stristr($data, '$allowzadmin =')) {
-                        if ($_POST["allowzadmin"] == "yes") {
-                            $newdata[] = '$allowzadmin = 1; //Set this to allow posts from zAdmin, warning as zAdmin does workflow rules so update spam is countered, however new client tickets are through zAdmin. To avoid insane spam, do not have this turned on while $postupdated is turned on.' . PHP_EOL;
-                        } else {
-                            $newdata[] = '$allowzadmin = 0; //Set this to allow posts from zAdmin, warning as zAdmin does workflow rules so update spam is countered, however new client tickets are through zAdmin. To avoid insane spam, do not have this turned on while $postupdated is turned on.' . PHP_EOL;
                         }
                     } else if (stristr($data, '$posttext =')) {
                         if ($_POST["posttext"] == "yes") {

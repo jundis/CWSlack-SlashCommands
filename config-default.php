@@ -72,7 +72,6 @@ $timebusinessclose = "5:00PM"; //Set to when your business closes in your timezo
 $webhookurl = "https://hooks.slack.com/services/tokens"; //Change this to the URL retrieved from incoming webhook setup for Slack.
 $postadded = 1; //Set this to post new tickets to slack.
 $postupdated = 0; //Set this to post updated tickets to slack. Defaults to off to avoid spam
-$allowzadmin = 0; //Set this to allow posts from zAdmin, warning as zAdmin does workflow rules so update spam is countered, however new client tickets are through zAdmin. To avoid insane spam, do not have this turned on while $postupdated is turned on. 
 $posttext = 1; //Set to 1 if you want it to post the latest note from the ticket into chat whenever a ticket is created or updated.
 $postcompany = 1; //Set to 1 if you want the Company to be posted in the clear text of the post (general what will be seen on IRC/XMPP)
 $timeenabled = 0; //Set to 1 if you want to post all tickets past $timepast to a specific channel, $timechan
