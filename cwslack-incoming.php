@@ -34,7 +34,8 @@ $info = json_decode(stripslashes($data->Entity)); //Decode the entity field whic
 if(empty($_GET['id']) || empty($_GET['action']) || empty($info)) die; //If anything we need doesn't exist, kill connection.
 
 if($_GET['action'] == "updated" && $_GET['srDetailRecId']==0 && $_GET['timeRecId']==0) die; //Kill connection if the update is not a note, and is something like a status change. This will prevent duplicate entries.
-if(strtolower($_GET['memberId'])=="zadmin" && $allowzadmin == 0) die; //Die if $allowzadmin is not enabled.
+
+if($_GET['isProblemDescription']=="False" && $_GET['isInternalAnalysis']=="False" && $_GET['isResolution']=="False") die; //Die if no actual update.
 
 $badboards = explode("|",$badboard); //Explode with pipe seperator.
 $badstatuses = explode("|",$badstatus); //Explode with pipe seperator.
