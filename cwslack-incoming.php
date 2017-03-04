@@ -98,6 +98,11 @@ if($posttext==1) //Block for curl to get latest note
 	{
 		$dataTimeData = cURL($timeurl, $header_data); //Decode the JSON returned by the CW API.
 
+		if($dataTData == NULL && $dataTimeData == NULL)
+		{
+			$posttext = 0;
+		}
+
 		if($posttext==1 && ($dataTData[0]->text != NULL || $dataTimeData[0]->text != NULL)) //Verified no curl error occurred as well as makes sure that if both text values == null, then there is no text to post.
 		{
 			$createdby = $dataTData[0]->createdBy; //Set $createdby to the ticket note creator.
