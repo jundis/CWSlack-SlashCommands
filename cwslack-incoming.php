@@ -43,7 +43,20 @@ $badcompanies = explode("|",$badcompany); //Explode with pipe seperator.
 if (in_array($info->BoardName,$badboards)) die;
 if (in_array($info->StatusName,$badstatuses)) die;
 if (in_array($info->CompanyName,$badcompanies)) die;
-if (!empty($_GET['board']))
+
+$channel = NULL; //Set channel to NULL for future use.
+
+if (!empty($boardmapping))
+{
+	$explode = explode(",",$boardmapping);
+	foreach($explode as $item) {
+		$temp = explode("|",$item);
+		if(strcasecmp($temp[0],$info->BoardName) == 0) {
+			$channel = $temp[1];
+		}
+	}
+}
+else if (!empty($_GET['board']))
 {
 	if(strpos($_GET['board'], "-") !== false)
 	{
@@ -57,13 +70,13 @@ if (!empty($_GET['board']))
 	{
 		die("Incorrect board");
 	}
+
+	if(!empty($_GET['channel']))  //If using channels in URL is set, and channel is not empty..
+	{
+		$channel = $_GET['channel']; //Set $channel to the channel.
+	}
 }
 
-$channel = NULL; //Set channel to NULL for future use.
-if(!empty($_GET['channel']))  //If using channels in URL is set, and channel is not empty..
-{
-	$channel = $_GET['channel']; //Set $channel to the channel.
-}
 
 //URL creation
 $ticketurl = $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.

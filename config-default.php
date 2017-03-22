@@ -81,6 +81,8 @@ $timechan = "#ticketstime"; //Set to a channel to post to for $timeenabled
 $badboard = "Alerts"; //Set to any board name you want to fail, to avoid ticket creation/updates from this board posting to Slack.
 $badstatus = "Closed|Canceled"; //Set to any status name you want to fail, to avoid ticket creation/updates with this status from posting to Slack.
 $badcompany = "CatchAll (for email connector)"; //Set to any company name you want to fail, to avoid ticket creation for catchall from posting to Slack.
+//Example $boardmapping = "Alerts|alerts,Customer Support|support,Incoming|dispatch"; This would send Alerts to #alerts, Customer Support to #support, Incoming to #dispatch, and Orders to the channel specified on Slack's webhook page.
+$boardmapping = ""; //Put board to channel mappings in here. Formatted as "Board Name|channel,Board Name|channel". Any board not covered will go to the default channel for the webhook, filter boards using $badboard. Example above
 
 //cwslack-firmalerts.php
 //This uses the variables $webhookurl and $timechan from cwslack-incoming.php above.
