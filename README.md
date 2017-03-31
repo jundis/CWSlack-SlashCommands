@@ -68,13 +68,7 @@ Use the scripts found in the updates folder to upgrade from an older version to 
 
 ####Different boards to different channels
 
-As of version 2.1, the cwslack-incoming.php script supports sending different support boards to different channels in Slack. This is accomplished by creating multiple integrator logins as specified in step 6 above but using the URL below for each callback.
-
-- https://domain.tld/cwslack-incoming.php?board=BoardName&channel=SlackChannel&id=
-
-You can specify multiple boards by separating them with a hyphen such as: ?board=BoardA-BoardB&channel=SlackAB
-
-By doing this, you can specify BoardA goes to ChannelA and BoardB goes to ChannelB. Note that in this usage, if you do not specify a callback for BoardC then it will not send tickets to Slack at all.
+As of version 2.4 the implementation has been changed from using callback URLs to using the $boardmapping variable in config.php
 
 ## cwslack-firmalerts.php
 
