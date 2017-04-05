@@ -115,6 +115,16 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 		$companyurl = $connectwise . "/$connectwisebranch/apis/3.0/company/companies?conditions=name%20contains%20%27" . urlencode($ticketstuff[1]) . "%27";
 		$companydata = cURL($companyurl, $header_data);
 
+		if(is_null($companydata))
+		{
+			if ($timeoutfix == true) {
+				cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No company found with the name " . $ticketstuff[0]));
+			} else {
+				die("No company found with the name " . $ticketstuff[0]); //Return properly encoded arrays in JSON for Slack parsing.
+			}
+			die();
+		}
+
 		$boardurl = $connectwise . "/$connectwisebranch/apis/3.0/service/boards?conditions=name%20contains%20%27" .$ticketstuff[0]. "%27";
 		$boarddata = cURL($boardurl, $header_data);
 
@@ -139,8 +149,18 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 
 		}
 
-		$companyurl = $connectwise . "/$connectwisebranch/apis/3.0/company/companies?conditions=name%20contains%20%27" . $ticketstuff[1] . "%27";
+		$companyurl = $connectwise . "/$connectwisebranch/apis/3.0/company/companies?conditions=name%20contains%20%27" . urlencode($ticketstuff[0]) . "%27";
 		$companydata = cURL($companyurl, $header_data);
+
+		if(is_null($companydata))
+		{
+			if ($timeoutfix == true) {
+				cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No company found with the name " . $ticketstuff[0]));
+			} else {
+				die("No company found with the name " . $ticketstuff[0]); //Return properly encoded arrays in JSON for Slack parsing.
+			}
+			die();
+		}
 
 		$postarray = array(
 			"summary" => $ticketstuff[1],
