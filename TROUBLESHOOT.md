@@ -1,6 +1,6 @@
 # CWSlack-SlashCommands Troubleshooting
 
-###Issue - Error Security: SSL is required
+###Issue - Error Security: SSL is required OR Error 401: Unauthorized
 
 If you are using hosted ConnectWise, you need to set your $connectwise variable in config.php to `https://api-na.myconnectwise.net` instead of `https://na.myconnectwise.net`
 
