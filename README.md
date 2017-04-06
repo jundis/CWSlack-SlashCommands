@@ -24,6 +24,8 @@ This script set and all modules require PHP version 5 and the cURL extension, an
 
 For unsupported non-MySQL installation instructions, please see README_NoMySQL.md
 
+**See TROUBLESHOOT.md first if you have any issues. Otherwise, contact info below.**
+
 You can reach me on the r/msp Discord, LabTechGeek Slack, or via reddit at /u/jundis if you need basic support.
 
 You can also reach me at joey(at)und.is should you need more intense support, custom modifications, or want your install done by me.
