@@ -1,6 +1,6 @@
 # CWSlack-SlashCommands
 
-[![Gitter chat](https://badges.gitter.im/jundis/CWSlack-SlashCommands.png)](https://gitter.im/jundis/CWSlack-SlashCommands)
+[![Gitter chat](https://badges.gitter.im/CWSlack-SlashCommands.png)](https://gitter.im/CWSlack-SlashCommands)
 
 This script, when hosted on a PHP supported web server, will act as a bridge between the JSON requests of Slack and the JSON responses of the ConnectWise REST API.
 
