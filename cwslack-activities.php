@@ -26,9 +26,9 @@ require_once 'functions.php';
 // Authorization array. Auto encodes API key for auhtorization above.
 $header_data = postHeader($companyname, $apipublickey, $apiprivatekey);
 
-if(empty($_GET['token']) || ($_GET['token'] != $slackactivitiestoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
-$exploded = explode("|",$_GET['text']); //Explode the string attached to the slash command for use in variables.
+if(empty($_REQUEST['token']) || ($_REQUEST['token'] != $slackactivitiestoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_REQUEST['text'])) die("No text provided."); //If there is no text added, kill the connection.
+$exploded = explode("|",$_REQUEST['text']); //Explode the string attached to the slash command for use in variables.
 
 //Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 if ($exploded[0]=="help") {
@@ -48,7 +48,7 @@ if($timeoutfix == true)
     flush();
     session_write_close();
     if($sendtimeoutwait==true) {
-        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral", "text" => "Please wait..."));
+        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral", "text" => "Please wait..."));
     }
 }
 //End timeout fix block
@@ -95,14 +95,14 @@ if($command == "new") //If command is new.
 else
 {
     if ($timeoutfix == true) {
-        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => $return));
+        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => $return));
     } else {
         die($return); //Post to slack
     }
 	die();
 }
 if ($timeoutfix == true) {
-    cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+    cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", $return);
 } else {
     die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
 }

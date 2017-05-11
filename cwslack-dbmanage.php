@@ -22,12 +22,12 @@ header('Content-Type: application/json'); //Set the header to return JSON, requi
 require_once 'config.php';
 require_once 'functions.php';
 
-if(empty($_GET['token']) || ($_GET['token'] != $slackdbmantoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
-$exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
+if(empty($_REQUEST['token']) || ($_REQUEST['token'] != $slackdbmantoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_REQUEST['text'])) die("No text provided."); //If there is no text added, kill the connection.
+$exploded = explode(" ",$_REQUEST['text']); //Explode the string attached to the slash command for use in variables.
 
 $explodeadmins = explode("|", $adminlist); //Explode list of acceptable admins.
-if(!in_array($_GET["user_name"],$explodeadmins))
+if(!in_array($_REQUEST["user_name"],$explodeadmins))
 {
     die("You are not authorized to access this command. Only the following users can: " . implode(", ",$explodeadmins));
 }

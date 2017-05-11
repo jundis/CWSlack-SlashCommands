@@ -24,11 +24,11 @@ require_once 'functions.php';
 
 $link=0;
 
-if(empty($_GET['method']) || ($_GET['method'] != $followtoken && $_GET['method'] != $unfollowtoken)){
-	if(empty($_GET['token']) || $_GET['token'] != $slackfollowtoken) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-	if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
+if(empty($_REQUEST['method']) || ($_REQUEST['method'] != $followtoken && $_REQUEST['method'] != $unfollowtoken)){
+	if(empty($_REQUEST['token']) || $_REQUEST['token'] != $slackfollowtoken) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+	if(empty($_REQUEST['text'])) die("No text provided."); //If there is no text added, kill the connection.
 	
-	$exploded = explode(" ",$_GET['text']); //Explode the string attached to the slash command for use in variables.
+	$exploded = explode(" ",$_REQUEST['text']); //Explode the string attached to the slash command for use in variables.
 } else {
 	$link=1;
 }
@@ -53,7 +53,7 @@ if($link==0 && !is_numeric($exploded[0])) {
 
 if($link==0){
 	$ticketnumber = $exploded[0]; //Read ticket number to variable for convenience.
-	$username = $_GET['user_name']; //Read Slack username to variable for convenience.
+	$username = $_REQUEST['user_name']; //Read Slack username to variable for convenience.
 
 	if (array_key_exists(1,$exploded)) //If a second string exists in the slash command array, make it the command.
 	{
@@ -62,14 +62,14 @@ if($link==0){
 }
 else
 {
-	$ticketnumber = $_GET['srnumber'];
+	$ticketnumber = $_REQUEST['srnumber'];
 	$mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase);
 	if (!$mysql) //Check for errors
 	{
 		die("Connection Error: " . mysqli_connect_error());
 	}
 
-	$val1 = mysqli_real_escape_string($mysql,$_GET['memberid']);
+	$val1 = mysqli_real_escape_string($mysql,$_REQUEST['memberid']);
 	$sql = "SELECT slackuser FROM usermap where cwname = '".$val1."'";
 
 	$result = mysqli_query($mysql, $sql); //Run result
@@ -81,15 +81,15 @@ else
 	}
 	else
 	{
-		$username = $_GET['memberid'];
+		$username = $_REQUEST['memberid'];
 	}
 	mysqli_close($mysql);
 
-	if($_GET['method']==$followtoken)
+	if($_REQUEST['method']==$followtoken)
 	{
 		//For future use.
 	}
-	else if ($_GET['method']==$unfollowtoken)
+	else if ($_REQUEST['method']==$unfollowtoken)
 	{
 		$command="unfollow"; //Set command to unfollow if it matches the CW unfollowtoken
 	}

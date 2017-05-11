@@ -23,10 +23,10 @@ header('Content-Type: application/json'); //Set the header to return JSON, requi
 require_once 'config.php'; //Require config
 require_once 'functions.php'; //Require functions
 
-if(empty($_GET['token']) || ($_GET['token'] != $slackconfigstoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
-if(empty($_GET['text'])) die("No text provided."); //If there is no text added, kill the connection.
+if(empty($_REQUEST['token']) || ($_REQUEST['token'] != $slackconfigstoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_REQUEST['text'])) die("No text provided."); //If there is no text added, kill the connection.
 
-$exploded = explode("|",$_GET['text']); //Explode the string attached to the slash command for use in variables.
+$exploded = explode("|",$_REQUEST['text']); //Explode the string attached to the slash command for use in variables.
 
 //Check to see if the first command in the text array is actually help, if so redirect to help webpage detailing slash command use.
 if ($exploded[0]=="help") {
@@ -46,7 +46,7 @@ if($timeoutfix == true)
     flush();
     session_write_close();
     if($sendtimeoutwait==true) {
-        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral", "text" => "Please wait..."));
+        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral", "text" => "Please wait..."));
     }
 }
 //End timeout fix block
@@ -86,7 +86,7 @@ $dataTData = cURL($url, $header_data); // Get the JSON returned by the CW API.
 if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 {
     if ($timeoutfix == true) {
-        cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No configuration found."));
+        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "No configuration found."));
     } else {
         die("No configuration found."); //Return properly encoded arrays in JSON for Slack parsing.
     }
@@ -162,7 +162,7 @@ $return =array(
 );
 
 if ($timeoutfix == true) {
-    cURLPost($_GET["response_url"], array("Content-Type: application/json"), "POST", $return);
+    cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", $return);
 } else {
     die(json_encode($return, JSON_PRETTY_PRINT)); //Return properly encoded arrays in JSON for Slack parsing.
 }
