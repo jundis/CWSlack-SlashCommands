@@ -370,7 +370,18 @@ if (array_key_exists(1, $exploded)) //If a second string exists in the slash com
         }
         else if(strpos($exploded[2],"h")!==false && strpos($exploded[2],"m")==false)
         {
-            $datestart = gmdate("Y-m-d\TH:i:s\Z",strtotime("-" . preg_replace('/[^0-9,.]/', "", $exploded[2]) . " hours")); //Start time of the ticket.
+            if(strpos($exploded[2],".")!==false)
+            {
+                $temptime = explode(".",$exploded[2]);
+                $temphours = $temptime[0];
+                $tempmins = "." . preg_replace('/[^0-9]/', "", $temptime[1]);
+                $tempmins = round(60 * $tempmins);
+                $datestart = gmdate("Y-m-d\TH:i:s\Z",strtotime("-" . $temphours . " hours" . " -" . $tempmins . " minutes")); //Start time of the ticket.
+            }
+            else
+            {
+                $datestart = gmdate("Y-m-d\TH:i:s\Z",strtotime("-" . preg_replace('/[^0-9,.]/', "", $exploded[2]) . " hours")); //Start time of the ticket.
+            }
         }
         else
         {
