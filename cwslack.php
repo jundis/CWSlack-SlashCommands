@@ -692,6 +692,8 @@ else
 	}
 }
 
+$lastupdate = "\nUpdated: " . $dataTData->_info->updatedBy . " at " . date("m-d-y g:iA", strtotime($dataTData->_info->lastUpdated));
+
 
 $date=strtotime($dataTData->dateEntered); //Convert date entered JSON result to time.
 $dateformat=date('m-d-Y g:i:sa',$date); //Convert previously converted time to a better time string.
@@ -728,7 +730,8 @@ if($command == "initial" || $command == "first" || $command == "note")
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
 				"\n" . $resources . " | " . $hours . //Return assigned resources
-				(!$resourceline ? "" : $resourceline), //Return next resource
+				(!$resourceline ? "" : $resourceline) . //Return next resource
+				$lastupdate,
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -748,7 +751,8 @@ if($command == "initial" || $command == "first" || $command == "note")
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
 				"\n" . $resources . " | " . $hours . //Return assigned resources
-				(!$resourceline ? "" : $resourceline), //Return next resource
+				(!$resourceline ? "" : $resourceline) . //Return next resource
+				$lastupdate,
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -781,7 +785,8 @@ else if($command == "full" || $command == "notes" || $command == "all")
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
 				"\n" . $resources . " | " . $hours . //Return assigned resources
-				(!$resourceline ? "" : $resourceline), //Return next resource
+				(!$resourceline ? "" : $resourceline) . //Return next resource
+				$lastupdate,
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -818,7 +823,8 @@ else if($command == "full" || $command == "notes" || $command == "all")
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 					"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
 					"\n" . $resources . " | " . $hours . //Return assigned resources
-					(!$resourceline ? "" : $resourceline), //Return next resource
+					(!$resourceline ? "" : $resourceline) . //Return next resource
+					$lastupdate,
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -897,7 +903,8 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
 				"\n" . $resources . " | " . $hours . //Return assigned resources
-				(!$resourceline ? "" : $resourceline), //Return next resource
+				(!$resourceline ? "" : $resourceline) . //Return next resource
+				$lastupdate,
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
@@ -917,7 +924,8 @@ else //If no command is set, or if it's just random gibberish after ticket numbe
 				"text" =>  $dataTData->company->identifier . " / " . $contact . //Return "Company / Contact" string
 				"\n" . $dateformat . " | " . $dataTData->status->name . //Return "Date Entered / Status" string
 				"\n" . $resources . " | " . $hours . //Return assigned resources
-				(!$resourceline ? "" : $resourceline), //Return next resource
+				(!$resourceline ? "" : $resourceline) . //Return next resource
+				$lastupdate,
 				"mrkdwn_in" => array(
 					"text",
 					"pretext"
