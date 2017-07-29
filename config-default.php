@@ -95,6 +95,12 @@ $firmalertchan = "#dispatch"; //When you want to split time alerts and firm aler
 //This uses all four variables above
 $notimeusers = "user1|user2"; //Usernames of users who should not be alerted on. Useful if you have techs who occasionally enter time and you don't want it pinging them every day. Separate with pipe |
 
+//cwslack-priorityalerts.php
+//This uses all the variables from firmalerts as well, adhering to it for whether to post to users/channel and which channel
+$prioritylist = "High|Critical"; // Name of the priority(ies) to look out for. Separate by pipe if more than one needed.
+$prioritystatus = "Scheduled|Scheduled -Notify"; // Status(es), seperated by pipe | symbol, which the priority alerts will check for and send alerts on.
+$prioritywait = 30; // Number of minutes to wait after a high-priority event before alerting the technician. Maximum 119 minutes.
+
 //cwslack-follow.php
 //Requires cwslack-incoming.php to function.
 $slackfollowtoken = "Slack Token Here"; //Set your token for the follow slash command
