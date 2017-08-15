@@ -65,16 +65,34 @@ foreach($dataTData as $entry)
     $summary = $entryTData->summary;
     $company = $entryTData->company->name;
 
+    if($debugmode)
+    {
+        echo "\nDEBUG: Ticket #" . $ticketnumber . " of user " . $user;
+    }
+
     if(!in_array($entryTData->priority->name,$priorities))
     {
         // Priority of found ticket is not one of the ones we're looking for, exit loop
-        break;
+        if($debugmode)
+        {
+            echo "\nDEBUG: Breaking at line 73, priority (" . $entryTData->priority->name . ") is not in the list: " . implode(", ", $priorities);
+        }
+        continue;
     }
 
     if(!in_array($entryTData->status->name,$prioritystatuses))
     {
         // Status of found ticket is not one of the ones we're looking for, exit loop
-        break;
+        if($debugmode)
+        {
+            echo "\nDEBUG: Breaking at line 73, status (" . $entryTData->status->name . ") is not in the list: " . implode(", ", $prioritystatuses);
+        }
+        continue;
+    }
+
+    if($debugmode)
+    {
+        echo "\nDEBUG: Passed status and priority validation";
     }
 
     //Username mapping code
