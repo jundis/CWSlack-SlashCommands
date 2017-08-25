@@ -108,6 +108,17 @@ $followenabled = 0; //When set to 1, follow commands and the follow scripts will
 $followtoken = "follow"; //Change to random text to be used in your CW follow link if you use it. Defaults to follow which is fine for testing.
 $unfollowtoken = "unfollow"; //Change to random text to be used in your CW unfollow link if you use it. Defaults to unfollow which is fine for testing.
 
+//cwslack-lunch.php
+$lunchtime = 60; // Expected number of MINUTES that a user is on lunch
+$lunchmax = 120; // Number of minutes to allow before cancelling the lunch entry, does not submit time
+$lunchsendslack = true; // Send messages to a slack channel when a user goes on/off lunch
+$lunchsendemail = false; // Send messages to an e-mail address when a user goes on/off lunch
+$lunchsendonoff = 1; // Key: 0 = No notifications, 1 = Send notifications when a user goes on lunch, 2 = Send when a user goes off lunch, 3 = Send when a user goes on lunch OR off lunch
+$lunchslackchannel = "general"; // Channel to send Slack messages to
+$lunchemailaddress = "allstaff@domain.com"; // E-mail address to send messages to
+$lunchcreatesched = true; // Should the script create a schedule entry on the users board
+$lunchsavetime = true; // Should the script submit a time entry for the user for their lunch duration
+
 //cwslack-dbmanage.php
 $slackdbmantoken = "Slack Token Here"; //Set your token for the database management slash command
 $adminlist = "admin1|admin2"; //Separate by pipe symbol as seen in example if you need multiple people to have access.
