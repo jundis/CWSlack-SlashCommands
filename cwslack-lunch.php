@@ -23,7 +23,7 @@ require_once 'config.php';
 require_once 'functions.php';
 
 if($usedatabase==0) die("Unable to run this module without a MySQL database"); // Warning if you don't have MySQL enabled
-if(empty($_REQUEST['token']) || ($_REQUEST['token'] != $slacktoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
+if(empty($_REQUEST['token']) || ($_REQUEST['token'] != $slacklunchtoken)) die("Slack token invalid."); //If Slack token is not correct, kill the connection. This allows only Slack to access the page for security purposes.
 if(empty($_REQUEST['text']))
 {
     $blanktext = true;
@@ -31,10 +31,11 @@ if(empty($_REQUEST['text']))
 else
 {
     $blanktext = false;
-    $exploded = explode(" ",$_REQUEST['text']); //Explode the string attached to the slash command for use in variables.
-    if ($exploded[0]=="help") {
-        die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true)));
-    }
+}
+
+$exploded = explode(" ",$_REQUEST['text']); //Explode the string attached to the slash command for use in variables.
+if ($exploded[0]=="help") {
+    die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true)));
 }
 
 // Authorization array. Auto encodes API key for auhtorization above.
@@ -42,7 +43,13 @@ $header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
 // Authorization array, with extra json content-type used in patch commands to change tickets.
 $header_data2 = postHeader($companyname, $apipublickey, $apiprivatekey);
 
+$timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries";
+$schedurl = $connectwise . "/$connectwisebranch/apis/3.0/schedule/entries";
+
 $slackname = $_REQUEST["user_name"];
+
+//REMOVE LATER
+$timeoutfix = false;
 
 //Timeout Fix Block
 if($timeoutfix == true)
@@ -186,6 +193,10 @@ if($golunchon || $exploded[0]=="on" || $exploded[0]=="go" || $exploded[0]=="star
     //Schedule entry block
     if($lunchcreatesched)
     {
+        $datestart = gmdate("Y-m-d\TH:i:s\Z"); //Start time of the ticket.
+        $dateend = gmdate("Y-m-d\TH:i:s\Z",strtotime("+1 hour")); //Start time of the ticket.
+        $postfieldspre = array("member"=>array("identifier"=>$cwname), "type"=>array("id"=>13), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag"=>true, "name"=>"Lunch [Slack]");
+        $dataTNotes = cURLPost($schedurl, $header_data2, "POST", $postfieldspre);
 
     }
 
@@ -194,7 +205,14 @@ if($golunchon || $exploded[0]=="on" || $exploded[0]=="go" || $exploded[0]=="star
     {
         if($lunchsendonoff == 1 || $lunchsendonoff == 3)
         {
+            $offlunchat = date("g:ia", strtotime("+1 hour"));
 
+            $postfieldspre = array(
+                "channel"=>$lunchslackchannel,
+                "text"=>"$cwname has taken their lunch and they will return at $offlunchat."
+            );
+
+            cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
         }
     }
 
@@ -209,7 +227,7 @@ if($golunchon || $exploded[0]=="on" || $exploded[0]=="go" || $exploded[0]=="star
 }
 
 //Lunch off block
-if($golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="stop" || $exploded[0]=="end")
+if(!$golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="stop" || $exploded[0]=="end")
 {
     $val1 = mysqli_real_escape_string($mysql,$slackname);
     $sql = "SELECT * FROM `lunch` WHERE `slackuser`=\"" . $val1 . "\""; //
@@ -240,7 +258,14 @@ if($golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="s
     {
         if($lunchsendonoff == 2 || $lunchsendonoff == 3)
         {
+            $offlunchat = date("g:ia", strtotime("+1 hour"));
 
+            $postfieldspre = array(
+                "channel"=>$lunchslackchannel,
+                "text"=>"$cwname has returned from lunch."
+            );
+
+            cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
         }
     }
 

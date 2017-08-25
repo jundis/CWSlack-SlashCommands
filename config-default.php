@@ -109,6 +109,7 @@ $followtoken = "follow"; //Change to random text to be used in your CW follow li
 $unfollowtoken = "unfollow"; //Change to random text to be used in your CW unfollow link if you use it. Defaults to unfollow which is fine for testing.
 
 //cwslack-lunch.php
+$slacklunchtoken = "test"; // Set your token for the lunch slash command
 $lunchtime = 60; // Expected number of MINUTES that a user is on lunch
 $lunchmax = 120; // Number of minutes to allow before cancelling the lunch entry, does not submit time
 $lunchsendslack = true; // Send messages to a slack channel when a user goes on/off lunch
