@@ -38,6 +38,12 @@ $dbusername = "username"; //Your MySQL DB Username
 $dbpassword = "password"; //Your MySQL DB Password
 $dbdatabase = "cwslack"; //Change if you have an existing database you want to use, otherwise leave as default.
 
+//E-mail configuration, required for lunch module mail functions
+$smtpserver = "smtp.domain.com"; //Set your SMTP server her
+$smtpport = 25; //Set your SMTP port. Defaults: 25 (No security), 465 (SSL), 587 (TLS)
+$smtpfrom = "notifications@domain.com"; //Set to the address all mail should be sent from
+$smtpname = "Company Notifications"; //Set to what you want e-mails to appear as coming from. E.x. Company Notifications <notfications@domain.com>
+
 //cwslack.php
 $slacktoken = "Slack Token Here"; //Set token from the Slack slash command screen.
 $useboards = 1; //Use the board function in new tickets. /t new company|summary vs /t new board|company|summary
@@ -109,14 +115,18 @@ $followtoken = "follow"; //Change to random text to be used in your CW follow li
 $unfollowtoken = "unfollow"; //Change to random text to be used in your CW unfollow link if you use it. Defaults to unfollow which is fine for testing.
 
 //cwslack-lunch.php
+//E-mail functionality requires you to setup your system for PHP mail(), info below
+//Windows: https://stackoverflow.com/questions/4652566/php-mail-setup-in-xampp
+//Linux: http://lukepeters.me/blog/getting-the-php-mail-function-to-work-on-ubuntu
 $slacklunchtoken = "test"; // Set your token for the lunch slash command
+$lunchchargecode = 41; // Set to your "Break" charge code that lunches should be put under
 $lunchtime = 60; // Expected number of MINUTES that a user is on lunch
 $lunchmax = 120; // Number of minutes to allow before cancelling the lunch entry, does not submit time
 $lunchsendslack = true; // Send messages to a slack channel when a user goes on/off lunch
 $lunchsendemail = false; // Send messages to an e-mail address when a user goes on/off lunch
 $lunchsendonoff = 1; // Key: 0 = No notifications, 1 = Send notifications when a user goes on lunch, 2 = Send when a user goes off lunch, 3 = Send when a user goes on lunch OR off lunch
 $lunchslackchannel = "general"; // Channel to send Slack messages to
-$lunchemailaddress = "allstaff@domain.com"; // E-mail address to send messages to
+$lunchemailto = "allstaff@domain.com"; // E-mail address to send messages to
 $lunchcreatesched = true; // Should the script create a schedule entry on the users board
 $lunchsavetime = true; // Should the script submit a time entry for the user for their lunch duration
 

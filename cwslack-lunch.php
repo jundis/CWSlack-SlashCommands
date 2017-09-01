@@ -81,7 +81,7 @@ if (!$mysql) //Check for errors
     die();
 }
 
-$sql = "CREATE TABLE IF NOT EXISTS lunch (slackuser VARCHAR(25) PRIMARY KEY, lunchstart VARCHAR(30), lunchend VARCHAR(30), lunchtoday BOOLEAN NOT NULL DEFAULT 0, lunchon BOOLEAN NOT NULL DEFAULT 0)";
+$sql = "CREATE TABLE IF NOT EXISTS lunch (slackuser VARCHAR(25) PRIMARY KEY, lunchstart DATETIME, lunchend DATETIME, lunchtoday BOOLEAN NOT NULL DEFAULT 0, lunchon BOOLEAN NOT NULL DEFAULT 0)";
 if (mysqli_query($mysql, $sql)) {
     //Table created successfully
 } else {
@@ -144,11 +144,11 @@ if($blanktext)
     {
         $row = mysqli_fetch_assoc($result); //Row association.
 
-        if($row["lunchstart"] == NULL || !$row["lunchtoday"])
+        if($row["lunchstart"] == NULL || !$row["lunchon"])
         {
             $golunchon = true;
         }
-        else if($row["lunchend"] == NULL)
+        else
         {
             $golunchon = false;
         }
@@ -176,8 +176,6 @@ if($golunchon || $exploded[0]=="on" || $exploded[0]=="go" || $exploded[0]=="star
     $sql = "SELECT * FROM `lunch` WHERE `slackuser`=\"" . $val1 . "\""; //
 
     $result = mysqli_query($mysql, $sql); //Run result
-    $rowcount = mysqli_num_rows($result);
-
     $userdata = mysqli_fetch_assoc($result); //Row association.
 
     if($userdata["lunchon"])
@@ -190,6 +188,16 @@ if($golunchon || $exploded[0]=="on" || $exploded[0]=="go" || $exploded[0]=="star
         die();
     }
 
+    if($userdata["lunchtoday"])
+    {
+        if ($timeoutfix == true) {
+            cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "You have already taken lunch today. Please use /lunch split if you are taking additional lunch time."));
+        } else {
+            die("You have already taken lunch today. Please use /lunch split if you are taking additional lunch time.");
+        }
+        die();
+    }
+
     //Schedule entry block
     if($lunchcreatesched)
     {
@@ -197,7 +205,6 @@ if($golunchon || $exploded[0]=="on" || $exploded[0]=="go" || $exploded[0]=="star
         $dateend = gmdate("Y-m-d\TH:i:s\Z",strtotime("+1 hour")); //Start time of the ticket.
         $postfieldspre = array("member"=>array("identifier"=>$cwname), "type"=>array("id"=>13), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag"=>true, "name"=>"Lunch [Slack]");
         $dataTNotes = cURLPost($schedurl, $header_data2, "POST", $postfieldspre);
-
     }
 
     //Slack notifications block
@@ -217,13 +224,102 @@ if($golunchon || $exploded[0]=="on" || $exploded[0]=="go" || $exploded[0]=="star
     }
 
     //Email notifications block
-    if($lunchemailaddress)
+    if($lunchsendemail)
     {
         if($lunchsendonoff == 1 || $lunchsendonoff == 3)
         {
+            ini_set("SMTP", $smtpserver);
+            ini_set("smtp_port", $smtpport);
 
+            $headers = 'From: ' . $smtpname . '<' . $smtpfrom . ">\r\n" .
+                'Reply-To: ' . $smtpfrom . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+            $subject = "$cwname on lunch";
+            $body = "$cwname has taken their lunch and should return at $offlunchat.";
+
+            mail($lunchemailto, $subject, $body, $headers);
         }
     }
+
+    $starttime = date("Y-m-d H:i:s");
+    $val1 = mysqli_real_escape_string($mysql,$slackname);
+    $sql = "UPDATE `lunch` SET `lunchstart` = '" . $starttime . "', `lunchon` = 1 WHERE `slackuser`=\"" . $val1 . "\""; //
+
+    $result = mysqli_query($mysql, $sql); //Run result
+
+    if ($timeoutfix == true) {
+        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "You have gone on lunch. Please return by $offlunchat"));
+    } else {
+        die("You have gone on lunch. Please return by $offlunchat"); //Post to slack
+    }
+    die(); //End of section
+}
+
+//Lunch on block
+if($exploded[0]=="split")
+{
+    $val1 = mysqli_real_escape_string($mysql,$slackname);
+    $sql = "SELECT * FROM `lunch` WHERE `slackuser`=\"" . $val1 . "\""; //
+
+    $result = mysqli_query($mysql, $sql); //Run result
+    $userdata = mysqli_fetch_assoc($result); //Row association.
+
+    if($userdata["lunchon"])
+    {
+        if ($timeoutfix == true) {
+            cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "You are already on lunch. Please use /lunch off to go off lunch"));
+        } else {
+            die("You are already on lunch. Please use /lunch off to go off lunch");
+        }
+        die();
+    }
+
+    //Slack notifications block
+    if($lunchsendslack)
+    {
+        if($lunchsendonoff == 1 || $lunchsendonoff == 3)
+        {
+            $offlunchat = date("g:ia", strtotime("+1 hour"));
+
+            $postfieldspre = array(
+                "channel"=>$lunchslackchannel,
+                "text"=>"$cwname has gone back on a split lunch, and will return soon. Please message the tech for exact timing."
+            );
+
+            cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
+        }
+    }
+
+    //Email notifications block
+    if($lunchsendemail)
+    {
+        if($lunchsendonoff == 1 || $lunchsendonoff == 3)
+        {
+            ini_set("SMTP", $smtpserver);
+            ini_set("smtp_port", $smtpport);
+
+            $headers = 'From: ' . $smtpname . '<' . $smtpfrom . ">\r\n" .
+                'Reply-To: ' . $smtpfrom . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+            $subject = "$cwname on lunch";
+            $body = "$cwname has gone back on a split lunch, and will return soon. Please message the tech for exact timing.";
+
+            mail($lunchemailto, $subject, $body, $headers);
+        }
+    }
+
+    $starttime = date("Y-m-d H:i:s");
+    $val1 = mysqli_real_escape_string($mysql,$slackname);
+    $sql = "UPDATE `lunch` SET `lunchstart` = '" . $starttime . "', `lunchend` = NULL, `lunchon` = 1 WHERE `slackuser`=\"" . $val1 . "\""; //
+
+    $result = mysqli_query($mysql, $sql); //Run result
+
+    if ($timeoutfix == true) {
+        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "You have gone on lunch. As this is a split lunch, please return within your remaining lunch time."));
+    } else {
+        die("You have gone on lunch. As this is a split lunch, please return within your remaining lunch time."); //Post to slack
+    }
+    die(); //End of section
 }
 
 //Lunch off block
@@ -233,8 +329,6 @@ if(!$golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="
     $sql = "SELECT * FROM `lunch` WHERE `slackuser`=\"" . $val1 . "\""; //
 
     $result = mysqli_query($mysql, $sql); //Run result
-    $rowcount = mysqli_num_rows($result);
-
     $userdata = mysqli_fetch_assoc($result); //Row association.
 
     if(!$userdata["lunchon"])
@@ -250,7 +344,31 @@ if(!$golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="
     //Time block
     if($lunchsavetime)
     {
+        $datestart = gmdate("Y-m-d\TH:i:s\Z",strtotime($userdata["lunchstart"])); //Start time of the time entry.
+        $dateend = gmdate("Y-m-d\TH:i:s\Z"); //End time of the time entry.
 
+        $postfieldspre = array(
+            "notes" => "Lunch via Slack",
+            "chargeToType" => "ChargeCode",
+            "chargeToId" => "$lunchchargecode",
+            "timeStart" => $datestart,
+            "timeEnd" => $dateend,
+            "member" => array("identifier"=>$cwname)
+        ); //Post time as user
+
+        $dataTNotes = cURLPost($timeurl, $header_data2, "POST", $postfieldspre);
+
+        if(array_key_exists("errors",$dataTNotes)) //If connectwise returned an error.
+        {
+            $errors = $dataTNotes->errors; //Make array easier to access.
+
+            if ($timeoutfix == true) {
+                cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "ConnectWise Error: " . $errors[0]->message));
+            } else {
+                die("ConnectWise Error: " . $errors[0]->message); //Post to slack
+            }
+            die(); //Return CW error
+        }
     }
 
     //Slack notifications block
@@ -262,7 +380,7 @@ if(!$golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="
 
             $postfieldspre = array(
                 "channel"=>$lunchslackchannel,
-                "text"=>"$cwname has returned from lunch."
+                "text"=>"$cwname has returned from lunch. They went on lunch at" . $userdata["lunchstart"]
             );
 
             cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
@@ -270,13 +388,35 @@ if(!$golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="
     }
 
     //Email notifications block
-    if($lunchemailaddress)
+    if($lunchsendemail)
     {
         if($lunchsendonoff == 2 || $lunchsendonoff == 3)
         {
+            ini_set("SMTP", $smtpserver);
+            ini_set("smtp_port", $smtpport);
 
+            $headers = 'From: ' . $smtpname . '<' . $smtpfrom . ">\r\n" .
+                'Reply-To: ' . $smtpfrom . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+            $subject = "$cwname off lunch";
+            $body = "$cwname has returned from lunch.";
+
+            mail($lunchemailto, $subject, $body, $headers);
         }
     }
+
+    $endtime = date("Y-m-d H:i:s");
+    $val1 = mysqli_real_escape_string($mysql,$slackname);
+    $sql = "UPDATE `lunch` SET `lunchend` = '" . $endtime . "', `lunchon` = 0, `lunchtoday` = 1 WHERE `slackuser`=\"" . $val1 . "\""; //
+
+    $result = mysqli_query($mysql, $sql); //Run result
+
+    if ($timeoutfix == true) {
+        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "You have gone off lunch and a time entry has been added."));
+    } else {
+        die("You have gone off lunch and a time entry has been added."); //Post to slack
+    }
+    die(); //End of section
 }
 
 
