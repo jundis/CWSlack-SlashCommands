@@ -667,7 +667,8 @@ if($posttext==1) //Block for curl to get latest note
 }
 
 //Scheduled resource block
-$resourceset = cURL($dataTData->_info->scheduleentries_href,$header_data); //Get URL and send that to curl function, retrieve response.
+$scheduleurl = str_replace(' ', '%20', $dataTData->_info->scheduleentries_href);
+$resourceset = cURL($scheduleurl,$header_data); //Get URL and send that to curl function, retrieve response.
 
 if($resourceset == NULL)
 {
@@ -675,9 +676,8 @@ if($resourceset == NULL)
 }
 else
 {
-	$latestres = end($resourceset);
+	$latestsched = end($resourceset);
 
-	$latestsched = cURL($latestres->_info->schedule_href,$header_data);
 	if($latestsched->dateStart==NULL)
 	{
 		$resourceline = false;
