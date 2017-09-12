@@ -678,7 +678,7 @@ else
 {
 	$latestsched = end($resourceset);
 
-	if($latestsched->dateStart==NULL)
+	if(!array_key_exists("dateStart",$latestsched) || $latestsched->dateStart==NULL)
 	{
 		$resourceline = false;
 	}
