@@ -94,6 +94,72 @@ if (mysqli_query($mysql, $sql)) {
 }
 
 
+if($_REQUEST['text'] == "list" || $_REQUEST['text'] == "status")
+{
+    $sql = "SELECT * FROM `lunch`";
+
+    $result = mysqli_query($mysql, $sql); //Run result
+    $output = "```User           | Status    | Lunch Start Today\n";
+    if(mysqli_num_rows($result) > 0) //If there were too many rows matching query
+    {
+        while($row = mysqli_fetch_assoc($result))
+        {
+            $formatuser = "";
+            $formatstatus = "";
+            $formatstart = "";
+
+            if(strlen($row["slackuser"]) > 14)
+            {
+                $formatuser = substr($row["slackuser"],0,11) . "... ";
+            }
+            else if(strlen($row["slackuser"]) == 14)
+            {
+                $formatuser = $row["slackuser"] . " ";
+            }
+            else
+            {
+                $formatuser = str_pad($row["slackuser"], 15);
+            }
+
+            if($row["lunchon"] == 1)
+            {
+                $formatstatus = " On Lunch  ";
+            }
+            else if($row["lunchon"] == 0 && $row["lunchtoday"] == 1)
+            {
+                $formatstatus = " Off Lunch ";
+            }
+            else
+            {
+                $formatstatus = " Not Taken ";
+            }
+
+            if($row["lunchstart"] == NULL)
+            {
+                $formatstart = " Not yet started";
+            }
+            else
+            {
+                $formatstart = " " . date("m/d/y g:ia", strtotime($row["lunchstart"]));
+            }
+
+            $output = $output . $formatuser . "|" . $formatstatus . "|" . $formatstart . "\n";
+        }
+        $output = $output . "```";
+        if ($timeoutfix == true) {
+            cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "in_channel","fallback" => "Lunch Status List","title"=>"Lunch Status List","text" => $output));
+        } else {
+            die($output);
+        }
+        die();
+    }
+    else
+    {
+        die("No user mappings found in database.");
+    }
+}
+
+
 $val1 = mysqli_real_escape_string($mysql,$slackname);
 $sql = "SELECT * FROM `usermap` WHERE `slackuser`=\"" . $val1 . "\"";
 
