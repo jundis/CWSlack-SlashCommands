@@ -64,16 +64,15 @@ $specialusers = array();
 foreach(explode("|",$specialtimeusers) as $user)
 {
     $tempval = explode(",", $user);
-    $specialusers[$tempval[0]] = $tempval[1];
+    $specialusers[strtolower($tempval[0])] = $tempval[1];
 }
-
 foreach($timeset as $user => $val)
 {
-    if(in_array(strtolower($user),array_map("strtolower",$specialusers)))
+
+    if(array_key_exists(strtolower($user),$specialusers))
     {
         $specialtimes = explode("-",$specialusers[$user]);
         $expectedtime = round((strtotime("now") - strtotime($specialtimes[0])) / 3600,2);
-
         if ($expectedtime > (round((strtotime($specialtimes[1]) - strtotime($specialtimes[0])) / 3600,2)))
         {
             $expectedtime = round((strtotime($specialtimes[1]) - strtotime($specialtimes[0])) / 3600,2);
@@ -127,7 +126,7 @@ foreach($users as $user => $val)
 {
     $ontheclock = true;
 
-    if(in_array(strtolower($user),array_map("strtolower",$specialusers)))
+    if(array_key_exists(strtolower($user),$specialusers))
     {
         $specialtimes = explode("-",$specialusers[$user]);
         $expectedtime = round((strtotime("now") - strtotime($specialtimes[0])) / 3600,2);
