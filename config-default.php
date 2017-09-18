@@ -100,6 +100,7 @@ $firmalertchan = "#dispatch"; //When you want to split time alerts and firm aler
 //cwslack-timealerts.php
 //This uses all four variables above
 $notimeusers = "user1|user2"; //Usernames of users who should not be alerted on. Useful if you have techs who occasionally enter time and you don't want it pinging them every day. Separate with pipe |
+$specialtimeusers = "user1,7:00am-4:00pm|user2,9:00am-6:00pm"; //Usernames of users who should be alerted on, but who have special hours different from default start-close. Seperate user and time with comma, seperate different users with pipe |. No spaces
 
 //cwslack-priorityalerts.php
 //This uses all the variables from firmalerts as well, adhering to it for whether to post to users/channel and which channel
