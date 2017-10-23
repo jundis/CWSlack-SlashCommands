@@ -446,7 +446,7 @@ if(!$golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="
 
             $postfieldspre = array(
                 "channel"=>$lunchslackchannel,
-                "text"=>"$cwname has returned from lunch. They went on lunch at" . $userdata["lunchstart"]
+                "text"=>"$cwname has returned from lunch. They went on lunch at " . date("g:ia",$userdata["lunchstart"])
             );
 
             cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
