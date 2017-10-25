@@ -58,6 +58,7 @@ $inactivecontacts = false; //Set to true to return inactive contacts
 //cwlsack-notes.php
 $slacknotestoken = "Slack Token Here"; //Set your token for the notes slash command
 $usecwname = 1; //If set to 1, it will create tickets using the user's slack name. Command will fail if their slack name is not the same as connectwise name.
+$defaultnotetype = ""; //Set to internal, external, or externalemail and this will be used if they do not specify a type. Leave blank to have no default and return an error if they don't specify.
 
 //cwslack-configs.php
 $slackconfigstoken = "Slack Token Here"; //Set your token for the configs slash command

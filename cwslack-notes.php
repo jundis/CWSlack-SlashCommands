@@ -62,7 +62,8 @@ if($timeoutfix == true)
 $ticketnumber = $exploded[0]; //Set the ticket number to the first string
 $command=NULL; //Create a command variable and set it to Null
 $sentence=NULL; //Create a option variable and set it to Null
-
+$urlticketdata = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
+$notype=false; // For use if they do not specify a type.
 
 //Set URL
 $noteurl = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber . "/notes";
@@ -101,13 +102,33 @@ else if ($command == "externalemail" || $command == "emailexternal")//If second 
 }
 else //If second part of text is neither external or internal
 {
-    if ($timeoutfix == true) {
-        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Second part of text must be either internal or external."));
-    } else {
-        die("Second part of text must be either internal or external."); //Return error text.
+	$notype = true;
+	if (array_key_exists(1, $exploded)) //If a third string exists in the slash command array, make it the option for the command.
+    {
+        unset($exploded[0]);
+        $sentence = implode(" ", $exploded);
     }
-    die();
-
+	if($defaultnotetype=="internal")
+	{
+		$postfieldspre = array("internalAnalysisFlag" => "True", "text" => $sentence); //Post ticket as API user
+	}
+	elseif($defaultnotetype=="external")
+	{
+		$postfieldspre = array("detailDescriptionFlag" => "True", "text" => $sentence);
+	}
+	elseif($defaultnotetype=="externalemail")
+	{
+		$postfieldspre = array("detailDescriptionFlag" => "True", "processNotifications" => "True", "text" => $sentence);
+	}
+	else
+	{
+		if ($timeoutfix == true) {
+			cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Second part of text must be either internal or external."));
+		} else {
+			die("Second part of text must be either internal or external."); //Return error text.
+		}
+		die();
+	}
 }
 
 //Username mapping code
@@ -161,6 +182,18 @@ else
     }
 }
 
+$dataTData = cURL($urlticketdata, $header_data); //Decode the JSON returned by the CW API.
+
+if($dataTData==NULL) 
+{
+	if ($timeoutfix == true) {
+		cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Array not returned. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata));
+	} else {
+		die("Array not returned. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata); //Return properly encoded arrays in JSON for Slack parsing.
+	}
+	die();
+}
+
 $dataTNotes = cURLPost($noteurl, $header_data, "POST", $postfieldspre);
 
 if(array_key_exists("errors",$dataTNotes)) //If connectwise returned an error.
@@ -176,10 +209,14 @@ if(array_key_exists("errors",$dataTNotes)) //If connectwise returned an error.
 }
 else //No error
 {
+	if($notype)
+	{
+		$command = $defaultnotetype;
+	}
     if ($timeoutfix == true) {
-        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "New " . $command . " note created on #" . $ticketnumber . ": " . $sentence));
+        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "in_channel","text" => "New " . $command . " note created on #" . $ticketnumber . ": " . $dataTData->company->identifier . " / " . $dataTData->summary . "\n\"" . $sentence . "\""));
     } else {
-        echo "New " . $command . " note created on #" . $ticketnumber . ": " . $sentence; //Post to slack
+        echo json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "New " . $command . " note created on #" . $ticketnumber . ": " . $dataTData->company->identifier . " / " . $dataTData->summary . "\n\"" . $sentence . "\"")); //Post to slack
     }
 }
 
