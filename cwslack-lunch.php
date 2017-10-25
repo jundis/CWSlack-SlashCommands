@@ -345,8 +345,6 @@ if($exploded[0]=="split")
     {
         if($lunchsendonoff == 1 || $lunchsendonoff == 3)
         {
-            $offlunchat = date("g:ia", strtotime("+1 hour"));
-
             $postfieldspre = array(
                 "channel"=>$lunchslackchannel,
                 "text"=>"$cwname has gone back on a split lunch, and will return soon. Please message the tech for exact timing."
@@ -442,11 +440,12 @@ if(!$golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="
     {
         if($lunchsendonoff == 2 || $lunchsendonoff == 3)
         {
-            $offlunchat = date("g:ia", strtotime("+1 hour"));
-
+            $dateobj = DateTime::createFromFormat("Y-m-d H:i:s",$userdata["lunchstart"]);
+			$datetime = date_format($dateobj, "g:ia");
+			
             $postfieldspre = array(
                 "channel"=>$lunchslackchannel,
-                "text"=>"$cwname has returned from lunch. They went on lunch at " . date("g:ia",$userdata["lunchstart"])
+                "text"=>"$cwname has returned from lunch. They went on lunch at " . $datetime
             );
 
             cURLPost($webhookurl, $header_data2, "POST", $postfieldspre);
