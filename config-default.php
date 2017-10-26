@@ -136,6 +136,9 @@ $lunchsavetime = true; // Should the script submit a time entry for the user for
 $slackdbmantoken = "Slack Token Here"; //Set your token for the database management slash command
 $adminlist = "admin1|admin2"; //Separate by pipe symbol as seen in example if you need multiple people to have access.
 
+//cwslack-stats.php
+$collectstats = 0; // By default this is turned off. Turn it on if you want stats collected to the stats table in MySQL. No slack based access to these stats.
+
 //Change optional
 $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help article URL here.
 
@@ -148,6 +151,12 @@ $debugmode = false;
 
 //Timezone Setting to be used for all files.
 date_default_timezone_set($timezone);
+
+// Stats collection
+if($collectstats)
+{
+    require_once 'cwslack-stats.php';
+}
 
 //Debug mode
 if($debugmode) //If debug mode is on..
