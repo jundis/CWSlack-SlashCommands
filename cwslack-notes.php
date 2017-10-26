@@ -103,11 +103,15 @@ else if ($command == "externalemail" || $command == "emailexternal")//If second 
 else //If second part of text is neither external or internal
 {
 	$notype = true;
-	if (array_key_exists(1, $exploded)) //If a third string exists in the slash command array, make it the option for the command.
+	
+	$exploded = explode(" ",$_REQUEST['text']); // Recreate exploded so we reset the unsets.
+	if (array_key_exists(1, $exploded)) // Assuming any second word exists
     {
+		
         unset($exploded[0]);
         $sentence = implode(" ", $exploded);
     }
+	
 	if($defaultnotetype=="internal")
 	{
 		$postfieldspre = array("internalAnalysisFlag" => "True", "text" => $sentence); //Post ticket as API user
