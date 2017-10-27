@@ -1,7 +1,5 @@
 # CWSlack-SlashCommands
 
-[![Gitter chat](https://badges.gitter.im/CWSlack-SlashCommands.png)](https://gitter.im/CWSlack-SlashCommands)
-
 This script, when hosted on a PHP supported web server, will act as a bridge between the JSON requests of Slack and the JSON responses of the ConnectWise REST API.
 
 cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, and cwslack-contacts.php were designed to be independent, but all rely on the config.php and functions.php files. This allows you to pick and choose what you want and for different Slack commands instead of one universal /cw tickets 249123 and /cw contact john doe it can be /t 249123 and /c john doe.
