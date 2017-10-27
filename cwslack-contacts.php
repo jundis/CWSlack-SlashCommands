@@ -142,7 +142,7 @@ if(array_key_exists("communicationItems",$dataTData[0]) && $dataTData[0]->commun
     foreach($comms as $item) {
         $type = $item->type; //Set the type variable to whatever the contact type is, this would be Email or Direct or whatever you have it set to in CW.
         $formatted = preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $item->value); //Format phone numbers
-        if($item->extension==NULL)
+        if(array_key_exists("extension",$item) && $item->extension==NULL)
         {
             $text = $text . $type->name . ": " . $formatted . "\n"; //Create a new line for each iteration,
         }
