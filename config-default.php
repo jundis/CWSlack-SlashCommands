@@ -137,7 +137,7 @@ $slackdbmantoken = "Slack Token Here"; //Set your token for the database managem
 $adminlist = "admin1|admin2"; //Separate by pipe symbol as seen in example if you need multiple people to have access.
 
 //cwslack-stats.php
-$collectstats = 0; // By default this is turned off. Turn it on if you want stats collected to the stats table in MySQL. No slack based access to these stats.
+$collectstats = false; // By default this is turned off. Turn it on if you want stats collected to the stats table in MySQL. No slack based access to these stats.
 
 //Change optional
 $helpurl = "https://github.com/jundis/CWSlack-SlashCommands"; //Set your help article URL here.
