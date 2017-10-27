@@ -702,17 +702,17 @@ $contact="None"; //Set None for contact in case no contact exists for "Catch All
 $resources="No resources"; //Just in case resources are null, have something to return.
 $hours="No time entered."; //Just in case time is null, have something to return.
 
-if($dataTData->actualHours != NULL) //If time is not NULL
+if(array_key_exists("actualHours",$dataTData) && $dataTData->actualHours != NULL) //If time is not NULL
 {
 	$hours="Time: ". $dataTData->actualHours . " Hours"; //Set $hours to a formatted time line.
 }
 
-if($dataTData->resources != NULL)
+if(array_key_exists("resources",$dataTData) && $dataTData->resources != NULL)
 {
 	$resources=$dataTData->resources;
 }
 
-if(!$dataTData->contact==NULL) { //Check if contact name exists in array.
+if(array_key_exists("contact",$dataTData) && !$dataTData->contact==NULL) { //Check if contact name exists in array.
 	$contact = $dataTData->contact->name; //Set contact variable to contact name.
 }
 
