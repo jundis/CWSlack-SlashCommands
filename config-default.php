@@ -153,7 +153,7 @@ $debugmode = false;
 date_default_timezone_set($timezone);
 
 // Stats collection
-if($collectstats)
+if($collectstats && array_key_exists("token",$_REQUEST))
 {
     require_once 'cwslack-stats.php';
 }
