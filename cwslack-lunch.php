@@ -48,27 +48,6 @@ $schedurl = $connectwise . "/$connectwisebranch/apis/3.0/schedule/entries";
 
 $slackname = $_REQUEST["user_name"];
 
-//REMOVE LATER
-$timeoutfix = false;
-
-//Timeout Fix Block
-if($timeoutfix == true)
-{
-    ob_end_clean();
-    header("Connection: close");
-    ob_start();
-    echo ('{"response_type": "in_channel"}');
-    $size = ob_get_length();
-    header("Content-Length: $size");
-    ob_end_flush();
-    flush();
-    session_write_close();
-    if($sendtimeoutwait==true) {
-        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral", "text" => "Please wait..."));
-    }
-}
-//End timeout fix block
-
 $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
 
 if (!$mysql) //Check for errors
