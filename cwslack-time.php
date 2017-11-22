@@ -167,7 +167,7 @@ if(!is_numeric($exploded[0])) {
 
         $datetoday = date("Y-m-d");
         $timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries";
-        $filterurl = $timeurl . "?conditions=enteredBy=%27" . $cwuser . "%27%20and%20timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=dateEntered%20desc&pagesize=200";
+        $filterurl = $timeurl . "?conditions=member/identifier%20like%20%27" . $cwuser . "%27%20and%20timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=dateEntered%20desc&pagesize=200";
 
         // Authorization header
         $header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
