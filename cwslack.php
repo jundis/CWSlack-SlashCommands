@@ -437,14 +437,44 @@ if($command=="scheduleme")
 		$dateend = $datestart;
 	}
 
-	$postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
+	if(!empty($schedulestatus))
+	{
+        $status = "0";
+        $statusname = "";
+        $statusurl = $dataTData->board->_info->board_href . "/statuses?conditions=name%20like%20%27" . $schedulestatus . "%27";
+        $dataStatus = cURL($statusurl, $header_data);
+        if(array_key_exists(0,$dataStatus))
+        {
+            $status = $dataStatus[0]->id;
+            $statusname = $dataStatus[0]->name;
+        }
+        if ($status == 0)
+        {
+            if ($timeoutfix == true) {
+                cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Failed to get status code: " . $status));
+            } else {
+                die("Failed to get status code: " . $status); //Return properly encoded arrays in JSON for Slack parsing.
+            }
+            die();
+        }
 
-	$dataTCmd = cURLPost(
-		$connectwise . "/$connectwisebranch/apis/3.0/schedule/entries",
-		$header_data2,
-		"POST",
-		$postarray
-	);
+        $dataStatus = cURLPost(
+            $urlticketdata,
+            $header_data2,
+            "PATCH",
+            array(array("op" => "replace", "path" => "/status/id", "value" => $status))
+        );
+
+        $postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
+
+        $dataStatus = cURLPost(
+            $connectwise . "/$connectwisebranch/apis/3.0/schedule/entries",
+            $header_data2,
+            "POST",
+            $postarray
+        );
+	}
+
 
 	if($removal==NULL)
 	{
@@ -568,6 +598,44 @@ if($command=="schedule")
 		"POST",
 		$postarray
 	);
+
+    if(!empty($schedulestatus))
+    {
+        $status = "0";
+        $statusname = "";
+        $statusurl = $dataTData->board->_info->board_href . "/statuses?conditions=name%20like%20%27" . $schedulestatus . "%27";
+        $dataStatus = cURL($statusurl, $header_data);
+        if(array_key_exists(0,$dataStatus))
+        {
+            $status = $dataStatus[0]->id;
+            $statusname = $dataStatus[0]->name;
+        }
+        if ($status == 0)
+        {
+            if ($timeoutfix == true) {
+                cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Failed to get status code: " . $status));
+            } else {
+                die("Failed to get status code: " . $status); //Return properly encoded arrays in JSON for Slack parsing.
+            }
+            die();
+        }
+
+        $dataStatus = cURLPost(
+            $urlticketdata,
+            $header_data2,
+            "PATCH",
+            array(array("op" => "replace", "path" => "/status/id", "value" => $status))
+        );
+
+        $postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
+
+        $dataStatus = cURLPost(
+            $connectwise . "/$connectwisebranch/apis/3.0/schedule/entries",
+            $header_data2,
+            "POST",
+            $postarray
+        );
+    }
 
 	if($removal==NULL)
 	{

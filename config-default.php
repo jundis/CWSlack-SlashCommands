@@ -47,6 +47,7 @@ $smtpname = "Company Notifications"; //Set to what you want e-mails to appear as
 //cwslack.php
 $slacktoken = "Slack Token Here"; //Set token from the Slack slash command screen.
 $useboards = 1; //Use the board function in new tickets. /t new company|summary vs /t new board|company|summary
+$schedulestatus = ""; //Set to the name of your status (e.x. "Scheduled") if you want the [/t # schedule] functions to update the status
 
 //cwslack-activities.php
 $slackactivitiestoken = "Slack Token Here"; //Set your token for the activities slash command
