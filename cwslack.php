@@ -474,6 +474,17 @@ if($command=="scheduleme")
             $postarray
         );
 	}
+	else
+	{
+        $postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
+
+        $dataStatus = cURLPost(
+            $connectwise . "/$connectwisebranch/apis/3.0/schedule/entries",
+            $header_data2,
+            "POST",
+            $postarray
+        );
+	}
 
 
 	if($removal==NULL)
