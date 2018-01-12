@@ -77,13 +77,6 @@ else if (!empty($_REQUEST['board']))
 	}
 }
 
-/* Uncomment this block and copy/paste as many times as necessary to setup additional web hook urls.
-if($info->BoardName == "BOARDNAME")
-{
-	$webhookurl = "url";
-}
-*/
-
 //URL creation
 $ticketurl = $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
 $noteurl = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $_REQUEST['id'] . "/notes?orderBy=id%20desc"; //Set the URL required for cURL requests to ticket note API.
