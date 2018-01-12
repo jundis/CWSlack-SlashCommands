@@ -286,7 +286,7 @@ if($golunchon || $exploded[0]=="on" || $exploded[0]=="go" || $exploded[0]=="star
         }
     }
 
-    $starttime = date("Y-m-d H:i:s");
+    $starttime = date("Y-m-d H:i") . ":00";
     $val1 = mysqli_real_escape_string($mysql,$slackname);
     $sql = "UPDATE `lunch` SET `lunchstart` = '" . $starttime . "', `lunchon` = 1 WHERE `slackuser`=\"" . $val1 . "\""; //
 
@@ -351,7 +351,7 @@ if($exploded[0]=="split")
         }
     }
 
-    $starttime = date("Y-m-d H:i:s");
+    $starttime = date("Y-m-d H:i") . ":00";
     $val1 = mysqli_real_escape_string($mysql,$slackname);
     $sql = "UPDATE `lunch` SET `lunchstart` = '" . $starttime . "', `lunchend` = NULL, `lunchon` = 1 WHERE `slackuser`=\"" . $val1 . "\""; //
 
@@ -387,8 +387,8 @@ if(!$golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="
     //Time block
     if($lunchsavetime)
     {
-        $datestart = gmdate("Y-m-d\TH:i:s\Z",strtotime($userdata["lunchstart"])); //Start time of the time entry.
-        $dateend = gmdate("Y-m-d\TH:i:s\Z"); //End time of the time entry.
+        $datestart = gmdate("Y-m-d\TH:i",strtotime($userdata["lunchstart"])) . ":00Z"; //Start time of the time entry.
+        $dateend = gmdate("Y-m-d\TH:i") . ":00Z"; //End time of the time entry.
 
         $postfieldspre = array(
             "notes" => "Lunch via Slack",
@@ -449,7 +449,7 @@ if(!$golunchon || $exploded[0]=="off" || $exploded[0]=="back" || $exploded[0]=="
         }
     }
 
-    $endtime = date("Y-m-d H:i:s");
+    $endtime = date("Y-m-d H:i" . ":00");
     $val1 = mysqli_real_escape_string($mysql,$slackname);
     $sql = "UPDATE `lunch` SET `lunchend` = '" . $endtime . "', `lunchon` = 0, `lunchtoday` = 1 WHERE `slackuser`=\"" . $val1 . "\""; //
 
