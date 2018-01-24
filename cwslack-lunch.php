@@ -38,6 +38,24 @@ if ($exploded[0]=="help") {
     die(json_encode(array("parse" => "full", "response_type" => "in_channel","text" => "Please visit " . $helpurl . " for more help information","mrkdwn"=>true)));
 }
 
+//Timeout Fix Block
+if($timeoutfix == true)
+{
+    ob_end_clean();
+    header("Connection: close");
+    ob_start();
+    echo ('{"response_type": "in_channel"}');
+    $size = ob_get_length();
+    header("Content-Length: $size");
+    ob_end_flush();
+    flush();
+    session_write_close();
+    if($sendtimeoutwait==true) {
+        cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral", "text" => "Please wait..."));
+    }
+}
+//End timeout fix block
+
 // Authorization array. Auto encodes API key for auhtorization above.
 $header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
 // Authorization array, with extra json content-type used in patch commands to change tickets.
