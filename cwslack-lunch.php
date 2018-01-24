@@ -44,7 +44,7 @@ if($timeoutfix == true)
     ob_end_clean();
     header("Connection: close");
     ob_start();
-    echo ('{"response_type": "in_channel"}');
+    //echo ('{"response_type": "in_channel"}'); Uncomment to show /lunch command in text
     $size = ob_get_length();
     header("Content-Length: $size");
     ob_end_flush();
