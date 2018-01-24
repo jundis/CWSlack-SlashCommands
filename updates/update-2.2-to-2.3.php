@@ -90,12 +90,12 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     } else if (stristr($data, '//cwslack-incoming.php') && !$line1) {
                         array_pop($newdata);
                         if (!empty($_POST["timebusinessstart"])) {
-                            $newdata[] = '$timebusinessstart = ' . $_POST["timebusinessstart"] . '; //Set to when your business opens in your timezone' . PHP_EOL;
+                            $newdata[] = '$timebusinessstart = "' . $_POST["timebusinessstart"] . '""; //Set to when your business opens in your timezone' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }
                         if (!empty($_POST["timebusinessstart"])) {
-                            $newdata[] = '$timebusinessstart = ' . $_POST["timebusinessstart"] . '; //Set to when your business opens in your timezone' . PHP_EOL;
+                            $newdata[] = '$timebusinessstart = "' . $_POST["timebusinessstart"] . '""; //Set to when your business opens in your timezone' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }

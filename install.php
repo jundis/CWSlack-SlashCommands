@@ -500,13 +500,13 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                         }
                     } else if (stristr($data, '$timebusinessstart =')) {
                         if (!empty($_POST["timebusinessstart"])) {
-                            $newdata[] = '$timebusinessstart = ' . $_POST["timebusinessstart"] . '; //Set to when your business opens in your timezone' . PHP_EOL;
+                            $newdata[] = '$timebusinessstart = "' . $_POST["timebusinessstart"] . '""; //Set to when your business opens in your timezone' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }
                     } else if (stristr($data, '$timebusinessclose =')) {
                         if (!empty($_POST["timebusinessclose"])) {
-                            $newdata[] = '$timebusinessclose = ' . $_POST["timebusinessclose"] . '; //Set to when your business closes in your timezone' . PHP_EOL;
+                            $newdata[] = '$timebusinessclose = "' . $_POST["timebusinessclose"] . '""; //Set to when your business closes in your timezone' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
                         }
