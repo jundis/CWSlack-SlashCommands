@@ -81,6 +81,7 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     <div class=\"col-sm-6\"><label for='slackDbmantoken'>/dbm Slack Token: </label></div><div class=\"col-sm-6\"><input type='text' name='slackdbmantoken' id='slackDbmantoken'><br></div>
                     <div class=\"col-sm-12\"><h4>Tickets Module</h4></div>
                     <div class=\"col-sm-7\"><label for='useBoards'>Use boards in new ticket creation: </label></div><div class=\"col-sm-5\"><input type='radio' name='useboards' value='yes' id='useBoards' checked> Yes <input type='radio' name='useboards' value='no' > No </div>
+                    <div class=\"col-sm-7\"><label for='scheduleStatus'>Status to change to for /t schedule: </label></div><div class=\"col-sm-6\"><input type='text' name='schedulestatus' id='scheduleStatus' placeholder='Scheduled'></div>
                     <div class=\"col-sm-12\"><h4>Incoming Module</h4></div>
                     <div class=\"col-sm-6\"><label for='webHookurl'>Web Hook URL: </label></div><div class=\"col-sm-6\"><input type='text' name='webhookurl' id='webHookurl' placeholder='https://hooks.slack.com/services/...'></div>
                     <div class=\"col-sm-7\"><label for='postAdded'>Post new tickets to Slack: </label></div><div class=\"col-sm-5\"><input type='radio' name='postadded' value='yes' id='postAdded' checked> Yes <input type='radio' name='postadded' value='no'> No</div>
@@ -94,6 +95,18 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     <div class=\"col-sm-6\"><label for='badBoard'>Board blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badboard' id='badBoard' placeholder='Alerts'></div>
                     <div class=\"col-sm-6\"><label for='badStatus'>Status blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badstatus' id='badStatus' placeholder='Closed|Canceled'></div>
                     <div class=\"col-sm-6\"><label for='badCompany'>Company Blacklist: </label></div><div class=\"col-sm-6\"><input type='text' name='badcompany' id='badCompany' placeholder='CatchAll'></div>
+                    <div class=\"col-sm-12\"><h4>Lunch Module</h4></div>
+                    <div class=\"col-sm-6\"><label for='slackLunchToken'>Slack /lunch token: </label></div><div class=\"col-sm-6\"><input type='text' name='slacklunchtoken' id='slackLunchToken' placeholder='Your token here'></div>
+                    <div class=\"col-sm-6\"><label for='lunchChargeCode'>Charge code ID to use for time entry: </label></div><div class=\"col-sm-6\"><input type='text' name='lunchchargecode' id='lunchChargeCode' placeholder='41'></div>
+                    <div class=\"col-sm-6\"><label for='lunchTime'>Normal lunch time (Minutes): </label></div><div class=\"col-sm-6\"><input type='text' name='lunchtime' id='lunchTime' placeholder='60'></div>
+                    <div class=\"col-sm-6\"><label for='lunchMax'>Max lunch period before cancel (Minutes): </label></div><div class=\"col-sm-6\"><input type='text' name='lunchmax' id='lunchMax' placeholder='120'></div>
+                    <div class=\"col-sm-6\"><label for='lunchSlackChannel'>Channel to send to: </label></div><div class=\"col-sm-6\"><input type='text' name='lunchslackchannel' id='lunchSlackChannel' placeholder='#general'></div>
+                    <div class=\"col-sm-7\"><label for='lunchSendSlack'>Send Slack channel messages: </label></div><div class=\"col-sm-5\"><input type='radio' name='lunchsendslack' value='yes' id='lunchSendSlack' checked> Yes <input type='radio' name='lunchsendonoff' value='no' > No </div>
+                    <div class=\"col-sm-7\"><label for='lunchSendOnOff'>Send when user goes on lunch: </label></div><div class=\"col-sm-5\"><input type='radio' name='lunchsendonoff' value='yes' id='lunchSendOnOff' checked> Yes <input type='radio' name='lunchsendonoff' value='no' > No </div>
+                    <div class=\"col-sm-7\"><label for='lunchCreateSched'>Submit schedule entry: </label></div><div class=\"col-sm-5\"><input type='radio' name='lunchcreatesched' value='yes' id='lunchCreateSched'> Yes <input type='radio' name='lunchcreatesched' value='no' checked> No </div>
+                    <div class=\"col-sm-7\"><label for='lunchSaveTime'>Submit time entry: </label></div><div class=\"col-sm-5\"><input type='radio' name='lunchsavetime' value='yes' id='lunchSaveTime'> Yes <input type='radio' name='lunchsavetime' value='no' checked> No </div>
+                    <div class=\"col-sm-12\"><h4>Notes Module</h4></div>
+                    <div class=\"col-sm-6\"><label for='defaultNoteType'>Default note type for /note without type specified: </label></div><div class=\"col-sm-6\"><input type='text' name='defaultnotetype' id='defaultNoteType' placeholder='internal'></div>
                     <div class=\"col-sm-12\"><h4>Time Module</h4></div>
                     <div class=\"col-sm-6\"><label for='timeDetailworktype'>Detailed notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timedetailworktype' id='timeDetailworktype' placeholder='Remote Support'></div>
                     <div class=\"col-sm-6\"><label for='timeInternalworktype'>Internal notes worktype: </label></div><div class=\"col-sm-6\"><input type='text' name='timeinternalworktype' id='timeInternalworktype' placeholder='Admin'></div>
@@ -107,6 +120,11 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                     <div class=\"col-sm-6\"><label for='firmAlertchan'>Channel to post firm alerts to if above is no: </label></div><div class=\"col-sm-6\"><input type='text' name='firmalertchan' id='firmAlertchan' placeholder='#dispatch'></div>
                     <div class=\"col-sm-12\"><h4>TimeAlerts Module</h4></div>
                     <div class=\"col-sm-6\"><label for='noTimeUsers'>Users who should not receive time alerts if they are behind: </label></div><div class=\"col-sm-6\"><input type='text' name='notimeusers' id='noTimeUsers' placeholder='user1|user2 (Pipe separates)'></div>
+                    <div class=\"col-sm-6\"><label for='specialTimeUsers'>Users who don't follow business open/close time: </label></div><div class=\"col-sm-6\"><input type='text' name='specialtimeusers' id='specialTimeUsers' placeholder='user1,7:00am-4:00pm|user2,9:00am-6:00pm'></div>
+                    <div class=\"col-sm-12\"><h4>PriorityAlerts Module</h4></div>
+                    <div class=\"col-sm-6\"><label for='priorityList'>List of priorities to alert on: </label></div><div class=\"col-sm-6\"><input type='text' name='prioritylist' id='priorityList' placeholder='High|Critical'></div>
+                    <div class=\"col-sm-6\"><label for='priorityStatus'>List of statuses to check priority of: </label></div><div class=\"col-sm-6\"><input type='text' name='prioritystatus' id='priorityStatus' placeholder='Scheduled|Scheduled - Notify'></div>
+                    <div class=\"col-sm-6\"><label for='priorityWait'>How long to wait after schedule is missed (1-119 min): </label></div><div class=\"col-sm-6\"><input type='text' name='prioritywait' id='priorityWait' placeholder='30'></div>
                     <div class=\"col-sm-12\"><h4>Follow Module</h4></div>
                     <div class=\"col-sm-7\"><label for='followEnabled'>Enable follow module: </label></div><div class=\"col-sm-5\"><input type='radio' name='followenabled' value='yes' id='followEnabled' checked> Yes <input type='radio' name='followenabled' value='no' > No </div>
                     <div class=\"col-sm-6\"><label for='followToken'>Follow token for CW Link: </label></div><div class=\"col-sm-6\"><input type='text' name='followtoken' id='followToken' placeholder='follow'></div>
@@ -515,6 +533,97 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                             $newdata[] = '$notimeusers = ' . $_POST["notimeusers"] . ';  //Usernames of users who should not be alerted on. Useful if you have techs who occasionally enter time and you don\'t want it pinging them every day. Separate with pipe |' . PHP_EOL;
                         } else {
                             $newdata[] = $data;
+                        }
+                    } if (stristr($data, '$schedulestatus =')) {
+                        if (!empty($_POST["schedulestatus"])) {
+                            $newdata[] = '$schedulestatus = "' . $_POST["schedulestatus"] . '";  //Set to the name of your status (e.x. "Scheduled") if you want the [/t # schedule] functions to update the status' . PHP_EOL;
+                            $line1=true;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$defaultnotetype =')) {
+                        if (!empty($_POST["defaultnotetype"])) {
+                            $newdata[] = '$defaultnotetype = "' . $_POST["defaultnotetype"] . '"; //Set to internal, external, or externalemail and this will be used if they do not specify a type. Leave blank to have no default and return an error if they don\'t specify.' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$specialtimeusers =')) {
+                        if (!empty($_POST["specialtimeusers"])) {
+                            $newdata[] = '$specialtimeusers = "' . $_POST["specialtimeusers"] . '"; //Usernames of users who should be alerted on, but who have special hours different from default start-close. Seperate user and time with comma, seperate different users with pipe |. No spaces' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$prioritylist =')) {
+                        if (!empty($_POST["prioritylist"])) {
+                            $newdata[] = '$prioritylist = "' . $_POST["prioritylist"] . '"; // Name of the priority(ies) to look out for. Separate by pipe if more than one needed.' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$prioritystatus =')) {
+                        if (!empty($_POST["prioritystatus"])) {
+                            $newdata[] = '$prioritystatus = "' . $_POST["prioritystatus"] . '"; // Status(es), seperated by pipe | symbol, which the priority alerts will check for and send alerts on.' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$prioritywait =')) {
+                        if (!empty($_POST["prioritywait"])) {
+                            $newdata[] = '$prioritywait = ' . $_POST["prioritywait"] . '; // Number of minutes to wait after a high-priority event before alerting the technician. Maximum 119 minutes.' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$slacklunchtoken =')) {
+                        if (!empty($_POST["slacklunchtoken"])) {
+                            $newdata[] = '$slacklunchtoken = "' . $_POST["slacklunchtoken"] . '"; // Set your token for the lunch slash command' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$lunchchargecode =')) {
+                        if (!empty($_POST["lunchchargecode"])) {
+                            $newdata[] = '$lunchchargecode = ' . $_POST["lunchchargecode"] . '; // Set to your "Break" charge code that lunches should be put under' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$lunchtime =')) {
+                        if (!empty($_POST["lunchtime"])) {
+                            $newdata[] = '$lunchtime = ' . $_POST["lunchtime"] . '; // Expected number of MINUTES that a user is on lunch' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$lunchmax =')) {
+                        if (!empty($_POST["lunchmax"])) {
+                            $newdata[] = '$lunchmax = ' . $_POST["lunchmax"] . '; // Number of minutes to allow before cancelling the lunch entry, does not submit time' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    }  else if (stristr($data, '$lunchslackchannel =')) {
+                        if (!empty($_POST["lunchslackchannel"])) {
+                            $newdata[] = '$lunchslackchannel = "' . $_POST["lunchslackchannel"] . '"; // Channel to send Slack messages to' . PHP_EOL;
+                        } else {
+                            $newdata[] = $data;
+                        }
+                    } else if (stristr($data, '$lunchsendslack =')) {
+                        if ($_POST["lunchsendslack"] == "yes") {
+                            $newdata[] = '$lunchsendslack = true; // Send messages to a slack channel when a user goes on/off lunch' . PHP_EOL;
+                        } else {
+                            $newdata[] = '$lunchsendslack = false; // Send messages to a slack channel when a user goes on/off lunch' . PHP_EOL;
+                        }
+                    } else if (stristr($data, '$lunchsendonoff =')) {
+                        if ($_POST["lunchsendonoff"] == "yes") {
+                            $newdata[] = '$lunchsendonoff = 1; // Key: 0 = No notifications, 1 = Send notifications when a user goes on lunch, 2 = Send when a user goes off lunch, 3 = Send when a user goes on lunch OR off lunch' . PHP_EOL;
+                        } else {
+                            $newdata[] = '$lunchsendonoff = 0; // Key: 0 = No notifications, 1 = Send notifications when a user goes on lunch, 2 = Send when a user goes off lunch, 3 = Send when a user goes on lunch OR off lunch' . PHP_EOL;
+                        }
+                    } else if (stristr($data, '$lunchcreatesched =')) {
+                        if ($_POST["lunchcreatesched"] == "yes") {
+                            $newdata[] = '$lunchcreatesched = true; // Should the script create a schedule entry on the users board' . PHP_EOL;
+                        } else {
+                            $newdata[] = '$lunchcreatesched = false; // Should the script create a schedule entry on the users board' . PHP_EOL;
+                        }
+                    } else if (stristr($data, '$lunchsavetime =')) {
+                        if ($_POST["lunchsavetime"] == "yes") {
+                            $newdata[] = '$lunchsavetime = true; // Should the script submit a time entry for the user for their lunch duration' . PHP_EOL;
+                        } else {
+                            $newdata[] = '$lunchsavetime = false; // Should the script submit a time entry for the user for their lunch duration' . PHP_EOL;
                         }
                     } else {
                         $newdata[] = $data;
