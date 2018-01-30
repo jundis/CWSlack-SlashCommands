@@ -5,6 +5,9 @@
  * Date: 10/26/2017
  * Time: 9:40 AM
  */
+ini_set('display_errors', 1);
+include 'config.php';
+$debugmode = true;
 
 $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
 
@@ -24,7 +27,6 @@ if (mysqli_query($mysql, $sql)) {
 } else {
     echo "stats Table Creation Error: " . mysqli_error($mysql);
 }
-
 $statscommand = substr($_REQUEST['command'],1);
 $statsuser = $_REQUEST['user_name'];
 
@@ -43,17 +45,20 @@ if(!mysqli_query($mysql,$sql))
         die("MySQL Error: " . mysqli_error($mysql));
     }
 }
-
 $statsdate = date("Y-m-d H:i:s");
 $sql = "SELECT * FROM `stats` WHERE `user` = '" . $statsuser . "'"; //SQL Query to select all users
 
 $result = mysqli_query($mysql, $sql); //Run result
-if($result) // If query worked
+$rowcount = mysqli_num_rows($result);
+if($rowcount > 1) //If there were too many rows matching query
+{
+    die("Error: too many users somehow?"); //This should NEVER happen.
+}
+else if ($rowcount == 1) //If exactly 1 row is found.
 {
     $statsuserdata = mysqli_fetch_assoc($result);
     $commandcount = $statsuserdata[$statscommand] + 1;
     $sql = "UPDATE `stats` SET lastcommand = '" . $statscommand . "', lastused = '" . $statsdate . "', " . $statscommand ." = '" . $commandcount . "' WHERE `user` = '" . $statsuser . "'"; //SQL Query to insert new map
-
     if(mysqli_query($mysql,$sql))
     {
         // Inserted user
@@ -66,7 +71,6 @@ if($result) // If query worked
 else
 {
     $sql = "INSERT INTO `stats` (`user`, `lastcommand`, `lastused`, `" . $statscommand . "`) VALUES ('" . $statsuser . "', '" . $statscommand . "', '" . $statsdate . "', 1);"; //SQL Query to insert new map
-
     if(mysqli_query($mysql,$sql))
     {
         // Inserted user
@@ -76,7 +80,6 @@ else
         die("MySQL Error: " . mysqli_error($mysql));
     }
 }
-
 
 
 ?>
