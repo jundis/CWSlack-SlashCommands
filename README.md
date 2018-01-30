@@ -72,9 +72,11 @@ Use the scripts found in the updates folder to upgrade from an older version to 
 
 As of version 2.4 the implementation has been changed from using callback URLs to using the $boardmapping variable in config.php
 
-## cwslack-firmalerts.php
+## cwslack-firmalerts.php AND cwslack-priorityalerts.php
 
 **(Requires some variables from cwslack-incoming.php to function if you don't use that)**
+
+Priority alerts uses the same instructions, same cron line just different file name.
 
 1. Download the cwslack-firmalerts.php, functions.php, install.php, and config-default.php files.
 2. Place on a compatible web server.
@@ -97,6 +99,14 @@ As of version 2.4 the implementation has been changed from using callback URLs t
 5. Setup a cron job or scheduled task on your server to run this PHP file **every 30 minutes.**  
    ```Cron: */30 * * * 1-5 /usr/bin/php /var/www/cwslack-timealerts.php >/dev/null 2>&1```
 6. Fail to enter time and test! It will alert after 2 hours of time is lacking.
+
+## cwslack-lunch.php
+
+This module requires a cron job or other scheduled task to clear the Lunch database table at midnight each night.
+
+Schedule using the following line in crontab.
+
+```0 0 * * * /usr/bin/php /var/www/cwslack-lunch-cron.php >/dev/null 2>&1```
 
 ## cwslack-follow.php
 
