@@ -95,53 +95,92 @@ if($dataTData==NULL) //If no contact is returned or your API URL is incorrect.
 
 $return="Nothing!"; //Create return value and set to a basic message just in case.
 $conf = $dataTData[0]; //Shortcut to item.
-$questions = $conf->questions; //Array of questions
 $notes = "None"; //Just in case
 $vendornotes = "None"; //Just in case
 $answers = ""; //Nothing just in case
 
-if($questions!=NULL)
+if(array_key_exists("questions",$conf))
 {
-	foreach($questions as $q) //For each item in the Question array
-	{
-		if($q->answer!=NULL) //If the answer exists and is not just blank and useless.
-		{
-		    if(strpos($q->question,"Password") !== false && $hidepasswords == 1) //If question contains "Password".
+    $questions = $conf->questions; //Array of questions
+    if($questions!=NULL)
+    {
+        foreach($questions as $q) //For each item in the Question array
+        {
+            if($q->answer!=NULL) //If the answer exists and is not just blank and useless.
             {
+                if(strpos($q->question,"Password") !== false && $hidepasswords == 1) //If question contains "Password".
+                {
 
-                if (strpos($q->question, ":") !== false) //If question contains a colon.
-                {
-                    $answers = $answers . $q->question . " Hidden, please view in CW\n"; //Return the question, answer, and new line.
+                    if (strpos($q->question, ":") !== false) //If question contains a colon.
+                    {
+                        $answers = $answers . $q->question . " Hidden, please view in CW\n"; //Return the question, answer, and new line.
+                    }
+                    else //Else, add a colon.
+                    {
+                        $answers = $answers . $q->question . ": Hidden, please view in CW\n"; //Return the question, answer, and new line.
+                    }
                 }
-                else //Else, add a colon.
+                else
                 {
-                    $answers = $answers . $q->question . ": Hidden, please view in CW\n"; //Return the question, answer, and new line.
+                    if (strpos($q->question, ":") !== false) //If question contains a colon.
+                    {
+                        $answers = $answers . $q->question . " " . $q->answer . "\n"; //Return the question, answer, and new line.
+                    }
+                    else //Else, add a colon.
+                    {
+                        $answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
+                    }
                 }
             }
-            else
+        }
+    }
+}
+else if(array_key_exists("customFields",$conf))
+{
+    $questions = $conf->customFields; //Array of questions
+    if($questions!=NULL)
+    {
+        foreach($questions as $q) //For each item in the Question array
+        {
+            if(array_key_exists("value",$q) && $q->value!=NULL) //If the answer exists and is not just blank and useless.
             {
-                if (strpos($q->question, ":") !== false) //If question contains a colon.
+                if(strpos($q->caption,"Password") !== false && $hidepasswords == 1) //If question contains "Password".
                 {
-                    $answers = $answers . $q->question . " " . $q->answer . "\n"; //Return the question, answer, and new line.
+
+                    if (strpos($q->caption, ":") !== false) //If question contains a colon.
+                    {
+                        $answers = $answers . $q->caption . " Hidden, please view in CW\n"; //Return the question, answer, and new line.
+                    }
+                    else //Else, add a colon.
+                    {
+                        $answers = $answers . $q->caption . ": Hidden, please view in CW\n"; //Return the question, answer, and new line.
+                    }
                 }
-                else //Else, add a colon.
+                else
                 {
-                    $answers = $answers . $q->question . ": " . $q->answer . "\n"; //Return the question, answer, and new line.
+                    if (strpos($q->caption, ":") !== false) //If question contains a colon.
+                    {
+                        $answers = $answers . $q->caption . " " . $q->value . "\n"; //Return the question, answer, and new line.
+                    }
+                    else //Else, add a colon.
+                    {
+                        $answers = $answers . $q->caption . ": " . $q->value . "\n"; //Return the question, answer, and new line.
+                    }
                 }
             }
-		}
-	}
+        }
+    }
 }
 else
 {
 	$answers="None";
 }
 
-if($conf->notes!=NULL) //If notes are not null
+if(array_key_exists("notes",$conf) && $conf->notes!=NULL) //If notes are not null
 {
     $notes = $conf->notes; //Set $notes to the config notes
 }
-if($conf->vendorNotes!=NULL) //If vendornotes are not null
+if(array_key_exists("vendorNotes",$conf) && $conf->vendorNotes!=NULL) //If vendornotes are not null
 {
     $vendornotes = $conf->vendorNotes; //Set $vendornotes to the config vendor notes.
 }
