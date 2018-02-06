@@ -6,8 +6,6 @@
  * Time: 9:40 AM
  */
 ini_set('display_errors', 1);
-include 'config.php';
-$debugmode = true;
 
 $mysql = mysqli_connect($dbhost, $dbusername, $dbpassword, $dbdatabase); //Connect MySQL
 
