@@ -309,7 +309,7 @@ if($command=="priority") { //Check if the second string in the text array from t
 if($command=="status") {
 	$status = "0";
 	$statusname = "";
-	$statusurl = $dataTData->board->_info->board_href . "/statuses?conditions=name%20like%20%27" . $option3 . "%27";
+	$statusurl = $dataTData->board->_info->board_href . "/statuses?conditions=name%20contains%20%27" . $option3 . "%27";
 	$dataTCmd = cURL($statusurl, $header_data);
 	if(array_key_exists(0,$dataTCmd))
 	{
