@@ -129,6 +129,10 @@ function cURLPost($url, $header, $request, $postfieldspre)
         else if($jsonDecode->code == "Unauthorized") { //If error code is an authorization error
             die("401 Unauthorized, check API key to ensure it is valid."); //Fail case.
         }
+        else if($jsonDecode->code == "InvalidObject" && $jsonDecode->message == "schedule object is invalid")
+        {
+            die("Error: " . $jsonDecode->errors->message . " - Please check to ensure you have this user mapped in the database using /dbm, as their name most likely differs between Slack and ConnectWise");
+        }
         else if($jsonDecode->code == NULL)
         {
             //do nothing.
