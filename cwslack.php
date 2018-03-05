@@ -467,7 +467,7 @@ if($command=="scheduleme")
 
         $postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
 
-        $dataStatus = cURLPost(
+        $dataTCmd = cURLPost(
             $connectwise . "/$connectwisebranch/apis/3.0/schedule/entries",
             $header_data2,
             "POST",
@@ -478,7 +478,7 @@ if($command=="scheduleme")
 	{
         $postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
 
-        $dataStatus = cURLPost(
+        $dataTCmd = cURLPost(
             $connectwise . "/$connectwisebranch/apis/3.0/schedule/entries",
             $header_data2,
             "POST",
@@ -493,7 +493,7 @@ if($command=="scheduleme")
 		if ($timeoutfix == true) {
 			cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "You have been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]","mrkdwn"=>true));
 		} else {
-			die("You have been properly scheduled for ticket #" . $dataStatus->objectId . " for $timingdate[0]"); //Return properly encoded arrays in JSON for Slack parsing.
+			die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " for $timingdate[0]"); //Return properly encoded arrays in JSON for Slack parsing.
 		}
 		die();
 	}
@@ -502,7 +502,7 @@ if($command=="scheduleme")
 		if ($timeoutfix == true) {
 			cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "You have been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal,"mrkdwn"=>true));
 		} else {
-			die("You have been properly scheduled for ticket #" . $dataStatus->objectId . " at " . $removal); //Return properly encoded arrays in JSON for Slack parsing.
+			die("You have been properly scheduled for ticket #" . $dataTCmd->objectId . " at " . $removal); //Return properly encoded arrays in JSON for Slack parsing.
 		}
 		die();
 	}
@@ -631,7 +631,7 @@ if($command=="schedule")
 
         $postarray = array("objectId" => $ticketnumber, "member" => array("identifier" => $cwuser), "type" => array("id" => 4), "dateStart" => $datestart, "dateEnd" => $dateend, "allowScheduleConflictsFlag" => true);
 
-        $dataStatus = cURLPost(
+        $dataTCmd = cURLPost(
             $connectwise . "/$connectwisebranch/apis/3.0/schedule/entries",
             $header_data2,
             "POST",
