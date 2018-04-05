@@ -288,15 +288,15 @@ if(!is_numeric($exploded[0])) {
 
         foreach($data as $entry)
         {
-            $name = $entry->enteredBy;
+            $name = $entry->member->identifier;
             if(array_key_exists($name,$timeset))
             {
-                $timeset[$entry->enteredBy]["totaltime"] = $timeset[$entry->enteredBy]["totaltime"] + $entry->actualHours;
+                $timeset[$entry->member->identifier]["totaltime"] = $timeset[$entry->member->identifier]["totaltime"] + $entry->actualHours;
             }
             else
             {
-                $timeset[$entry->enteredBy] = null;
-                $timeset[$entry->enteredBy]["totaltime"] = $entry->actualHours;
+                $timeset[$entry->member->identifier] = null;
+                $timeset[$entry->member->identifier]["totaltime"] = $entry->actualHours;
             }
         }
 
