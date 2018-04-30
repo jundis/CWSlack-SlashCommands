@@ -30,7 +30,7 @@ See here: https://www.codeooze.com/coding/php-curl-on-windows/
 
 Or google "enable curl windows" and use your best judgement on what site to choose.
 
-### Other?
+### Issue - Other?
 
 You can reach me on the r/msp Discord, LabTechGeek Slack, or via reddit at /u/jundis if you have a bug or run into any issues, but support will be limited as I turn my focus to developing the hosted solution.
 
