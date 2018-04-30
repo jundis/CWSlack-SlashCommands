@@ -255,7 +255,7 @@ if($command=="priority") { //Check if the second string in the text array from t
 
 	$priority = "0"; //Set priority = 0.
 	$priorityname = "";
-	$priorityurl = $connectwise . "/$connectwisebranch/apis/3.0/service/priorities?conditions=name%20like%20%27" . $option3 . "%27";
+	$priorityurl = $connectwise . "/$connectwisebranch/apis/3.0/service/priorities?conditions=name%20like%20%27%2A" . $option3 . "%2A%27";
 	$dataTCmd = cURL($priorityurl, $header_data);
 	if(array_key_exists(0,$dataTCmd))
 	{
