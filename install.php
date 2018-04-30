@@ -534,7 +534,7 @@ ini_set('display_errors', 1); //Display errors in case something occurs
                         } else {
                             $newdata[] = $data;
                         }
-                    } if (stristr($data, '$schedulestatus =')) {
+                    } else if (stristr($data, '$schedulestatus =')) {
                         if (!empty($_POST["schedulestatus"])) {
                             $newdata[] = '$schedulestatus = "' . $_POST["schedulestatus"] . '";  //Set to the name of your status (e.x. "Scheduled") if you want the [/t # schedule] functions to update the status' . PHP_EOL;
                             $line1=true;
