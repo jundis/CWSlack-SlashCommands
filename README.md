@@ -4,7 +4,9 @@ This script, when hosted on a PHP supported web server, will act as a bridge bet
 
 cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, and cwslack-contacts.php were designed to be independent, but all rely on the config.php and functions.php files. This allows you to pick and choose what you want and for different Slack commands instead of one universal /cw tickets 249123 and /cw contact john doe it can be /t 249123 and /c john doe.
 
-####Usage
+**Note: This project is currently being maintained for bugs only, all further new feature development is being done on the unreleased hosted platform.**
+
+#### Usage
 
 * cwslack.php: Pull ticket information, create new tickets, change status, and change priority.
 * cwslack-activities.php: Pull activity information
@@ -30,7 +32,7 @@ You can reach me on the r/msp Discord, LabTechGeek Slack, or via reddit at /u/ju
 
 You can also reach me at joey(at)und.is should you need more intense support, custom modifications, or want your install done by me.
 
-####Update Instructions
+#### Update Instructions
 
 Use the scripts found in the updates folder to upgrade from an older version to current. This will automatically update the config.php file with necessary values and create any new MySQL tables as well. You can also manually update by comparing the config file from this repository to your active one.
 
@@ -68,7 +70,7 @@ Use the scripts found in the updates folder to upgrade from an older version to 
 8. Change the $postupdated and $postadded to what you prefer. Enabling $postupdated can get spammy.
 9. Test it in Slack by creating a new ticket on the board you selected in step 6!
 
-####Different boards to different channels
+#### Different boards to different channels
 
 As of version 2.4 the implementation has been changed from using callback URLs to using the $boardmapping variable in config.php
 
