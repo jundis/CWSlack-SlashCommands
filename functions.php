@@ -55,7 +55,7 @@ function cURL($url, $header)
 
     $jsonDecode = json_decode($curlBodyTData); //Decode the JSON returned by the CW API.
 
-    if(array_key_exists("code",$jsonDecode)) { //Check if array contains error code
+    if(is_array($jsonDecode) && array_key_exists("code",$jsonDecode)) { //Check if array contains error code
         if($jsonDecode->code == "NotFound") { //If error code is NotFound
             die("Connectwise record was not found."); //Report that the ticket was not found.
         }
@@ -66,7 +66,7 @@ function cURL($url, $header)
             die("Unknown Error Occurred, check API key and other API settings. Error " . $jsonDecode->code . ": " . $jsonDecode->message); //Fail case, including the message and code output from connectwise.
         }
     }
-    if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
+    if(is_array($jsonDecode) && array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
     {
         $errors = $jsonDecode->errors; //Make array easier to access.
 
@@ -122,7 +122,7 @@ function cURLPost($url, $header, $request, $postfieldspre)
     }
     $jsonDecode = json_decode($curlBodyTCmd); //Decode the JSON returned by the CW API.
 
-    if(array_key_exists("code",$jsonDecode)) { //Check if array contains error code
+    if(is_array($jsonDecode) && array_key_exists("code",$jsonDecode)) { //Check if array contains error code
         if($jsonDecode->code == "NotFound") { //If error code is NotFound
             die("Connectwise record was not found."); //Report that the ticket was not found.
         }
@@ -141,7 +141,7 @@ function cURLPost($url, $header, $request, $postfieldspre)
             die("Unknown Error Occurred, check API key and other API settings. Error " . $jsonDecode->code . ": " . $jsonDecode->message); //Fail case.
         }
     }
-    if(array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
+    if(is_array($jsonDecode) && array_key_exists("errors",$jsonDecode)) //If connectwise returned an error.
     {
         $errors = $jsonDecode->errors; //Make array easier to access.
 
