@@ -4,7 +4,7 @@ This script, when hosted on a PHP supported web server, will act as a bridge bet
 
 cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, and cwslack-contacts.php were designed to be independent, but all rely on the config.php and functions.php files. This allows you to pick and choose what you want and for different Slack commands instead of one universal /cw tickets 249123 and /cw contact john doe it can be /t 249123 and /c john doe.
 
-**Note: This project is currently being maintained for bugs only, all further new feature development is being done on the unreleased hosted platform.**
+#### Note: This project is currently being maintained for bugs only, all further new feature development is being done on the hosted successor at https://mspic.io
 
 #### Usage
 
