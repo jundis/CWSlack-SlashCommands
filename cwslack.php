@@ -701,7 +701,7 @@ if($posttext==1) //Block for curl to get latest note
 			$posttext=0;
 		}
 	}
-	else if(isset($dataTNotes[0]) && is_object($dataTNotes) && property_exists($dataTNotes,'text') && $dataTNotes[0]->text != NULL || isset($dataTimeData[0]) && is_object ($dataTimeData) && property_exists($dataTimeData,'text') && $dataTimeData[0]->text != NULL) //Makes sure that if both text values == null, then there is no text to post.
+	else if($dataTNotes[0]->text != NULL || $dataTimeData[0]->text != NULL) //Makes sure that if both text values == null, then there is no text to post.
 	{
 		if($dataTNotes[0]->text != NULL) {
 
