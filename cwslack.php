@@ -79,7 +79,7 @@ if (array_key_exists(2,$exploded)) //If a third string exists in the slash comma
 //Set URLs
 $urlticketdata = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber; //Set ticket API url
 $ticketurl = $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Ticket URL for connectwise.
-$timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries?conditions=chargeToId=" . $ticketnumber . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
+$timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries?conditions=chargeToId=" . $ticketnumber . "&chargeToType=%27ServiceTicket%27&orderBy=_info/dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
 if($command == "initial" || $command == "first" || $command == "note") //Set noteurl to use ascending if an initial note command is passed, else use descending.
 {
 	$noteurl = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $ticketnumber . "/notes?orderBy=id%20asc";
@@ -194,14 +194,14 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 		{
 			$row = mysqli_fetch_assoc($result); //Row association.
 
-			$postarray["enteredBy"] = $row["cwname"]; //Return the connectwise name of the row found as the CW member name.
+			$postarray["_info"]["enteredBy"] = $row["cwname"]; //Return the connectwise name of the row found as the CW member name.
 			$postarray["owner"] = array("identifier"=>$row["cwname"]); //Return the connectwise name of the row found as the CW member name.
 		}
 		else //If no rows are found
 		{
 			if($usecwname==1) //If variable enabled
 			{
-				$postarray["enteredBy"] = $_REQUEST['user_name'];
+				$postarray["_info"]["enteredBy"] = $_REQUEST['user_name'];
 				$postarray["owner"] = array("identifier"=>$_REQUEST['user_name']); //Return the slack username as the user for the ticket note. If the user does not exist in CW, it will use the API username.
 			}
 		}
@@ -210,7 +210,7 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 	{
 		if($usecwname==1)
 		{
-			$postarray["enteredBy"] = $_REQUEST['user_name'];
+			$postarray["_info"]["enteredBy"] = $_REQUEST['user_name'];
 			$postarray["owner"] = array("identifier"=>$_REQUEST['user_name']);
 		}
 	}
@@ -238,7 +238,7 @@ if (strpos(strtolower($exploded[0]), "new") !== false)
 //-
 $dataTData = cURL($urlticketdata, $header_data); //Decode the JSON returned by the CW API.
 
-if($dataTData==NULL) 
+if($dataTData==NULL)
 {
 	if ($timeoutfix == true) {
 		cURLPost($_REQUEST["response_url"], array("Content-Type: application/json"), "POST", array("parse" => "full", "response_type" => "ephemeral","text" => "Array not returned in line 195. Please check your connectwise URL variable in config.php and ensure it is accessible via the web at " . $urlticketdata));
@@ -688,9 +688,9 @@ if($posttext==1) //Block for curl to get latest note
 	{
 		if(array_key_exists(0, $dataTimeData))
 		{
-			$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
+			$createdby = $dataTimeData[0]->_info->enteredBy; //Set $createdby to the time entry creator.
 			$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
-			$notedate = $dataTimeData[0]->dateEntered;
+			$notedate = $dataTimeData[0]->_info->dateEntered;
 
 			$date2 = strtotime($notedate);
 			$date2format = date('m-d-Y g:i:sa', $date2);
@@ -713,14 +713,14 @@ if($posttext==1) //Block for curl to get latest note
 			$text = $dataTNotes[0]->text; //Set $text to the ticket text.
 			if (array_key_exists(0, $dataTNotes) && array_key_exists(0, $dataTimeData) && $command != "initial" && $command != "first" && $command != "note") //Check if arrays exist properly.
 			{
-				$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
+				$timetime = new DateTime($dataTimeData[0]->_info->dateEntered); //Create new time object based on time entry note.
 
 
 				if ($timetime > $notetime) //If the time entry is newer than latest ticket note.
 				{
-					$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
+					$createdby = $dataTimeData[0]->_info->enteredBy; //Set $createdby to the time entry creator.
 					$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
-					$notedate = $dataTimeData[0]->dateEntered;
+					$notedate = $dataTimeData[0]->_info->dateEntered;
 					$internalflag = $dataTimeData[0]->addToInternalAnalysisFlag;
 				}
 			}
@@ -730,9 +730,9 @@ if($posttext==1) //Block for curl to get latest note
 		}
 		else
 		{
-			$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
+			$createdby = $dataTimeData[0]->_info->enteredBy; //Set $createdby to the time entry creator.
 			$text = $dataTimeData[0]->notes; //Set $text to the time entry text.
-			$notedate = $dataTimeData[0]->dateEntered;
+			$notedate = $dataTimeData[0]->_info->dateEntered;
 
 			$date2 = strtotime($notedate);
 			$date2format = date('m-d-Y g:i:sa', $date2);
@@ -774,7 +774,7 @@ else
 $lastupdate = "\nUpdated: " . $dataTData->_info->updatedBy . " at " . date("m-d-y g:iA", strtotime($dataTData->_info->lastUpdated));
 
 
-$date=strtotime($dataTData->dateEntered); //Convert date entered JSON result to time.
+$date=strtotime($dataTData->_info->dateEntered); //Convert date entered JSON result to time.
 $dateformat=date('m-d-Y g:i:sa',$date); //Convert previously converted time to a better time string.
 $return="Nothing!"; //Create return value and set to a basic message just in case.
 $contact="None"; //Set None for contact in case no contact exists for "Catch All" tickets.
@@ -939,8 +939,8 @@ else if($command == "full" || $command == "notes" || $command == "all")
 		{
 			foreach($dataTimeData as $singletime)
 			{
-				$createdby = $singletime->enteredBy; //Set $createdby to the time entry creator.
-				$notedate = $singletime->dateEntered;
+				$createdby = $singletime->_info->enteredBy; //Set $createdby to the time entry creator.
+				$notedate = $singletime->_info->dateEntered;
 				$internalflag = $singletime->addToInternalAnalysisFlag;
 				$text = $singletime->notes; //Set $text to the time entry text.
 

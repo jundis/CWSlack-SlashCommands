@@ -30,6 +30,7 @@ $apiprivatekey = "Key"; //Private API key
 $timezone = "America/Chicago"; //Set your timezone here.
 $timeoutfix = false; //Enable to fix any 3000ms response from Slack.
 $sendtimeoutwait = false; //Set to true to send a please wait message with every command. Only does something when $timeoutfix is set to true.
+$cwClientId=""; //This is required for all ConnectWise Manage API calls as of v2019.3
 
 // Database Configuration, required for if you want to use MySQL/Maria DB features.
 $usedatabase = 0; // Set to 0 by default, set to 1 if you want to enable MySQL.

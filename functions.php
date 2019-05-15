@@ -25,6 +25,9 @@
  * @param $header
  * @return mixed
  */
+
+$globalVersion = "2019.3";
+
 function cURL($url, $header)
 {
     global $debugmode; //Require global variable $debugmode from config.php.
@@ -153,19 +156,29 @@ function cURLPost($url, $header, $request, $postfieldspre)
 
 function authHeader($company, $publickey, $privatekey)
 {
+    global $cwClientId;
+    global $globalVersion;
+
     $apicompanyname = strtolower($company); //Company name all lower case for api auth.
     $authorization = base64_encode($apicompanyname . "+" . $publickey . ":" . $privatekey); //Encode the API, needed for authorization.
 
-    return array("Authorization: Basic ". $authorization);
+    return array("Authorization: Basic ". $authorization,
+        "clientId: " . $cwClientId,
+        "Accept: application/vnd.connectwise.com+json; version=" . $globalVersion);
 }
 
 function postHeader($company, $publickey, $privatekey)
 {
+    global $cwClientId;
+    global $globalVersion;
+
     $apicompanyname = strtolower($company); //Company name all lower case for api auth.
     $authorization = base64_encode($apicompanyname . "+" . $publickey . ":" . $privatekey); //Encode the API, needed for authorization.
 
     return array(
         "Authorization: Basic " . $authorization,
+        "clientId: " . $cwClientId,
+        "Accept: application/vnd.connectwise.com+json; version=" . $globalVersion,
         "Content-Type: application/json"
     );
 }
