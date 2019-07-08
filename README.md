@@ -6,6 +6,8 @@ cwslack.php, cwslack-incoming.php, cwslack-activities.php, cwslack-configs.php, 
 
 #### Note: This project is currently being maintained for bugs only, all further new feature development is being done on the hosted successor at https://mspic.io
 
+#### Note: As of July 2019, you need a Client ID to use any public integrations with the ConnectWise APIs. You'll need to sign up for a developer account at https://developer.connectwise.com and you can then generate a Client ID which goes into config.php as $cwClientId. This does not apply to hosted integrations such as mspIC, as that is handled by the host. Generate your ID here: https://developer.connectwise.com/ClientID
+
 #### Usage
 
 * cwslack.php: Pull ticket information, create new tickets, change status, and change priority.
