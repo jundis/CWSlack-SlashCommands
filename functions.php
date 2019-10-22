@@ -26,7 +26,7 @@
  * @return mixed
  */
 
-$globalVersion = "2019.3";
+$globalVersion = "2019.2";
 
 function cURL($url, $header)
 {

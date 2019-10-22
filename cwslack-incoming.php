@@ -80,7 +80,7 @@ else if (!empty($_REQUEST['board']))
 //URL creation
 $ticketurl = $connectwise . "/$connectwisebranch/services/system_io/Service/fv_sr100_request.rails?service_recid="; //Set the URL required for ticket links.
 $noteurl = $connectwise . "/$connectwisebranch/apis/3.0/service/tickets/" . $_REQUEST['id'] . "/notes?orderBy=id%20desc"; //Set the URL required for cURL requests to ticket note API.
-$timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries?conditions=chargeToId=" . $_REQUEST['id'] . "&chargeToType=%27ServiceTicket%27&orderBy=_info/dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
+$timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries?conditions=chargeToId=" . $_REQUEST['id'] . "&chargeToType=%27ServiceTicket%27&orderBy=dateEntered%20desc"; //Set the URL required for cURL requests to the time entry API.
 
 $dataTData = array(); //Blank array.
 $dataTimeData = array(); //Blank array.
@@ -121,12 +121,12 @@ if($posttext==1) //Block for curl to get latest note
 			$text = $dataTData[0]->text; //Set $text to the ticket text.
 			if (array_key_exists(0, $dataTData) && array_key_exists(0, $dataTimeData)) //Check if arrays exist properly.
 			{
-				$timetime = new DateTime($dataTimeData[0]->_info->dateEntered); //Create new time object based on time entry note.
+				$timetime = new DateTime($dataTimeData[0]->dateEntered); //Create new time object based on time entry note.
 				$notetime = new DateTime($dataTData[0]->dateCreated); //Create new datetime object based on ticketnote note.
 
 				if ($timetime > $notetime) //If the time entry is newer than latest ticket note.
 				{
-					$createdby = $dataTimeData[0]->_info->enteredBy; //Set $createdby to the time entry creator.
+					$createdby = $dataTimeData[0]->enteredBy; //Set $createdby to the time entry creator.
 					$text = $dataTimeData[0]->notes; //
 					$usetime = 1; //Set time flag.
 				}
@@ -140,7 +140,7 @@ if($posttext==1) //Block for curl to get latest note
 		if ($usetime == 1)
 		{
 			$dataarray = $dataTimeData[0];
-			$notedate = $dataTimeData[0]->_info->dateEntered;
+			$notedate = $dataTimeData[0]->dateEntered;
 			$dateformat2=date('m-d-Y g:i:sa',strtotime($notedate));
 		}
 		else

@@ -33,7 +33,7 @@ $header_data2 =array(
 
 $datetoday = date("Y-m-d");
 $timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries";
-$filterurl = $timeurl . "?conditions=timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=_info/dateEntered%20desc&pagesize=1000";
+$filterurl = $timeurl . "?conditions=timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=dateEntered%20desc&pagesize=1000";
 
 $data = cURL($filterurl, $header_data);
 

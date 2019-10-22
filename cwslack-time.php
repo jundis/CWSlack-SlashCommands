@@ -167,7 +167,7 @@ if(!is_numeric($exploded[0])) {
 
         $datetoday = date("Y-m-d");
         $timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries";
-        $filterurl = $timeurl . "?conditions=member/identifier%20like%20%27" . $cwuser . "%27%20and%20timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=_info/dateEntered%20desc&pagesize=200";
+        $filterurl = $timeurl . "?conditions=member/identifier%20like%20%27" . $cwuser . "%27%20and%20timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=dateEntered%20desc&pagesize=200";
 
         // Authorization header
         $header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
@@ -267,7 +267,7 @@ if(!is_numeric($exploded[0])) {
     {
         $datetoday = date("Y-m-d");
         $timeurl = $connectwise . "/$connectwisebranch/apis/3.0/time/entries";
-        $filterurl = $timeurl . "?conditions=timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=_info/dateEntered%20desc&pagesize=1000";
+        $filterurl = $timeurl . "?conditions=timeStart%20%3C%20[" . $datetoday . "T23:59:59Z]%20and%20timeStart%20%3E%20[" . $datetoday . "T00:00:00Z]&orderBy=dateEntered%20desc&pagesize=1000";
 
         // Authorization header
         $header_data = authHeader($companyname, $apipublickey, $apiprivatekey);
@@ -493,14 +493,14 @@ if($usedatabase==1)
         $row = mysqli_fetch_assoc($result); //Row association.
 
         $postfieldspre["member"] = array("identifier"=>$row["cwname"]); //Return the connectwise name of the row found as the CW member name.
-        $postfieldspre["_info"]["enteredBy"] = $row["cwname"];
+        $postfieldspre["enteredBy"] = $row["cwname"];
     }
     else //If no rows are found
     {
         if($usecwname==1) //If variable enabled
         {
             $postfieldspre["member"] = array("identifier"=>$_REQUEST['user_name']); //Return the slack username as the user for the ticket note. If the user does not exist in CW, it will use the API username.
-            $postfieldspre["_info"]["enteredBy"] = $_REQUEST['user_name'];
+            $postfieldspre["enteredBy"] = $_REQUEST['user_name'];
         }
     }
 }
@@ -509,7 +509,7 @@ else
     if($usecwname==1)
     {
         $postfieldspre["member"] = array("identifier"=>$_REQUEST['user_name']);
-        $postfieldspre["_info"]["enteredBy"] = $_REQUEST['user_name'];
+        $postfieldspre["enteredBy"] = $_REQUEST['user_name'];
     }
 }
 
